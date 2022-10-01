@@ -1,12 +1,12 @@
-package com.gonativecoders.whosin.ui.screens.teams
+package com.gonativecoders.whosin.ui.screens.me
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun TeamsScreen() {
+fun MeScreen() {
     Column {
-        Text(text = "You're in!!")
+        Text(text = "When am I in?")
     }
 }
