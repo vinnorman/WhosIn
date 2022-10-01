@@ -2,9 +2,7 @@
 
 package com.gonativecoders.whosin.ui.screens.login
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,9 +14,12 @@ import com.gonativecoders.whosin.ui.theme.WhosInTheme
 @Composable
 fun LoginScreen(onLoggedIn: () -> Unit) {
     Column(modifier = Modifier.padding(24.dp),
-    horizontalAlignment = Alignment.CenterHorizontally) {
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center) {
         OutlinedTextField(value = "", onValueChange = {}, label = { Text(text = "Username") })
+        Spacer(modifier = Modifier.size(16.dp))
         OutlinedTextField(value = "", onValueChange = {}, label = { Text(text = "Password") })
+        Spacer(modifier = Modifier.size(24.dp))
         Button(onClick = onLoggedIn) {
             Text(text = "Log In")
         }

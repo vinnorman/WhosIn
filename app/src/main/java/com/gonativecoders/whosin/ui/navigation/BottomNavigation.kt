@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.gonativecoders.whosin.ui.Screen
 
 @Composable
 fun BottomNavigation(navController: NavController) {
@@ -15,7 +16,7 @@ fun BottomNavigation(navController: NavController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar {
-        val items = listOf(Screen.WhosIn, Screen.Me, Screen.Account)
+        val items = listOf(Screen.BottomNavScreen.WhosIn, Screen.BottomNavScreen.Me, Screen.BottomNavScreen.Account)
         items.forEachIndexed { index, screen ->
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = screen.route) },
