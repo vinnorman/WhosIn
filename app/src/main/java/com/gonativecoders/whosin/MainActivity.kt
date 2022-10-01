@@ -3,6 +3,7 @@
 package com.gonativecoders.whosin
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.gonativecoders.whosin.ui.screens.Screen
+import com.gonativecoders.whosin.ui.screens.login.LoginScreen
+import com.gonativecoders.whosin.ui.screens.teams.TeamsScreen
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,31 +26,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WhosInTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginForm()
+
+                    val navController = rememberNavController()
+
+                    NavHost(navController = navController, startDestination = Screen.Login.route) {
+                        composable(Screen.Login.route) {
+                            LoginScreen(onLoggedIn = { navController.navigate(Screen.Teams.route) })
+                        }
+                        composable(Screen.Teams.route) { TeamsScreen() }
+                    }
+
                 }
             }
         }
-    }
-}
-
-@Composable
-fun LoginForm() {
-    Column {
-        OutlinedTextField(value = "", onValueChange = {}, label = { Text(text = "Username")})
-        OutlinedTextField(value = "", onValueChange = {}, label = { Text(text = "Password")})
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WhosInTheme {
-        LoginForm()
     }
 }
