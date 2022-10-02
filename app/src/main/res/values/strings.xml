@@ -3,4 +3,5 @@
     <string name="screen_name_whos_in">Who\'s In?</string>
     <string name="screen_name_me">Me</string>
     <string name="screen_name_account">Account</string>
+    <string name="password_field_placeholder">Enter Password</string>
 </resources>
