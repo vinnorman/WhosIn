@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.screens.whosin
+package com.gonativecoders.whosin.ui.screens.home.whosin
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
