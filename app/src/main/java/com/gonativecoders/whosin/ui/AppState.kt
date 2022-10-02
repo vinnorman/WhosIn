@@ -19,7 +19,7 @@ fun rememberAppState(
 class AppState(val navController: NavHostController) {
 
     val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Me, HomeDestinations.Account)
-    val bottomNavRoutes = homeDestinations.map { it.route }
+    private val bottomNavRoutes = homeDestinations.map { it.route }
 
     val isBottomNavigationRoute: Boolean
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in bottomNavRoutes

@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.ui.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
@@ -12,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.me.MeScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
@@ -22,10 +24,10 @@ sealed class MainDestinations(val route: String) {
     object Home : MainDestinations("home")
 }
 
-sealed class HomeDestinations(val route: String, val displayText: String, val icon: ImageVector) {
-    object WhosIn : HomeDestinations("whosin", "Who's In?", Icons.Filled.Search)
-    object Me : HomeDestinations("me", "Me", Icons.Filled.DateRange)
-    object Account : HomeDestinations("account", "Account", Icons.Filled.AccountCircle)
+sealed class HomeDestinations(val route: String, @StringRes val title: Int, val icon: ImageVector) {
+    object WhosIn : HomeDestinations("whosin", R.string.screen_name_whos_in, Icons.Filled.Search)
+    object Me : HomeDestinations("me", R.string.screen_name_me, Icons.Filled.DateRange)
+    object Account : HomeDestinations("account", R.string.screen_name_account, Icons.Filled.AccountCircle)
 }
 
 @Composable

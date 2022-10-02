@@ -5,6 +5,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun BottomNavigation(
@@ -12,12 +13,11 @@ fun BottomNavigation(
     currentRoute: String,
     onItemSelected: (String) -> Unit
 ) {
-
     NavigationBar {
-        items.forEachIndexed { index, screen ->
+        items.forEach { screen ->
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = screen.route) },
-                label = { Text(screen.displayText) },
+                label = { Text(stringResource(screen.title)) },
                 selected = currentRoute == screen.route,
                 onClick = { onItemSelected(screen.route) }
             )
