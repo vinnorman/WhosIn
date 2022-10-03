@@ -6,8 +6,8 @@ class AuthRepository(private val authService: AuthService) {
         authService.login(email, password, onResult)
     }
 
-    fun createAccount(email: String, password: String, onResult: (Throwable?) -> Unit) {
-        authService.createAccount(email, password, onResult)
+    fun createAccount(email: String, password: String, displayName: String, onResult: (Throwable?) -> Unit) {
+        authService.createAccount(email, password, displayName, onResult)
     }
 
 }

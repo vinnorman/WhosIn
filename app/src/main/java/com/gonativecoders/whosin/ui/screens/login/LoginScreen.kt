@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.ui.MainDestinations
 import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.PasswordField
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
@@ -20,7 +21,7 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun LoginScreen(
     onLoggedIn: () -> Unit,
-    moveToCreateAccountScreen:  () -> Unit
+    navigate:  (route: String) -> Unit
 ) {
     val viewModel = getViewModel<LoginViewModel>()
 
@@ -43,7 +44,7 @@ fun LoginScreen(
             Text(text = "Log In")
         }
         Spacer(modifier = Modifier.size(24.dp))
-        TextButton(onClick = { moveToCreateAccountScreen() }) {
+        TextButton(onClick = { navigate(MainDestinations.Register.route) }) {
             Text(text = "Create Account")
         }
         if (uiState.error != null) {
@@ -61,7 +62,7 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            LoginScreen(moveToCreateAccountScreen = fun() {
+            LoginScreen(navigate = fun(_: String) {
 
             }, onLoggedIn = fun() {
 

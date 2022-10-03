@@ -13,15 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.ui.MainDestinations
 import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.NameField
 import com.gonativecoders.whosin.ui.composables.PasswordField
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterScreen(
     onLoggedIn: () -> Unit,
-    moveToLoginScreen:  () -> Unit
+    navigate: (route: String) -> Unit
 ) {
+    val viewModel = getViewModel<RegisterViewModel>()
+
+    val uiState = viewModel.uiState
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,21 +37,21 @@ fun RegisterScreen(
     ) {
         Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Welcome Image")
         Spacer(modifier = Modifier.size(32.dp))
-        NameField(value = "", onNewValue = {  })
+        NameField(value = uiState.displayName, onNewValue = viewModel::onNameChange)
         Spacer(modifier = Modifier.size(16.dp))
-        EmailField(value = "", onNewValue = {  })
+        EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.size(16.dp))
-        PasswordField(value = "", onNewValue = {  }, placeholder = R.string.password_field_placeholder)
+        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged, placeholder = R.string.password_field_placeholder)
         Spacer(modifier = Modifier.size(24.dp))
-        Button(onClick = {  }) {
+        Button(onClick = { viewModel.onCreateAccountClicked(onLoggedIn) }) {
             Text(text = "Create Account")
         }
         Spacer(modifier = Modifier.size(24.dp))
-        TextButton(onClick = { moveToLoginScreen()}) {
+        TextButton(onClick = { navigate(MainDestinations.Login.route) }) {
             Text(text = "Already have an account? Login")
         }
-//        if (uiState.error != null) {
-//            Text(text = "Whoops! Something went wrong. ${uiState.error}")
-//        }
+        if (uiState.error != null) {
+            Text(text = "Whoops! Something went wrong. ${uiState.error}")
+        }
     }
 }

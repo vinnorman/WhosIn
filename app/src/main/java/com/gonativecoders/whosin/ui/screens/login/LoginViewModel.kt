@@ -15,9 +15,6 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
         val error: Throwable? = null
     )
 
-    private val email get() = uiState.email
-    private val password get() = uiState.password
-
     var uiState by mutableStateOf(UiState())
         private set
 
@@ -30,7 +27,7 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
     }
 
     fun onLoginClicked(onLoggedIn: () -> Unit) {
-        authRepository.login(email, password) { error ->
+        authRepository.login(uiState.email, uiState.password) { error ->
             if (error == null) {
                 onLoggedIn()
             } else {
