@@ -18,9 +18,11 @@ import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.me.MeScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
+import com.gonativecoders.whosin.ui.screens.register.RegisterScreen
 
 sealed class MainDestinations(val route: String) {
     object Login : MainDestinations("login")
+    object Register : MainDestinations("register")
     object Home : MainDestinations("home")
 }
 
@@ -43,12 +45,30 @@ fun AppNavigation(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(MainDestinations.Login.route) { LoginScreen(onLoggedIn = onLoggedIn) }
+        composable(MainDestinations.Login.route) {
+            LoginScreen(
+                onLoggedIn = onLoggedIn,
+                moveToCreateAccountScreen = {
+                    navController.navigate(MainDestinations.Register.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        composable(MainDestinations.Register.route) {
+            RegisterScreen(
+                onLoggedIn = onLoggedIn,
+                moveToLoginScreen = {
+                    navController.navigate(MainDestinations.Login.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
         navigation(route = MainDestinations.Home.route, startDestination = HomeDestinations.WhosIn.route) {
             composable(HomeDestinations.WhosIn.route) { WhosInScreen() }
             composable(HomeDestinations.Me.route) { MeScreen() }
             composable(HomeDestinations.Account.route) { AccountScreen(onLoggedOut = onLoggedOut) }
         }
-
     }
 }

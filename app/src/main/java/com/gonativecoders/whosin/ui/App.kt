@@ -4,12 +4,10 @@ package com.gonativecoders.whosin.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.ui.navigation.AppNavigation
@@ -24,8 +22,10 @@ fun App() {
     WhosInTheme {
         val appState = rememberAppState()
 
-        Surface(modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Scaffold(
                 bottomBar = {
                     if (appState.isBottomNavigationRoute) {
@@ -35,6 +35,18 @@ fun App() {
                             onItemSelected = appState::onBottomNavigationSelected
                         )
                     }
+                },
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = appState.snackbarHostState,
+                        modifier = Modifier.padding(8.dp),
+                        snackbar = { snackbarData ->
+                            Snackbar(
+                                snackbarData = snackbarData,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    )
                 },
                 content = { innerPadding ->
                     AppNavigation(
@@ -54,5 +66,5 @@ val koinModules = module {
     single { AuthService() }
     single { AuthRepository(authService = get()) }
 
-    viewModel { LoginViewModel(authRepository = get())}
+    viewModel { LoginViewModel(authRepository = get()) }
 }

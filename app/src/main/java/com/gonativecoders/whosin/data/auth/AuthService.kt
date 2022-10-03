@@ -11,8 +11,12 @@ class AuthService {
     }
 
     fun login(email: String, password: String, onResult: (Throwable?) -> Unit) {
-        Firebase.auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { onResult(it.exception) }
+        try {
+            Firebase.auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { onResult(it.exception) }
+        } catch (exception: IllegalArgumentException) {
+            onResult(exception)
+        }
     }
 
 }

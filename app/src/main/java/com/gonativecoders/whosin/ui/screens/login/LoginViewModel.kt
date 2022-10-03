@@ -1,7 +1,8 @@
 package com.gonativecoders.whosin.ui.screens.login
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.gonativecoders.whosin.data.auth.AuthRepository
 
@@ -14,24 +15,26 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
         val error: Throwable? = null
     )
 
-    private val email get() = uiState.value.email
-    private val password get() = uiState.value.password
+    private val email get() = uiState.email
+    private val password get() = uiState.password
 
-    var uiState: MutableState<UiState> = mutableStateOf(UiState())
+    var uiState by mutableStateOf(UiState())
         private set
 
     fun onEmailChange(newValue: String) {
-        uiState.value = uiState.value.copy(email = newValue)
+        uiState = uiState.copy(email = newValue)
     }
 
     fun onPasswordChanged(newValue: String) {
-        uiState.value = uiState.value.copy(password = newValue)
+        uiState = uiState.copy(password = newValue)
     }
 
-    fun onLoginClicked(onLoginResult: (isSuccessful: Boolean) -> Unit) {
+    fun onLoginClicked(onLoggedIn: () -> Unit) {
         authRepository.login(email, password) { error ->
             if (error == null) {
-                onLoginResult(true)
+                onLoggedIn()
+            } else {
+                uiState = uiState.copy(error = error)
             }
         }
     }
