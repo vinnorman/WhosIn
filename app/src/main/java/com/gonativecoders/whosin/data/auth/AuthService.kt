@@ -2,6 +2,7 @@ package com.gonativecoders.whosin.data.auth
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class AuthService {
@@ -11,6 +12,7 @@ class AuthService {
             .addOnCompleteListener {
                 if (it.exception == null) {
                     addDisplayName(displayName, onResult)
+                    Firebase.firestore.collection("users").add(mapOf("name" to displayName, "id" to it.result.user?.uid))
                 } else {
                     onResult(it.exception)
                 }

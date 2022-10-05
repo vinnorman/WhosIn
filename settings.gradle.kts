@@ -1,3 +1,7 @@
+rootProject.name = "Who's In"
+
+include (":app")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -12,5 +16,4 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Who's In"
-include ':app'
+
