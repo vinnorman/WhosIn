@@ -21,16 +21,21 @@ import androidx.navigation.navigation
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
+import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.composables.BottomBar
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.me.MeScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
 import com.gonativecoders.whosin.ui.screens.login.LoginViewModel
+import com.gonativecoders.whosin.ui.screens.onboarding.createteam.CreateTeamScreen
+import com.gonativecoders.whosin.ui.screens.onboarding.jointeam.JoinTeamScreen
+import com.gonativecoders.whosin.ui.screens.onboarding.welcome.WelcomeScreen
 import com.gonativecoders.whosin.ui.screens.register.RegisterScreen
 import com.gonativecoders.whosin.ui.screens.register.RegisterViewModel
 import com.gonativecoders.whosin.ui.screens.splash.SplashScreen
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -85,7 +90,6 @@ fun NavGraphBuilder.navGraph(appState: AppState) {
     }
     composable(MainDestinations.Login.route) {
         LoginScreen(
-            onLoggedIn = appState::onLoggedIn,
             navigate = { route -> appState.navigate(route) }
         )
     }
@@ -100,6 +104,11 @@ fun NavGraphBuilder.navGraph(appState: AppState) {
         composable(HomeDestinations.Me.route) { MeScreen() }
         composable(HomeDestinations.Account.route) { AccountScreen(onLoggedOut = appState::onLoggedOut) }
     }
+    navigation(route = MainDestinations.Onboarding.route, startDestination = OnboardingDestinations.Welcome.route) {
+        composable(OnboardingDestinations.Welcome.route) { WelcomeScreen(appState::navigate) }
+        composable(OnboardingDestinations.CreateTeam.route) { CreateTeamScreen() }
+        composable(OnboardingDestinations.JoinTeam.route) { JoinTeamScreen() }
+    }
 }
 
 sealed class MainDestinations(val route: String) {
@@ -107,6 +116,7 @@ sealed class MainDestinations(val route: String) {
     object Login : MainDestinations("login")
     object Register : MainDestinations("register")
     object Home : MainDestinations("home")
+    object Onboarding: MainDestinations("onboarding")
 }
 
 sealed class HomeDestinations(val route: String, @StringRes val title: Int, val icon: ImageVector) {
@@ -115,10 +125,18 @@ sealed class HomeDestinations(val route: String, @StringRes val title: Int, val 
     object Account : HomeDestinations("account", R.string.screen_name_account, Icons.Filled.AccountCircle)
 }
 
+sealed class OnboardingDestinations(val route: String) {
+    object Welcome : OnboardingDestinations("welcome")
+    object CreateTeam : OnboardingDestinations("create-team")
+    object JoinTeam : OnboardingDestinations("join-team")
+}
+
 val koinModules = module {
     single { AuthService() }
     single { AuthRepository(authService = get()) }
 
-    viewModel { LoginViewModel(authRepository = get()) }
+    viewModel { LoginViewModel(authRepository = get(), dataStore = get()) }
     viewModel { RegisterViewModel(authRepository = get()) }
+
+    single { DataStoreRepository(androidContext()) }
 }

@@ -8,12 +8,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.util.SnackbarManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.get
 
 
 @Composable
@@ -21,13 +23,15 @@ fun rememberAppState(
     navController: NavHostController = rememberNavController(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     snackbarManager: SnackbarManager = SnackbarManager,
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    dataStore: DataStoreRepository = get()
 ) = remember(navController, snackbarHostState, snackbarManager, coroutineScope) {
     AppState(
         navController,
         snackbarHostState,
         snackbarManager,
-        coroutineScope
+        coroutineScope,
+        dataStore
     )
 }
 
@@ -36,7 +40,8 @@ class AppState(
     val navController: NavHostController,
     val snackbarHostState: SnackbarHostState,
     val snackbarManager: SnackbarManager,
-    coroutineScope: CoroutineScope
+    val coroutineScope: CoroutineScope,
+    val dataStore: DataStoreRepository
 ) {
 
     val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Me, HomeDestinations.Account)
@@ -46,6 +51,7 @@ class AppState(
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in bottomNavRoutes
     val currentRoute: String?
         get() = navController.currentDestination?.route
+
 
     init {
         coroutineScope.launch {
@@ -94,7 +100,13 @@ class AppState(
     }
 
     fun onLoggedIn() {
-        clearAndNavigate(MainDestinations.Home.route)
+        coroutineScope.launch {
+            if (dataStore.getBoolean("has-completed-onboarding")) {
+                clearAndNavigate(MainDestinations.Onboarding.route)
+            } else {
+                clearAndNavigate(MainDestinations.Home.route)
+            }
+        }
     }
 
     fun onLoggedOut() {

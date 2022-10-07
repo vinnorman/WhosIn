@@ -20,10 +20,9 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LoginScreen(
-    onLoggedIn: () -> Unit,
-    navigate:  (route: String) -> Unit
+    navigate:  (route: String) -> Unit,
+    viewModel: LoginViewModel = getViewModel()
 ) {
-    val viewModel = getViewModel<LoginViewModel>()
 
     val uiState = viewModel.uiState
 
@@ -40,7 +39,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(16.dp))
         PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged, placeholder = R.string.password_field_placeholder)
         Spacer(modifier = Modifier.size(24.dp))
-        Button(onClick = { viewModel.onLoginClicked(onLoggedIn) }) {
+        Button(onClick = { viewModel.onLoginClicked(navigate) }) {
             Text(text = "Log In")
         }
         Spacer(modifier = Modifier.size(24.dp))
@@ -63,8 +62,6 @@ fun DefaultPreview() {
     ) {
         WhosInTheme {
             LoginScreen(navigate = fun(_: String) {
-
-            }, onLoggedIn = fun() {
 
             })
         }
