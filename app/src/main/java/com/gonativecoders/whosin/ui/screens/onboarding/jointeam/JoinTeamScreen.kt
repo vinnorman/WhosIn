@@ -7,6 +7,6 @@ import androidx.compose.runtime.Composable
 @Composable
 fun JoinTeamScreen() {
     Column {
-        Text(text = "Create a team")
+        Text(text = "Join a team")
     }
 }

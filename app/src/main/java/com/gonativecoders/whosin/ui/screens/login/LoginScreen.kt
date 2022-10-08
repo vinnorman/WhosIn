@@ -37,7 +37,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(32.dp))
         EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.size(16.dp))
-        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged, placeholder = R.string.password_field_placeholder)
+        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged)
         Spacer(modifier = Modifier.size(24.dp))
         Button(onClick = { viewModel.onLoginClicked(navigate) }) {
             Text(text = "Log In")
@@ -61,7 +61,7 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            LoginScreen(navigate = fun(_: String) {
+            LoginScreen(navigate = {
 
             })
         }

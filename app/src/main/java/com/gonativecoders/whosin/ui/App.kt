@@ -22,6 +22,8 @@ import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
+import com.gonativecoders.whosin.data.team.TeamRepository
+import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.ui.composables.BottomBar
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.me.MeScreen
@@ -29,6 +31,7 @@ import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
 import com.gonativecoders.whosin.ui.screens.login.LoginViewModel
 import com.gonativecoders.whosin.ui.screens.onboarding.createteam.CreateTeamScreen
+import com.gonativecoders.whosin.ui.screens.onboarding.createteam.CreateTeamViewModel
 import com.gonativecoders.whosin.ui.screens.onboarding.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.screens.onboarding.welcome.WelcomeScreen
 import com.gonativecoders.whosin.ui.screens.register.RegisterScreen
@@ -106,7 +109,7 @@ fun NavGraphBuilder.navGraph(appState: AppState) {
     }
     navigation(route = MainDestinations.Onboarding.route, startDestination = OnboardingDestinations.Welcome.route) {
         composable(OnboardingDestinations.Welcome.route) { WelcomeScreen(appState::navigate) }
-        composable(OnboardingDestinations.CreateTeam.route) { CreateTeamScreen() }
+        composable(OnboardingDestinations.CreateTeam.route) { CreateTeamScreen(appState::navigate) }
         composable(OnboardingDestinations.JoinTeam.route) { JoinTeamScreen() }
     }
 }
@@ -135,8 +138,13 @@ val koinModules = module {
     single { AuthService() }
     single { AuthRepository(authService = get()) }
 
+    single { TeamService() }
+    single { TeamRepository(teamService = get()) }
+
     viewModel { LoginViewModel(authRepository = get(), dataStore = get()) }
     viewModel { RegisterViewModel(authRepository = get()) }
+    viewModel { CreateTeamViewModel(teamRepository = get()) }
+
 
     single { DataStoreRepository(androidContext()) }
 }

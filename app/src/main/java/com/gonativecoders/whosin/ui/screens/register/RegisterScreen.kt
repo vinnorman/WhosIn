@@ -41,7 +41,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.size(16.dp))
         EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.size(16.dp))
-        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged, placeholder = R.string.password_field_placeholder)
+        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged)
         Spacer(modifier = Modifier.size(24.dp))
         Button(onClick = { viewModel.onCreateAccountClicked(onLoggedIn) }) {
             Text(text = "Create Account")
