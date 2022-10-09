@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gonativecoders.whosin.data.auth.AuthRepository
+import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.MainDestinations
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val authRepository: AuthRepository, private val dataStore: DataStoreRepository) : ViewModel() {
+class LoginViewModel(private val authService: AuthService, private val dataStore: DataStoreRepository) : ViewModel() {
 
     data class UiState(
         val email: String = "",
@@ -31,7 +31,7 @@ class LoginViewModel(private val authRepository: AuthRepository, private val dat
     }
 
     fun onLoginClicked(navigate: (route: String) -> Unit) {
-        authRepository.login(uiState.email, uiState.password) { error ->
+        authService.login(uiState.email, uiState.password) { error ->
             if (error == null) {
                 onLoggedIn(navigate)
             } else {

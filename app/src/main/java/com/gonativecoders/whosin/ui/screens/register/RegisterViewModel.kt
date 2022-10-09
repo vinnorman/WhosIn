@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.gonativecoders.whosin.data.auth.AuthRepository
+import com.gonativecoders.whosin.data.auth.AuthService
 
-class RegisterViewModel(private val authRepository: AuthRepository) : ViewModel() {
+class RegisterViewModel(private val authService: AuthService) : ViewModel() {
 
     data class UiState(
         val displayName: String = "",
@@ -32,7 +32,7 @@ class RegisterViewModel(private val authRepository: AuthRepository) : ViewModel(
     }
 
     fun onCreateAccountClicked(onLoggedIn: () -> Unit) {
-        authRepository.createAccount(uiState.email, uiState.password, uiState.displayName) { error ->
+        authService.createAccount(uiState.email, uiState.password, uiState.displayName) { error ->
             if (error == null) {
                 onLoggedIn()
             } else {

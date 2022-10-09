@@ -19,10 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
+import com.gonativecoders.whosin.data.auth.FirebaseAuthService
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.data.team.TeamRepository
+import com.gonativecoders.whosin.data.team.FirestoreTeamService
 import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.ui.composables.BottomBar
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
@@ -135,16 +135,12 @@ sealed class OnboardingDestinations(val route: String) {
 }
 
 val koinModules = module {
-    single { AuthService() }
-    single { AuthRepository(authService = get()) }
+    viewModel { LoginViewModel(authService = get(), dataStore = get()) }
+    viewModel { RegisterViewModel(authService = get()) }
+    viewModel { CreateTeamViewModel(teamService = get()) }
 
-    single { TeamService() }
-    single { TeamRepository(teamService = get()) }
-
-    viewModel { LoginViewModel(authRepository = get(), dataStore = get()) }
-    viewModel { RegisterViewModel(authRepository = get()) }
-    viewModel { CreateTeamViewModel(teamRepository = get()) }
-
+    single<AuthService> { FirebaseAuthService() }
+    single<TeamService> { FirestoreTeamService() }
 
     single { DataStoreRepository(androidContext()) }
 }
