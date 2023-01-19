@@ -7,12 +7,19 @@ import com.google.firebase.ktx.Firebase
 
 class FirebaseAuthService : AuthService {
 
-    override fun createAccount(email: String, password: String, displayName: String, onResult: (Throwable?) -> Unit) {
+    override fun createAccount(
+        email: String,
+        password: String,
+        displayName: String,
+        onResult: (Throwable?) -> Unit
+    ) {
         Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.exception == null) {
                     addDisplayName(displayName, onResult)
-                    Firebase.firestore.collection("users").add(mapOf("name" to displayName, "id" to it.result.user?.uid))
+                    Firebase.firestore.collection("users")
+                        .document(it.result.user?.uid!!)
+                        .set(mapOf("name" to displayName))
                 } else {
                     onResult(it.exception)
                 }

@@ -22,8 +22,19 @@ fun CreateTeamScreen(
     viewModel: CreateTeamViewModel = getViewModel()
 ) {
 
-    val uiState = viewModel.uiState
+    CreateTeamContent(
+        uiState = viewModel.uiState,
+        onTeamNameChanged = viewModel::onTeamNameChanged,
+        onCreateTeamClicked = { viewModel.onCreateTeamClicked(navigate) })
 
+}
+
+@Composable
+fun CreateTeamContent(
+    uiState: CreateTeamViewModel.UiState,
+    onTeamNameChanged: (String) -> Unit,
+    onCreateTeamClicked: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,9 +42,9 @@ fun CreateTeamScreen(
             .padding(top = 96.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TeamNameField(value = uiState.teamName, onNewValue = viewModel::onTeamNameChanged)
+        TeamNameField(value = uiState.teamName, onNewValue = onTeamNameChanged)
         Spacer(modifier = Modifier.size(48.dp))
-        Button(onClick = { viewModel.onCreateTeamClicked(navigate) }) {
+        Button(onClick = onCreateTeamClicked) {
             Text(text = "Create Team")
         }
         if (uiState.error != null) {
@@ -41,7 +52,6 @@ fun CreateTeamScreen(
         }
 
     }
-
 }
 
 
@@ -53,9 +63,11 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            CreateTeamScreen(navigate = {
-
-            })
+            CreateTeamContent(
+                uiState = CreateTeamViewModel.UiState(),
+                onTeamNameChanged = {},
+                onCreateTeamClicked = {}
+            )
         }
 
     }

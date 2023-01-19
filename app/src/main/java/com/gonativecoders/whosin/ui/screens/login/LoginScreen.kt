@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,8 +51,16 @@ fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            modifier = Modifier.size(80.dp),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            painter = painterResource(id = R.drawable.baseline_group_work_24),
             contentDescription = "Welcome Image"
+        )
+        Spacer(modifier = Modifier.size(12.dp))
+        Text(
+            text = "Who's In",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.size(32.dp))
         EmailField(value = uiState.email, onNewValue = onEmailChange)

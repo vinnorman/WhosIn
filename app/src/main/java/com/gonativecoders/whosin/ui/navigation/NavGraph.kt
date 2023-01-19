@@ -49,6 +49,6 @@ private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
     ) {
         composable(HomeDestinations.WhosIn.route) { WhosInScreen() }
         composable(HomeDestinations.Chat.route) { MeScreen() }
-        composable(HomeDestinations.Account.route) { AccountScreen(onLoggedOut = appState::onLoggedOut) }
+        composable(HomeDestinations.Account.route) { AccountScreen(onLoggedOut = appState::onLoggedOut, onCreateNewTeam = appState::onCreateNewTeam) }
     }
 }

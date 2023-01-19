@@ -58,12 +58,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation ("androidx.compose.material:material-icons-extended:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
     implementation("io.insert-koin:koin-android:3.2.2")
     implementation("io.insert-koin:koin-androidx-compose:3.2.1")
 
-    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
     implementation(platform("com.google.firebase:firebase-bom:30.4.1"))

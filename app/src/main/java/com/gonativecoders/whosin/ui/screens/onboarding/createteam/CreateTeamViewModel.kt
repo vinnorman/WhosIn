@@ -4,8 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
+import kotlinx.coroutines.launch
 
 class CreateTeamViewModel(private val teamService: TeamService) : ViewModel() {
 
@@ -23,13 +25,16 @@ class CreateTeamViewModel(private val teamService: TeamService) : ViewModel() {
     }
 
     fun onCreateTeamClicked(navigate: (route: String) -> Unit) {
-        teamService.createTeam(uiState.teamName) { error ->
-            if (error == null) {
-                navigate(MainDestinations.Home.route)
-            } else {
-                uiState = uiState.copy(error = error)
+        viewModelScope.launch {
+            teamService.createTeam(uiState.teamName) { error ->
+                if (error == null) {
+                    navigate(MainDestinations.Home.route)
+                } else {
+                    uiState = uiState.copy(error = error)
+                }
             }
         }
+
     }
 
 }

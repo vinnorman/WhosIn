@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.navigation.HomeDestinations
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
+import com.gonativecoders.whosin.ui.navigation.OnboardingDestinations
 import com.gonativecoders.whosin.ui.util.SnackbarManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -46,14 +47,13 @@ class AppState(
     val dataStore: DataStoreRepository
 ) {
 
-    val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Chat, HomeDestinations.Account)
+    val homeDestinations =
+        listOf(HomeDestinations.WhosIn, HomeDestinations.Chat, HomeDestinations.Account)
     private val bottomNavRoutes = homeDestinations.map { it.route }
 
     val isBottomNavigationRoute: Boolean
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in bottomNavRoutes
-    val currentRoute: String?
-        get() = navController.currentDestination?.route
-
+    val currentRoute: String? get() = navController.currentDestination?.route
 
     init {
         coroutineScope.launch {
@@ -114,6 +114,10 @@ class AppState(
     fun onLoggedOut() {
         Firebase.auth.signOut()
         clearAndNavigate(MainDestinations.Login.route)
+    }
+
+    fun onCreateNewTeam() {
+        navigate(OnboardingDestinations.CreateTeam.route)
     }
 
 }
