@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.ui.MainDestinations
+import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val authService: AuthService, private val dataStore: DataStoreRepository) : ViewModel() {

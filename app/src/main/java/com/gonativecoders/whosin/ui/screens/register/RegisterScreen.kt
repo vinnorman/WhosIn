@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.ui.MainDestinations
 import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.NameField
 import com.gonativecoders.whosin.ui.composables.PasswordField
+import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import org.koin.androidx.compose.getViewModel
 
 @Composable

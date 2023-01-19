@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.gonativecoders.whosin.data.team.TeamService
-import com.gonativecoders.whosin.ui.MainDestinations
+import com.gonativecoders.whosin.ui.navigation.MainDestinations
 
 class CreateTeamViewModel(private val teamService: TeamService) : ViewModel() {
 

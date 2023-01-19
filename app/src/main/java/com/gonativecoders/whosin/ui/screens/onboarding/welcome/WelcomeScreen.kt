@@ -10,8 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gonativecoders.whosin.ui.OnboardingDestinations
-
+import com.gonativecoders.whosin.ui.navigation.OnboardingDestinations
 
 @Composable
 fun WelcomeScreen(navigate: (route: String) -> Unit) {

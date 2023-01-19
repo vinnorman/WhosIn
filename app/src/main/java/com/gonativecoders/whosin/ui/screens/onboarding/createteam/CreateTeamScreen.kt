@@ -24,7 +24,6 @@ fun CreateTeamScreen(
 
     val uiState = viewModel.uiState
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()

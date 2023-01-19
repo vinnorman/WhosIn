@@ -12,20 +12,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.ui.MainDestinations
 import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.PasswordField
+import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LoginScreen(
-    navigate:  (route: String) -> Unit,
+    navigate: (route: String) -> Unit,
     viewModel: LoginViewModel = getViewModel()
 ) {
 
-    val uiState = viewModel.uiState
+    LoginContent(
+        uiState = viewModel.uiState,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChanged,
+        onLoginClicked = { viewModel.onLoginClicked(navigate) },
+        onCreateAccountClicked = { navigate(MainDestinations.Register.route) }
+    )
 
+}
+
+@Composable
+fun LoginContent(
+    uiState: LoginViewModel.UiState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClicked: () -> Unit,
+    onCreateAccountClicked: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -33,17 +49,20 @@ fun LoginScreen(
             .padding(top = 96.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Welcome Image")
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = "Welcome Image"
+        )
         Spacer(modifier = Modifier.size(32.dp))
-        EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
+        EmailField(value = uiState.email, onNewValue = onEmailChange)
         Spacer(modifier = Modifier.size(16.dp))
-        PasswordField(value = uiState.password, onNewValue = viewModel::onPasswordChanged)
+        PasswordField(value = uiState.password, onNewValue = onPasswordChange)
         Spacer(modifier = Modifier.size(24.dp))
-        Button(onClick = { viewModel.onLoginClicked(navigate) }) {
+        Button(onClick = onLoginClicked) {
             Text(text = "Log In")
         }
         Spacer(modifier = Modifier.size(24.dp))
-        TextButton(onClick = { navigate(MainDestinations.Register.route) }) {
+        TextButton(onClick = onCreateAccountClicked) {
             Text(text = "Create Account")
         }
         if (uiState.error != null) {
@@ -61,9 +80,13 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            LoginScreen(navigate = {
-
-            })
+            LoginContent(
+                uiState = LoginViewModel.UiState(),
+                onEmailChange = {},
+                onPasswordChange = {},
+                onLoginClicked = {},
+                onCreateAccountClicked = {}
+            )
         }
 
     }
