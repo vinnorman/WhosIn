@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 
 class FirestoreTeamService : TeamService {
 
-    override suspend fun createTeam(teamName: String, onResult: (Throwable?) -> Unit ) {
+    override suspend fun createTeam(teamName: String, onResult: (Throwable?) -> Unit) {
         try {
             val user = Firebase.auth.currentUser ?: return
             val team = Team(
