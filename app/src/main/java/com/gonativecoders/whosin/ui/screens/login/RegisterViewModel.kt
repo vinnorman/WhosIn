@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.screens.register
+package com.gonativecoders.whosin.ui.screens.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

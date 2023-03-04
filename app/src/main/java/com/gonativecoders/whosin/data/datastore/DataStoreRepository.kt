@@ -22,7 +22,6 @@ class DataStoreRepository(private val context: Context) {
     suspend fun getBoolean(key: String): Boolean {
         val preferencesKey = booleanPreferencesKey(key)
         return context.dataStore.data.first()[preferencesKey] ?: false
-
     }
 
 }

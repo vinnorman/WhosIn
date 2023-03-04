@@ -6,81 +6,116 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.data.whosin.model.User
+import com.gonativecoders.whosin.data.whosin.model.Week
+import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
+import org.koin.androidx.compose.getViewModel
+import java.util.*
+
+
+val week = Week(
+    Date(), listOf(
+        WorkDay(
+            "Mon", 1, listOf(
+                User(1, "Vin", R.drawable.man)
+            )
+        ),
+        WorkDay(
+            "Tue", 2, listOf(
+                User(1, "Vin", R.drawable.man),
+                User(2, "Maria", R.drawable.woman),
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+                User(1, "Vin", R.drawable.man),
+                User(2, "Maria", R.drawable.woman),
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+                User(1, "Vin", R.drawable.man),
+                User(2, "Maria", R.drawable.woman),
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+                User(1, "Vin", R.drawable.man),
+                User(2, "Maria", R.drawable.woman),
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+            )
+        ),
+        WorkDay(
+            "Wed", 3, listOf(
+                User(2, "Maria", R.drawable.woman),
+                User(1, "Vin", R.drawable.man),
+                User(4, "Dave", R.drawable.gamer),
+            )
+        ),
+        WorkDay(
+            "Thu", 4, listOf(
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+            )
+        ),
+        WorkDay(
+            "Fri", 5, listOf(
+                User(1, "Vin", R.drawable.man),
+                User(2, "Maria", R.drawable.woman),
+                User(3, "Kasha", R.drawable.user),
+                User(4, "Dave", R.drawable.gamer),
+            )
+        )
+    )
+)
 
 @Composable
-fun WhosInScreen() {
+fun WhosInScreen(
+    viewModel: WhosInViewModel = getViewModel()
+) {
+
+    WhosInContent(week)
+
+}
+
+@Composable
+fun WhosInContent(
+    week: Week
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
     ) {
 
-
-        val data = mapOf(
-            "Mon" to listOf(
-                AvatarData("Vin", R.drawable.man, true),
-            ),
-            "Tue" to listOf(
-                AvatarData("Vin", R.drawable.man, true),
-                AvatarData("Maria", R.drawable.woman, true),
-                AvatarData("Kasha", R.drawable.user, true),
-                AvatarData("Dave", R.drawable.gamer, false),
-            ),
-            "Wed" to listOf(
-                AvatarData("Maria", R.drawable.woman, true),
-                AvatarData("Vin", R.drawable.man, false),
-                AvatarData("Dave", R.drawable.gamer, false),
-            ),
-            "Thu" to listOf(
-                AvatarData("Kasha", R.drawable.user, true),
-                AvatarData("Dave", R.drawable.gamer, false),
-            ),
-            "Fri" to listOf(
-                AvatarData("Vin", R.drawable.man, true),
-                AvatarData("Maria", R.drawable.woman, true),
-                AvatarData("Kasha", R.drawable.user, true),
-                AvatarData("Dave", R.drawable.gamer, true),
-            ),
-        )
-
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
-
             ) {
             Spacer(modifier = Modifier.width(8.dp))
-            data.keys.toList().forEach { day ->
+            week.days.forEach { day ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     horizontalAlignment = CenterHorizontally
                 ) {
-                    DayHeader(day = day)
+                    DayHeader(day = day.day)
                     Spacer(modifier = Modifier.height(24.dp))
-                    AvatarList(data[day]!!)
+                    AvatarList(day.attendees)
                 }
-
                 Spacer(modifier = Modifier.width(8.dp))
-
             }
+
 
         }
 
@@ -88,14 +123,9 @@ fun WhosInScreen() {
     }
 }
 
-data class AvatarData(
-    val name: String,
-    val avatar: Int,
-    val isDefinite: Boolean
-)
 
 @Composable
-private fun AvatarList(people: List<AvatarData>) {
+private fun AvatarList(people: List<User>) {
     LazyColumn(
         horizontalAlignment = CenterHorizontally
     ) {
@@ -106,7 +136,6 @@ private fun AvatarList(people: List<AvatarData>) {
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
-
 
 
     }
@@ -128,7 +157,7 @@ fun DayHeader(day: String, modifier: Modifier = Modifier) {
 
 
 @Composable
-fun Avatar(person: AvatarData) {
+fun Avatar(person: User) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
             Image(
@@ -139,15 +168,9 @@ fun Avatar(person: AvatarData) {
                     .size(48.dp)
                     .clip(CircleShape)
             )
-            Image(painter = painterResource(id = if (person.isDefinite) R.drawable.checked else R.drawable.question), contentDescription = "hi",
-                modifier = Modifier
-                    .offset(0.dp, 8.dp)
-                    .shadow(2.dp, RoundedCornerShape(40))
-                    .size(24.dp)
-                    .align(Alignment.BottomEnd),)
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = person.name)
+        Text(text = person.nickName)
 
     }
 }
@@ -160,7 +183,7 @@ fun TeamScreenPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            WhosInScreen()
+            WhosInContent(week)
         }
 
     }
