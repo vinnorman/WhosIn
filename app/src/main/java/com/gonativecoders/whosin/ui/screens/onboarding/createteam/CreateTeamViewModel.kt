@@ -5,11 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gonativecoders.whosin.data.team.TeamService
+import com.gonativecoders.whosin.data.datastore.DataStoreRepository
+import com.gonativecoders.whosin.data.team.TeamRepository
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import kotlinx.coroutines.launch
 
-class CreateTeamViewModel(private val teamService: TeamService) : ViewModel() {
+class CreateTeamViewModel(private val repository: TeamRepository, private val dataStore: DataStoreRepository) : ViewModel() {
 
     data class UiState(
         val teamName: String = "",
@@ -26,15 +27,14 @@ class CreateTeamViewModel(private val teamService: TeamService) : ViewModel() {
 
     fun onCreateTeamClicked(navigate: (route: String) -> Unit) {
         viewModelScope.launch {
-            teamService.createTeam(uiState.teamName) { error ->
-                if (error == null) {
-                    navigate(MainDestinations.Home.route)
-                } else {
-                    uiState = uiState.copy(error = error)
-                }
+            try {
+                val team = repository.createTeam(uiState.teamName)
+                dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
+                navigate(MainDestinations.Home.route)
+            }catch (exception :Exception) {
+                uiState = uiState.copy(error = exception)
             }
         }
-
     }
 
 }

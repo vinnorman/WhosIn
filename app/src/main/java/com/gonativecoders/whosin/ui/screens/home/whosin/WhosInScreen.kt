@@ -81,14 +81,12 @@ val week = Week(
 fun WhosInScreen(
     viewModel: WhosInViewModel = getViewModel()
 ) {
-
-    WhosInContent(week)
-
+    WhosInContent(uiState = viewModel.uiState)
 }
 
 @Composable
 fun WhosInContent(
-    week: Week
+    uiState:  WhosInViewModel.UiState
 ) {
     Column(
         modifier = Modifier
@@ -183,7 +181,7 @@ fun TeamScreenPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            WhosInContent(week)
+            WhosInContent(WhosInViewModel.UiState())
         }
 
     }

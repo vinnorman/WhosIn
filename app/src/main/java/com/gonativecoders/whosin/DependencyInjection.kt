@@ -3,7 +3,7 @@ package com.gonativecoders.whosin
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.auth.FirebaseAuthService
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.data.team.FirestoreTeamService
+import com.gonativecoders.whosin.data.team.TeamRepository
 import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.WhosInService
@@ -18,15 +18,16 @@ import org.koin.dsl.module
 val koinModules = module {
     viewModel { LoginViewModel(authService = get(), dataStore = get()) }
     viewModel { RegisterViewModel(authService = get()) }
-    viewModel { CreateTeamViewModel(teamService = get()) }
-    viewModel { WhosInViewModel(repository = get()) }
+    viewModel { CreateTeamViewModel(repository = get(), dataStore = get()) }
+    viewModel { WhosInViewModel(repository = get(), dataStore = get()) }
 
     factory { WhosInRepository(service = get()) }
+    factory { TeamRepository(service = get()) }
 
     single { WhosInService() }
 
     single<AuthService> { FirebaseAuthService() }
-    single<TeamService> { FirestoreTeamService() }
+    single { TeamService() }
 
     single { DataStoreRepository(androidContext()) }
 }
