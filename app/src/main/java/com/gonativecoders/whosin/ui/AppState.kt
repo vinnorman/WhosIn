@@ -1,10 +1,7 @@
 package com.gonativecoders.whosin.ui
 
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -54,6 +51,8 @@ class AppState(
     val isBottomNavigationRoute: Boolean
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in bottomNavRoutes
     val currentRoute: String? get() = navController.currentDestination?.route
+
+    val toolbarTitle = mutableStateOf("")
 
     init {
         coroutineScope.launch {

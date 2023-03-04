@@ -30,6 +30,7 @@ class CreateTeamViewModel(private val repository: TeamRepository, private val da
             try {
                 val team = repository.createTeam(uiState.teamName)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
+                dataStore.putBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING, true)
                 navigate(MainDestinations.Home.route)
             }catch (exception :Exception) {
                 uiState = uiState.copy(error = exception)

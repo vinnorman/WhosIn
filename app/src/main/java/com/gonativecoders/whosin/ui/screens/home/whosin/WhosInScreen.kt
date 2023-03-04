@@ -21,6 +21,7 @@ import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.whosin.model.User
 import com.gonativecoders.whosin.data.whosin.model.Week
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
+import com.gonativecoders.whosin.ui.AppState
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import org.koin.androidx.compose.getViewModel
 import java.util.*
@@ -79,8 +80,11 @@ val week = Week(
 
 @Composable
 fun WhosInScreen(
+    appState: AppState,
     viewModel: WhosInViewModel = getViewModel()
 ) {
+
+    viewModel.uiState.team?.name?.let {  appState.toolbarTitle.value = it }
     WhosInContent(uiState = viewModel.uiState)
 }
 

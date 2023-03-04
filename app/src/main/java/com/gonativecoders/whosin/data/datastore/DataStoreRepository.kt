@@ -41,6 +41,7 @@ class DataStoreRepository(private val context: Context) {
     companion object {
 
         const val TEAM_ID = "teamId"
+        const val HAS_SEEN_ONBOARDING = "has_seen_onboarding"
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.data.whosin
 
+import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Week
 import java.util.*
 
@@ -14,6 +15,10 @@ class WhosInRepository(private val service: WhosInService) {
         return service.getWeek(teamId, year, week)
 
 
+    }
+
+    suspend fun getTeam(teamId: String): Team {
+        return service.getTeam(teamId)
     }
 
 }

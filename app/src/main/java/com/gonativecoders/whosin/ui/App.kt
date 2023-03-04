@@ -4,6 +4,8 @@ package com.gonativecoders.whosin.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,6 +32,23 @@ fun App() {
                             items = appState.homeDestinations,
                             currentRoute = appState.currentRoute!!,
                             onItemSelected = appState::navigateToBottomBarRoute
+                        )
+                    }
+                },
+                topBar = {
+                    if (appState.isBottomNavigationRoute) {
+                        CenterAlignedTopAppBar(
+                            title = { Text(text = appState.toolbarTitle.value) },
+                            actions = {
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        imageVector =  Icons.Rounded.AccountCircle,
+                                        contentDescription = "Account Button",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+
+                            }
                         )
                     }
                 },

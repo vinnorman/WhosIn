@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gonativecoders.whosin.data.auth.AuthService
+import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val authService: AuthService, private val dataStore: DataStoreRepository) : ViewModel() {
+class LoginViewModel(private val repository: AuthRepository, private val dataStore: DataStoreRepository) : ViewModel() {
 
     data class UiState(
         val email: String = "",
@@ -31,22 +31,21 @@ class LoginViewModel(private val authService: AuthService, private val dataStore
     }
 
     fun onLoginClicked(navigate: (route: String) -> Unit) {
-        authService.login(uiState.email, uiState.password) { error ->
-            if (error == null) {
+        viewModelScope.launch {
+            try {
+                repository.login(uiState.email, uiState.password)
                 onLoggedIn(navigate)
-            } else {
-                uiState = uiState.copy(error = error)
+            } catch (exception: Exception) {
+                uiState = uiState.copy(error = exception)
             }
         }
     }
 
-    fun onLoggedIn(navigate: (route: String) -> Unit) {
-        viewModelScope.launch {
-            if (dataStore.getBoolean("has-seen-onboarding")) {
-                navigate(MainDestinations.Home.route)
-            } else {
-                navigate(MainDestinations.Onboarding.route)
-            }
+    suspend fun onLoggedIn(navigate: (route: String) -> Unit) {
+        if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
+            navigate(MainDestinations.Home.route)
+        } else {
+            navigate(MainDestinations.Onboarding.route)
         }
     }
 
