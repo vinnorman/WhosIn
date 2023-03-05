@@ -12,16 +12,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SplashScreen(
     navigate: (route: String) -> Unit,
-    modifier: Modifier = Modifier
+    onLoggedIn: (user: User) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel = getViewModel()
 ) {
     Column(
         modifier = modifier
@@ -32,13 +34,14 @@ fun SplashScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
-
     }
     LaunchedEffect(true) {
         delay(1000)
-        navigate(if (Firebase.auth.currentUser != null) MainDestinations.Home.route else MainDestinations.Login.route)
+        when (val loginStatus = viewModel.getLoginStatus()) {
+            is SplashViewModel.LoginStatus.LoggedIn -> onLoggedIn(loginStatus.user)
+            SplashViewModel.LoginStatus.LoggedOut -> navigate(MainDestinations.Login.route)
+        }
     }
 }
 
@@ -50,7 +53,7 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            SplashScreen(navigate = {})
+            SplashScreen(navigate = {}, onLoggedIn = {})
         }
 
     }

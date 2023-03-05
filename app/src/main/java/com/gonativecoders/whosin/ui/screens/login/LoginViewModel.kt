@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.auth.AuthRepository
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: AuthRepository, private val dataStore: DataStoreRepository) : ViewModel() {
@@ -30,23 +30,24 @@ class LoginViewModel(private val repository: AuthRepository, private val dataSto
         uiState = uiState.copy(password = newValue)
     }
 
-    fun onLoginClicked(navigate: (route: String) -> Unit) {
+    fun onLoginClicked(onLoggedIn: (user: User) -> Unit) {
         viewModelScope.launch {
             try {
-                repository.login(uiState.email, uiState.password)
-                onLoggedIn(navigate)
+                val user = repository.login(uiState.email, uiState.password)
+                onLoggedIn(user)
+//                onLoggedIn(navigate)
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }
         }
     }
 
-    suspend fun onLoggedIn(navigate: (route: String) -> Unit) {
-        if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
-            navigate(MainDestinations.Home.route)
-        } else {
-            navigate(MainDestinations.Onboarding.route)
-        }
-    }
+//    suspend fun onLoggedIn(navigate: (route: String) -> Unit) {
+//        if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
+//            navigate(MainDestinations.Home.route)
+//        } else {
+//            navigate(MainDestinations.Onboarding.route)
+//        }
+//    }
 
 }

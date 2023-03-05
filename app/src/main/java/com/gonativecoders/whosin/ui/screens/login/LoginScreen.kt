@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.PasswordField
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
@@ -22,6 +23,7 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun LoginScreen(
     navigate: (route: String) -> Unit,
+    onLoggedIn: (user: User) -> Unit,
     viewModel: LoginViewModel = getViewModel()
 ) {
 
@@ -29,7 +31,7 @@ fun LoginScreen(
         uiState = viewModel.uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChanged,
-        onLoginClicked = { viewModel.onLoginClicked(navigate) },
+        onLoginClicked = { viewModel.onLoginClicked(onLoggedIn) },
         onCreateAccountClicked = { navigate(MainDestinations.Register.route) }
     )
 

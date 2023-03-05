@@ -16,10 +16,10 @@ import com.gonativecoders.whosin.ui.screens.splash.SplashScreen
 
 fun NavGraphBuilder.navGraph(appState: AppState) {
     composable(MainDestinations.Splash.route) {
-        SplashScreen(navigate = appState::clearAndNavigate)
+        SplashScreen(navigate = appState::clearAndNavigate, onLoggedIn = appState::setLoggedIn)
     }
     composable(MainDestinations.Login.route) {
-        LoginScreen(navigate = { route -> appState.navigate(route) })
+        LoginScreen(navigate = { route -> appState.navigate(route) }, onLoggedIn = appState::setLoggedIn)
     }
     composable(MainDestinations.Register.route) {
         RegisterScreen(
@@ -29,14 +29,10 @@ fun NavGraphBuilder.navGraph(appState: AppState) {
     }
     homeNavGraph(appState)
     onboardingNavGraph(appState)
-
 }
 
 private fun NavGraphBuilder.onboardingNavGraph(appState: AppState) {
-    navigation(
-        route = MainDestinations.Onboarding.route,
-        startDestination = OnboardingDestinations.Welcome.route
-    ) {
+    navigation(route = MainDestinations.Onboarding.route, startDestination = OnboardingDestinations.Welcome.route) {
         composable(OnboardingDestinations.Welcome.route) { WelcomeScreen(appState::navigate) }
         composable(OnboardingDestinations.CreateTeam.route) { CreateTeamScreen(appState::navigate) }
         composable(OnboardingDestinations.JoinTeam.route) { JoinTeamScreen() }
@@ -44,11 +40,14 @@ private fun NavGraphBuilder.onboardingNavGraph(appState: AppState) {
 }
 
 private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
-    navigation(
-        route = MainDestinations.Home.route, startDestination = HomeDestinations.WhosIn.route
-    ) {
+    navigation(route = MainDestinations.Home.route, startDestination = HomeDestinations.WhosIn.route) {
         composable(HomeDestinations.WhosIn.route) { WhosInScreen(appState) }
         composable(HomeDestinations.Chat.route) { MeScreen() }
-        composable(HomeDestinations.Account.route) { AccountScreen(onLoggedOut = appState::onLoggedOut, onCreateNewTeam = appState::onCreateNewTeam) }
+        composable(HomeDestinations.Account.route) {
+            AccountScreen(
+                onLoggedOut = appState::onLoggedOut,
+                onCreateNewTeam = appState::onCreateNewTeam
+            )
+        }
     }
 }

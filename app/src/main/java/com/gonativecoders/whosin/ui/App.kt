@@ -21,6 +21,11 @@ fun App() {
     WhosInTheme {
         val appState = rememberAppState()
 
+        val loginState = appState.loginState.value
+        if (loginState is AppState.LoginState.LoggedIn) {
+            appState.navigate(MainDestinations.Home.route)
+        }
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -36,9 +41,9 @@ fun App() {
                     }
                 },
                 topBar = {
-                    if (appState.isBottomNavigationRoute) {
+                    if (loginState is AppState.LoginState.LoggedIn) {
                         CenterAlignedTopAppBar(
-                            title = { Text(text = appState.toolbarTitle.value) },
+                            title = { Text(text = loginState.user.teams?.first()?.teamName ?: "Who's In?") },
                             actions = {
                                 IconButton(onClick = { }) {
                                     Icon(

@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.navigation.HomeDestinations
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
@@ -44,15 +45,14 @@ class AppState(
     val dataStore: DataStoreRepository
 ) {
 
-    val homeDestinations =
-        listOf(HomeDestinations.WhosIn, HomeDestinations.Chat, HomeDestinations.Account)
-    private val bottomNavRoutes = homeDestinations.map { it.route }
+    val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Chat, HomeDestinations.Account)
 
     val isBottomNavigationRoute: Boolean
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in bottomNavRoutes
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in homeDestinations.map { it.route }
     val currentRoute: String? get() = navController.currentDestination?.route
 
-    val toolbarTitle = mutableStateOf("")
+
+    val loginState = mutableStateOf<LoginState>(LoginState.LoggedOut)
 
     init {
         coroutineScope.launch {
@@ -60,7 +60,14 @@ class AppState(
                 snackbarHostState.showSnackbar(message)
             }
         }
-        Firebase.auth.currentUser
+    }
+
+    fun setLoggedIn(user: User) {
+        loginState.value = LoginState.LoggedIn(user)
+    }
+
+    fun setLoggedOut() {
+        loginState.value = LoginState.LoggedOut
     }
 
     fun navigateToBottomBarRoute(route: String) {
@@ -71,14 +78,11 @@ class AppState(
                         saveState = true
                     }
                 }
-                // Avoid multiple copies of the same destination when re-selecting the same item
-                launchSingleTop = true
-                // Restore state when re-selecting a previously selected item
-                restoreState = true
+                launchSingleTop = true  // Avoid multiple copies of the same destination when re-selecting the same item
+                restoreState = true   // Restore state when re-selecting a previously selected item
             }
         }
     }
-
 
     fun navigate(route: String) {
         navController.navigate(route) {
@@ -118,5 +122,14 @@ class AppState(
     fun onCreateNewTeam() {
         navigate(OnboardingDestinations.CreateTeam.route)
     }
+
+    sealed class LoginState {
+
+        data class LoggedIn(val user: User) : LoginState()
+
+        object LoggedOut : LoginState()
+
+    }
+
 
 }

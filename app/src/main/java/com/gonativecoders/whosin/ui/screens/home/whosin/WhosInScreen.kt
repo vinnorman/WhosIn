@@ -83,8 +83,6 @@ fun WhosInScreen(
     appState: AppState,
     viewModel: WhosInViewModel = getViewModel()
 ) {
-
-    viewModel.uiState.team?.name?.let {  appState.toolbarTitle.value = it }
     WhosInContent(uiState = viewModel.uiState)
 }
 
