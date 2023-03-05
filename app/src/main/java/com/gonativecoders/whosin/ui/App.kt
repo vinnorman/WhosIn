@@ -22,9 +22,6 @@ fun App() {
         val appState = rememberAppState()
 
         val loginState = appState.loginState.value
-        if (loginState is AppState.LoginState.LoggedIn) {
-            appState.navigate(MainDestinations.Home.route)
-        }
 
         Surface(
             modifier = Modifier.fillMaxSize(),

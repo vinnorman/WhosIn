@@ -14,18 +14,19 @@ import kotlinx.coroutines.tasks.await
 class AuthService(private val database: FirebaseFirestore = Firebase.firestore, private val auth: FirebaseAuth = Firebase.auth) {
 
 
-    suspend fun createAccount(email: String, password: String, displayName: String) {
+    suspend fun createAccount(email: String, password: String, displayName: String): User {
         val user = auth.createUserWithEmailAndPassword(email, password).await().user ?: throw Exception("Couldn't create account")
         user.updateProfile(userProfileChangeRequest {
             this.displayName = displayName
         }).await()
-        saveUser(user, displayName)
+        return saveUser(user, displayName)
     }
 
-    private suspend fun saveUser(user: FirebaseUser, displayName: String) {
+    private suspend fun saveUser(user: FirebaseUser, displayName: String): User {
         database.collection("users")
             .document(user.uid)
             .set(mapOf("name" to displayName)).await()
+        return User(name = displayName).apply { id = user.uid }
     }
 
     suspend fun login(email: String, password: String): User {

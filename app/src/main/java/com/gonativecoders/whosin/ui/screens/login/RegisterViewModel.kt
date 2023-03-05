@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.auth.AuthRepository
+import com.gonativecoders.whosin.data.auth.model.User
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
@@ -33,12 +34,11 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
         uiState = uiState.copy(password = newValue)
     }
 
-    fun onCreateAccountClicked(onLoggedIn: () -> Unit) {
+    fun onCreateAccountClicked(onLoggedIn: (User) -> Unit) {
         viewModelScope.launch {
             try {
-                repository.createAccount(uiState.email, uiState.password, uiState.displayName)
-                onLoggedIn()
-
+                val user = repository.createAccount(uiState.email, uiState.password, uiState.displayName)
+                onLoggedIn(user)
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }

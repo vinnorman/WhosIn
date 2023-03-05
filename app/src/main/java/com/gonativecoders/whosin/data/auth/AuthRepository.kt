@@ -13,7 +13,7 @@ class AuthRepository(private val service: AuthService) {
         return service.getUser(userId)
     }
 
-    suspend fun createAccount(email: String, password: String, displayName: String) {
+    suspend fun createAccount(email: String, password: String, displayName: String): User {
         return service.createAccount(email, password, displayName)
     }
 

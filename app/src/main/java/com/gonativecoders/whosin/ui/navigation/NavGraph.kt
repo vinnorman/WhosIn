@@ -23,7 +23,7 @@ fun NavGraphBuilder.navGraph(appState: AppState) {
     }
     composable(MainDestinations.Register.route) {
         RegisterScreen(
-            onLoggedIn = appState::onLoggedIn,
+            onLoggedIn = appState::setLoggedIn,
             navigate = { route -> appState.navigateAndPopUp(route, MainDestinations.Login.route) }
         )
     }
@@ -45,7 +45,7 @@ private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
         composable(HomeDestinations.Chat.route) { MeScreen() }
         composable(HomeDestinations.Account.route) {
             AccountScreen(
-                onLoggedOut = appState::onLoggedOut,
+                onLoggedOut = appState::setLoggedOut,
                 onCreateNewTeam = appState::onCreateNewTeam
             )
         }

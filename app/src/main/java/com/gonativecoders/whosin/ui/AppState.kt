@@ -63,11 +63,20 @@ class AppState(
     }
 
     fun setLoggedIn(user: User) {
-        loginState.value = LoginState.LoggedIn(user)
+        coroutineScope.launch {
+            loginState.value = LoginState.LoggedIn(user)
+            if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
+                clearAndNavigate(MainDestinations.Onboarding.route)
+            } else {
+                clearAndNavigate(MainDestinations.Home.route)
+            }
+        }
     }
 
     fun setLoggedOut() {
         loginState.value = LoginState.LoggedOut
+        Firebase.auth.signOut()
+        clearAndNavigate(MainDestinations.Login.route)
     }
 
     fun navigateToBottomBarRoute(route: String) {
@@ -102,21 +111,6 @@ class AppState(
             launchSingleTop = true
             popUpTo(0) { inclusive = true }
         }
-    }
-
-    fun onLoggedIn() {
-        coroutineScope.launch {
-            if (dataStore.getBoolean("has-completed-onboarding")) {
-                clearAndNavigate(MainDestinations.Onboarding.route)
-            } else {
-                clearAndNavigate(MainDestinations.Home.route)
-            }
-        }
-    }
-
-    fun onLoggedOut() {
-        Firebase.auth.signOut()
-        clearAndNavigate(MainDestinations.Login.route)
     }
 
     fun onCreateNewTeam() {
