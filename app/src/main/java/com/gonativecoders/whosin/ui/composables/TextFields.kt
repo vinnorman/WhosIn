@@ -13,12 +13,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.ui.screens.onboarding.jointeam.TeamCodeField
 
 @Composable
 fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -50,6 +52,29 @@ fun TeamNameField(value: String, onNewValue: (String) -> Unit, modifier: Modifie
     )
 
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldWithIcon(
+    value: String,
+    onNewValue: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: String,
+    icon: ImageVector,
+    contentDescription: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
+) {
+    OutlinedTextField(
+        singleLine = true,
+        modifier = modifier,
+        value = value,
+        onValueChange = { onNewValue(it) },
+        keyboardOptions = keyboardOptions,
+        placeholder = { Text(placeholder) },
+        leadingIcon = { Icon(imageVector = icon, contentDescription = contentDescription) }
+    )
+}
+
 
 @Composable
 fun NameField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -107,6 +132,8 @@ fun DefaultPreview() {
             PasswordField(value = "", onNewValue = {})
             Spacer(modifier = Modifier.height(12.dp))
             TeamNameField(value = "", onNewValue = {})
+            Spacer(modifier = Modifier.height(12.dp))
+            TeamCodeField(value = "", onNewValue = {})
         }
     }
 }

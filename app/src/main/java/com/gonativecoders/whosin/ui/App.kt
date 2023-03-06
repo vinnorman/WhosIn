@@ -40,7 +40,7 @@ fun App() {
                 topBar = {
                     if (loginState is AppState.LoginState.LoggedIn) {
                         CenterAlignedTopAppBar(
-                            title = { Text(text = loginState.user.teams?.first()?.teamName ?: "Who's In?") },
+                            title = { Text(text = loginState.user.team?.name ?: "Who's In?") },
                             actions = {
                                 IconButton(onClick = { }) {
                                     Icon(

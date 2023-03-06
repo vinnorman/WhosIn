@@ -5,33 +5,53 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
-import com.gonativecoders.whosin.data.whosin.model.Week
+import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.launch
 import java.util.*
 
-class WhosInViewModel(private val repository: WhosInRepository, private val dataStore: DataStoreRepository) : ViewModel() {
+class WhosInViewModel(private val userId: String, private val repository: WhosInRepository) : ViewModel() {
 
-    var uiState by mutableStateOf(UiState())
+    var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
 
     init {
         viewModelScope.launch {
-            val teamId = dataStore.getString(DataStoreRepository.TEAM_ID) ?: throw Exception("no team id found")
-            val team = repository.getTeam(teamId)
-            val week = repository.getWeek(teamId, Date())
-            uiState = uiState.copy(team = team, week = week)
+            loadData()
         }
     }
 
-    data class UiState(
-        val team: Team? = null,
-        val week: Week? = null,
-        val loading: Boolean = false,
-        val error: Throwable? = null
-    )
+    private suspend fun loadData() {
+        val user = repository.getUser(userId)
+        val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
+        val workDays = repository.getWeek(team.id, Date())
+        uiState = UiState.Success(user, team, workDays)
+    }
 
+    fun onDayClicked(day: WorkDay) {
+        viewModelScope.launch {
+            (uiState as? UiState.Success)?.let {
+                repository.updateAttendance(userId, it.team.id, day)
+                loadData()
+            }
+        }
+
+    }
+
+
+    sealed class UiState {
+
+        object Loading: UiState()
+
+        data class Success(
+            val user: com.gonativecoders.whosin.data.auth.model.User,
+            val team: Team,
+            val workDays: List<WorkDay>,
+        ) : UiState()
+
+        data class Error(val error: Throwable) : UiState()
+
+    }
 
 }

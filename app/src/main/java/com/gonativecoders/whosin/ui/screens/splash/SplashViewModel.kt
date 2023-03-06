@@ -14,10 +14,6 @@ class SplashViewModel(private val repository: AuthRepository) : ViewModel() {
         return LoginStatus.LoggedIn(user)
     }
 
-    suspend fun getUserDetails(userId: String): User {
-        return repository.getUserDetails(userId)
-    }
-
     sealed class LoginStatus {
 
         data class LoggedIn(val user: User) : LoginStatus()

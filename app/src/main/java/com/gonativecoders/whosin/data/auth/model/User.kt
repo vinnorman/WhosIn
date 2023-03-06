@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentId
 
 data class User(
     val name: String = "",
-    val teams: List<UserTeam>? = null
+    val team: UserTeam? = null,
 ) {
 
     @DocumentId
@@ -13,7 +13,7 @@ data class User(
 }
 
 data class UserTeam(
-    val teamCode: String? = "",
-    val teamId: String? = "",
-    val teamName: String? = ""
+    val code: String? = "",
+    val id: String? = "",
+    val name: String? = ""
 )

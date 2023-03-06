@@ -1,20 +1,20 @@
 package com.gonativecoders.whosin.data.whosin.model
 
+import com.google.firebase.firestore.DocumentId
 import java.util.*
 
 data class Week(
-    val startDate: Date,
-    val days: List<WorkDay>
+    val startDate: Date = Date()
 )
 
 data class WorkDay(
-    val day: String,
-    val number: Int,
-    val attendees: List<User>
-)
+    val date: Date = Date(),
+    val attendance: List<Attendee> = listOf()
+) {
 
-data class User(
-    val id: Int,
-    val nickName: String,
-    val avatar: Int = 0
-)
+    @DocumentId
+    lateinit var id: String
+
+}
+
+data class Attendee(val userId: String = "")

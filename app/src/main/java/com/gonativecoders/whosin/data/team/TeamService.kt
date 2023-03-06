@@ -1,47 +1,60 @@
 package com.gonativecoders.whosin.data.team
 
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.util.getRandomString
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class TeamService {
+class TeamService(private val database: FirebaseFirestore = Firebase.firestore) {
 
-    suspend fun createTeam(teamName: String): Team {
+    suspend fun createTeam(userId: String, teamName: String): Team {
+        val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
 
-        val user = Firebase.auth.currentUser ?: throw Exception("No logged in user!")
         val team = Team(
             name = teamName,
-            createdBy = user.uid,
+            createdBy = userId,
             code = getRandomString(6)
         )
-        val document = Firebase.firestore.collection("teams")
+        val document = database.collection("teams")
             .add(team)
             .await()
         team.id = document.id
-        addTeamToUser(userId = user.uid, team = team)
+        addTeamToUser(userId = user.id, team = team)
         addUserToTeam(user, team.id)
         return team
+    }
+
+    suspend fun joinTeam(userId: String, code: String) {
+        val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
+        val team: Team = database.collection("teams").whereEqualTo("code", code).get().await().first().toObject()
+        addTeamToUser(userId, team)
+        addUserToTeam(user, team.id)
     }
 
     private suspend fun addTeamToUser(userId: String, team: Team) {
         Firebase.firestore.collection("users").document(userId)
             .update(
-                "teams", FieldValue.arrayUnion(
-                    mapOf("teamName" to team.name, "teamCode" to team.code, "teamId" to team.id)
+                "team", mapOf(
+                    "code" to team.code,
+                    "id" to team.id,
+                    "name" to team.name,
                 )
             ).await()
     }
 
-    private suspend fun addUserToTeam(user: FirebaseUser, teamId: String) {
+    private suspend fun addUserToTeam(user: User, teamId: String) {
         Firebase.firestore.collection("teams").document(teamId)
             .update(
                 "members", FieldValue.arrayUnion(
-                    mapOf("name" to user.displayName, "id" to user.uid)
+                    mapOf(
+                        "displayName" to user.name,
+                        "id" to user.id
+                    )
                 )
             ).await()
     }

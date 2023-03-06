@@ -51,8 +51,9 @@ class AppState(
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in homeDestinations.map { it.route }
     val currentRoute: String? get() = navController.currentDestination?.route
 
-
     val loginState = mutableStateOf<LoginState>(LoginState.LoggedOut)
+
+
 
     init {
         coroutineScope.launch {
@@ -65,17 +66,13 @@ class AppState(
     fun setLoggedIn(user: User) {
         coroutineScope.launch {
             loginState.value = LoginState.LoggedIn(user)
-            if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
-                clearAndNavigate(MainDestinations.Onboarding.route)
-            } else {
-                clearAndNavigate(MainDestinations.Home.route)
-            }
+            clearAndNavigate(if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route + "/${user.id}")
         }
     }
 
     fun setLoggedOut() {
-        loginState.value = LoginState.LoggedOut
         Firebase.auth.signOut()
+        loginState.value = LoginState.LoggedOut
         clearAndNavigate(MainDestinations.Login.route)
     }
 

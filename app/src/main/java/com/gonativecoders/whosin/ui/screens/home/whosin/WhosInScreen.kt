@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalLayoutApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.gonativecoders.whosin.ui.screens.home.whosin
 
@@ -17,151 +17,122 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.data.whosin.model.User
-import com.gonativecoders.whosin.data.whosin.model.Week
+import com.gonativecoders.whosin.data.team.model.Member
+import com.gonativecoders.whosin.data.team.model.Team
+import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import com.gonativecoders.whosin.ui.AppState
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
-import org.koin.androidx.compose.getViewModel
+import java.text.SimpleDateFormat
 import java.util.*
 
 
-val week = Week(
-    Date(), listOf(
-        WorkDay(
-            "Mon", 1, listOf(
-                User(1, "Vin", R.drawable.man)
-            )
-        ),
-        WorkDay(
-            "Tue", 2, listOf(
-                User(1, "Vin", R.drawable.man),
-                User(2, "Maria", R.drawable.woman),
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-                User(1, "Vin", R.drawable.man),
-                User(2, "Maria", R.drawable.woman),
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-                User(1, "Vin", R.drawable.man),
-                User(2, "Maria", R.drawable.woman),
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-                User(1, "Vin", R.drawable.man),
-                User(2, "Maria", R.drawable.woman),
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-            )
-        ),
-        WorkDay(
-            "Wed", 3, listOf(
-                User(2, "Maria", R.drawable.woman),
-                User(1, "Vin", R.drawable.man),
-                User(4, "Dave", R.drawable.gamer),
-            )
-        ),
-        WorkDay(
-            "Thu", 4, listOf(
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-            )
-        ),
-        WorkDay(
-            "Fri", 5, listOf(
-                User(1, "Vin", R.drawable.man),
-                User(2, "Maria", R.drawable.woman),
-                User(3, "Kasha", R.drawable.user),
-                User(4, "Dave", R.drawable.gamer),
-            )
-        )
-    )
-)
-
 @Composable
 fun WhosInScreen(
-    appState: AppState,
-    viewModel: WhosInViewModel = getViewModel()
+    viewModel: WhosInViewModel
 ) {
-    WhosInContent(uiState = viewModel.uiState)
+
+    when (val uiState = viewModel.uiState) {
+        is WhosInViewModel.UiState.Error -> {}
+        WhosInViewModel.UiState.Loading -> Loading()
+        is WhosInViewModel.UiState.Success -> WeekView(days = uiState.workDays, userId = uiState.user.id, onDayClicked = viewModel::onDayClicked, team = uiState.team)
+    }
 }
 
 @Composable
-fun WhosInContent(
-    uiState:  WhosInViewModel.UiState
-) {
+fun Loading() {
+    CircularProgressIndicator()
+}
+
+@Composable
+fun WeekView(days: List<WorkDay>, userId: String, team: Team, onDayClicked: (WorkDay) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+            .padding(top = 24.dp, start = 12.dp, end = 12.dp)
     ) {
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
-            ) {
-            Spacer(modifier = Modifier.width(8.dp))
-            week.days.forEach { day ->
+                .fillMaxWidth(),
+        ) {
+
+            days.forEach { day ->
+                Spacer(modifier = Modifier.width(4.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
                     horizontalAlignment = CenterHorizontally
                 ) {
-                    DayHeader(day = day.day)
+
+                    DayHeader(userId = userId, day = day, onCardClicked = onDayClicked)
                     Spacer(modifier = Modifier.height(24.dp))
-                    AvatarList(day.attendees)
+                    AvatarList(team, day.attendance)
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
             }
 
+        }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DayHeader(userId: String, day: WorkDay, modifier: Modifier = Modifier, onCardClicked: (WorkDay) -> Unit) {
+    val formatter = SimpleDateFormat("EEE\nd MMM", Locale.getDefault())
+    Box {
+        Card(modifier = modifier, onClick = { onCardClicked(day) }) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = formatter.format(day.date), textAlign = TextAlign.Center, fontSize = 14.sp)
+            }
+        }
+        if (day.attendance.any { it.userId == userId }) {
+            Image(
+                painter = painterResource(R.drawable.checked),
+                contentDescription = "Check",
+                modifier = Modifier
+                    .padding(end = 2.dp)
+                    .size(12.dp)
+                    .align(Alignment.BottomEnd)
+                    .clip(CircleShape)
+            )
         }
 
-
     }
+
 }
 
 
 @Composable
-private fun AvatarList(people: List<User>) {
+private fun AvatarList(team: Team, attendees: List<Attendee>) {
     LazyColumn(
         horizontalAlignment = CenterHorizontally
     ) {
-
-        people.forEach { person ->
+        val teamMembers = attendees.mapNotNull { attendee ->
+            team.members.find { it.id == attendee.userId }
+        }
+        teamMembers.forEach { teamMember ->
             item {
-                Avatar(person)
+                Avatar(teamMember)
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
-
-
     }
 }
 
 
 @Composable
-fun DayHeader(day: String, modifier: Modifier = Modifier) {
-    Card(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = day, textAlign = TextAlign.Center)
-        }
-    }
-}
-
-
-@Composable
-fun Avatar(person: User) {
+fun Avatar(teamMember: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
             Image(
-                painter = painterResource(person.avatar),
+                painter = painterResource(R.drawable.man),
                 contentDescription = "Avatar",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -170,7 +141,7 @@ fun Avatar(person: User) {
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = person.nickName)
+        Text(text = teamMember.displayName)
 
     }
 }
@@ -182,8 +153,22 @@ fun TeamScreenPreview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.YEAR, 2023)
+            set(Calendar.WEEK_OF_YEAR, 6)
+        }
+
+        val workDays = listOf(
+            WorkDay(calendar.time),
+            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
+            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
+            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
+            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
+        )
+
         WhosInTheme {
-            WhosInContent(WhosInViewModel.UiState())
+            WeekView(workDays, "userId",Team() ) { }
         }
 
     }

@@ -11,6 +11,7 @@ import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInViewModel
 import com.gonativecoders.whosin.ui.screens.login.LoginViewModel
 import com.gonativecoders.whosin.ui.screens.login.RegisterViewModel
 import com.gonativecoders.whosin.ui.screens.onboarding.createteam.CreateTeamViewModel
+import com.gonativecoders.whosin.ui.screens.onboarding.jointeam.JoinTeamViewModel
 import com.gonativecoders.whosin.ui.screens.splash.SplashViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,7 +22,8 @@ val koinModules = module {
     viewModel { LoginViewModel(repository = get(), dataStore = get()) }
     viewModel { RegisterViewModel(repository = get()) }
     viewModel { CreateTeamViewModel(repository = get(), dataStore = get()) }
-    viewModel { WhosInViewModel(repository = get(), dataStore = get()) }
+    viewModel { JoinTeamViewModel(repository = get()) }
+    viewModel { (userId: String) -> WhosInViewModel(userId, repository = get()) }
 
     factory { AuthRepository(service = get()) }
     factory { WhosInRepository(service = get()) }
