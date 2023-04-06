@@ -13,13 +13,7 @@ class WhosInRepository(private val service: WhosInService) {
     }
 
     suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
-        val (year, week) = Calendar.getInstance().run {
-            firstDayOfWeek = Calendar.MONDAY
-            time = date
-            get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR)
-        }
-
-        return service.getWeek(teamId, year, week)
+        return service.getWeek(teamId, date)
     }
 
     suspend fun getTeam(teamId: String): Team {

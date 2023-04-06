@@ -5,6 +5,7 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.Week
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
+import com.gonativecoders.whosin.util.calendar.getCurrentWeekCalendar
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -16,13 +17,18 @@ import java.util.*
 
 class WhosInService(private val database: FirebaseFirestore = Firebase.firestore) {
 
-    suspend fun getWeek(teamId: String, year: Int, weekNumber: Int): List<WorkDay> {
+    suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
+
+        val calendar = getCurrentWeekCalendar(date)
+        val (year, week) = calendar.run { get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR) }
+
+
         val weekDocument = database.collection("teams")
             .document(teamId)
             .collection("years")
             .document(year.toString())
             .collection("weeks")
-            .document(weekNumber.toString())
+            .document(week.toString())
 
         val result = weekDocument
             .collection("days")
@@ -31,8 +37,6 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
         return if (!result.isEmpty) {
             result.toObjects()
         } else {
-            val calendar = getCurrentWeekCalendar(year, weekNumber)
-
             weekDocument.set(Week(calendar.time)).await()
 
             val workDays = listOf(
@@ -56,23 +60,8 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
     }
 
-    private fun getCurrentWeekCalendar(year: Int, weekNumber: Int): Calendar {
-        return GregorianCalendar.getInstance().apply {
-            firstDayOfWeek = Calendar.MONDAY
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            set(Calendar.YEAR, year)
-            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-            set(Calendar.WEEK_OF_YEAR, weekNumber)
-        }
-    }
-
     suspend fun getTeam(teamId: String): Team {
-        val result = Firebase.firestore.collection("teams").document(teamId).get().await() ?: throw Exception("Team not found")
-        result.toObject<Team>()
-        return Firebase.firestore.collection("teams").document(teamId).get().await().toObject<Team>() ?: throw Exception("Team not found")
+        return database.collection("teams").document(teamId).get().await().toObject<Team>() ?: throw Exception("Team not found")
     }
 
     suspend fun getUser(userId: String): User {

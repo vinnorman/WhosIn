@@ -5,7 +5,6 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 
 data class Team(
-
     val name: String? = null,
     val createdBy: String? = null,
     val code: String? = null,

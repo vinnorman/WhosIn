@@ -37,7 +37,7 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
     }
 
     private suspend fun addTeamToUser(userId: String, team: Team) {
-        Firebase.firestore.collection("users").document(userId)
+        database.collection("users").document(userId)
             .update(
                 "team", mapOf(
                     "code" to team.code,
@@ -48,11 +48,12 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
     }
 
     private suspend fun addUserToTeam(user: User, teamId: String) {
-        Firebase.firestore.collection("teams").document(teamId)
+        database.collection("teams").document(teamId)
             .update(
                 "members", FieldValue.arrayUnion(
                     mapOf(
                         "displayName" to user.name,
+                        "avatar" to 0,
                         "id" to user.id
                     )
                 )
