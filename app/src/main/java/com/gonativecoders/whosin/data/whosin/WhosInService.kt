@@ -31,15 +31,7 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
         return if (!result.isEmpty) {
             result.toObjects()
         } else {
-
-            val calendar = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-                set(Calendar.YEAR, year)
-                set(Calendar.WEEK_OF_YEAR, weekNumber)
-            }
+            val calendar = getCurrentWeekCalendar(year, weekNumber)
 
             weekDocument.set(Week(calendar.time)).await()
 
@@ -64,6 +56,19 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
     }
 
+    private fun getCurrentWeekCalendar(year: Int, weekNumber: Int): Calendar {
+        return GregorianCalendar.getInstance().apply {
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.YEAR, year)
+            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+            set(Calendar.WEEK_OF_YEAR, weekNumber)
+        }
+    }
+
     suspend fun getTeam(teamId: String): Team {
         val result = Firebase.firestore.collection("teams").document(teamId).get().await() ?: throw Exception("Team not found")
         result.toObject<Team>()
@@ -76,6 +81,7 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, attendee: Attendee, isAttending: Boolean) {
         val calendar = Calendar.getInstance().apply {
+            firstDayOfWeek = Calendar.MONDAY
             time = day.date
             set(Calendar.HOUR_OF_DAY, 0)
         }
@@ -84,7 +90,12 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
             get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR)
         }
 
-        database.collection("teams")
+        val data = mapOf(
+            "attendance" to if (isAttending) FieldValue.arrayUnion(attendee) else FieldValue.arrayRemove(attendee)
+        )
+
+
+        val dayDocument = database.collection("teams")
             .document(teamId)
             .collection("years")
             .document(year.toString())
@@ -92,11 +103,11 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
             .document(weekNumber.toString())
             .collection("days")
             .document(day.id)
-            .update(
-                mapOf(
-                    "attendance" to if (isAttending) FieldValue.arrayUnion(attendee) else FieldValue.arrayRemove(attendee)
-                )
-            ).await()
 
+        if (dayDocument.get().await().exists()) {
+            dayDocument.update(data).await()
+        } else {
+            dayDocument.set(data).await()
+        }
     }
 }

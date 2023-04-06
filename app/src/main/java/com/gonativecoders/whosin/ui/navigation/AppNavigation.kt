@@ -1,6 +1,5 @@
 package com.gonativecoders.whosin.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -91,18 +90,15 @@ private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
     ) {
         composable(route = HomeDestinations.WhosIn.route) { entry ->
             val userId = appState.getUserId(entry)
-            Log.d("Vin", "account user id is $userId")
             val viewModel: WhosInViewModel = getViewModel(parameters = { parametersOf(userId) })
             WhosInScreen(viewModel)
         }
 
         composable(HomeDestinations.Team.route) { entry ->
-            Log.d("Vin", "going to Team Screen")
             TeamScreen()
         }
         composable(HomeDestinations.Account.route) { entry ->
             val userId = appState.getUserId(entry)
-            Log.d("Vin", "account user id is $userId")
             AccountScreen(
                 onLoggedOut = appState::setLoggedOut,
                 onCreateNewTeam = appState::onCreateNewTeam

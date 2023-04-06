@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
@@ -29,7 +30,7 @@ class WhosInViewModel(private val userId: String, private val repository: WhosIn
         uiState = UiState.Success(user, team, workDays)
     }
 
-    fun onDayClicked(day: WorkDay) {
+    fun updateAttendance(day: WorkDay) {
         viewModelScope.launch {
             (uiState as? UiState.Success)?.let {
                 repository.updateAttendance(userId, it.team.id, day)
@@ -39,13 +40,12 @@ class WhosInViewModel(private val userId: String, private val repository: WhosIn
 
     }
 
-
     sealed class UiState {
 
         object Loading: UiState()
 
         data class Success(
-            val user: com.gonativecoders.whosin.data.auth.model.User,
+            val user: User,
             val team: Team,
             val workDays: List<WorkDay>,
         ) : UiState()

@@ -55,6 +55,5 @@ fun DefaultPreview() {
         WhosInTheme {
             SplashScreen(navigate = {}, onLoggedIn = {})
         }
-
     }
 }

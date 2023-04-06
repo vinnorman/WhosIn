@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.data.auth.model.UserTeam
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
@@ -27,16 +29,28 @@ import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Composable
+fun WhosInScreen(viewModel: WhosInViewModel) {
+    WhosInContent(
+        uiState = viewModel.uiState,
+        onDayClicked = { day -> viewModel.updateAttendance(day) }
+    )
+}
 
 @Composable
-fun WhosInScreen(
-    viewModel: WhosInViewModel
+fun WhosInContent(
+    uiState: WhosInViewModel.UiState,
+    onDayClicked: (WorkDay) -> Unit
 ) {
-
-    when (val uiState = viewModel.uiState) {
+    when (uiState) {
         is WhosInViewModel.UiState.Error -> {}
         WhosInViewModel.UiState.Loading -> Loading()
-        is WhosInViewModel.UiState.Success -> WeekView(days = uiState.workDays, userId = uiState.user.id, onDayClicked = viewModel::onDayClicked, team = uiState.team)
+        is WhosInViewModel.UiState.Success -> WeekView(
+            days = uiState.workDays,
+            userId = uiState.user.id,
+            onDayClicked = onDayClicked,
+            team = uiState.team
+        )
     }
 }
 
@@ -47,34 +61,45 @@ fun Loading() {
 
 @Composable
 fun WeekView(days: List<WorkDay>, userId: String, team: Team, onDayClicked: (WorkDay) -> Unit) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 24.dp, start = 12.dp, end = 12.dp)
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-        ) {
-
-            days.forEach { day ->
-                Spacer(modifier = Modifier.width(4.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    horizontalAlignment = CenterHorizontally
-                ) {
-
-                    DayHeader(userId = userId, day = day, onCardClicked = onDayClicked)
-                    Spacer(modifier = Modifier.height(24.dp))
-                    AvatarList(team, day.attendance)
-                }
-                Spacer(modifier = Modifier.width(4.dp))
-            }
-
+        days.forEach { day ->
+            Spacer(modifier = Modifier.width(4.dp))
+            DayColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                userId = userId,
+                day = day,
+                team = team,
+                onDayClicked = onDayClicked
+            )
+            Spacer(modifier = Modifier.width(4.dp))
         }
+
+    }
+}
+
+@Composable
+fun DayColumn(
+    modifier: Modifier,
+    userId: String,
+    day: WorkDay,
+    onDayClicked: (WorkDay) -> Unit,
+    team: Team,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = CenterHorizontally
+    ) {
+
+        DayHeader(userId = userId, day = day, onCardClicked = onDayClicked)
+        Spacer(modifier = Modifier.height(24.dp))
+        AvatarList(team, day.attendance)
     }
 }
 
@@ -160,15 +185,18 @@ fun TeamScreenPreview() {
         }
 
         val workDays = listOf(
-            WorkDay(calendar.time),
+            WorkDay(calendar.time, listOf(Attendee("1"))),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
+        val user = User("Vin", UserTeam("", "1", "My team")).apply { id = "1" }
+        val team = Team("Some team", members = listOf(Member("1")))
+
         WhosInTheme {
-            WeekView(workDays, "userId",Team() ) { }
+            WhosInContent(uiState = WhosInViewModel.UiState.Success(user, team, workDays), onDayClicked = {})
         }
 
     }

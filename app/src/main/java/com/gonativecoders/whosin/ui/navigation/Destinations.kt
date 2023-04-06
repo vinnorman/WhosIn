@@ -12,7 +12,7 @@ sealed class MainDestinations(val route: String) {
     object Splash : MainDestinations("splash")
     object Login : MainDestinations("login")
     object Register : MainDestinations("register")
-    object Home : MainDestinations("home/{userId}")
+    object Home : MainDestinations("home")
     object Onboarding: MainDestinations("onboarding")
 }
 
