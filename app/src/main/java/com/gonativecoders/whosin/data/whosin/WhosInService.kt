@@ -14,11 +14,9 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class WhosInService(val database: FirebaseFirestore = Firebase.firestore) {
-
+class WhosInService(private val database: FirebaseFirestore = Firebase.firestore) {
 
     suspend fun getWeek(teamId: String, year: Int, weekNumber: Int): List<WorkDay> {
-
         val weekDocument = database.collection("teams")
             .document(teamId)
             .collection("years")
@@ -55,7 +53,7 @@ class WhosInService(val database: FirebaseFirestore = Firebase.firestore) {
 
             workDays.forEach { day ->
 
-                val dayOfWeek =  Calendar.getInstance().apply { time = day.date }.get(Calendar.DAY_OF_WEEK)
+                val dayOfWeek = Calendar.getInstance().apply { time = day.date }.get(Calendar.DAY_OF_WEEK)
                 weekDocument.collection("days").document(dayOfWeek.toString()).set(day)
                 day.id = dayOfWeek.toString()
             }

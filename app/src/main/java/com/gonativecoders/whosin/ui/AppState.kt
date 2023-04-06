@@ -45,16 +45,14 @@ class AppState(
     val dataStore: DataStoreRepository
 ) {
 
-    val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Chat, HomeDestinations.Account)
+    val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Team, HomeDestinations.Account)
 
     val isBottomNavigationRoute: Boolean
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in homeDestinations.map { it.route }
     val currentRoute: String? get() = navController.currentDestination?.route
 
     val loginState = mutableStateOf<LoginState>(LoginState.LoggedOut)
-
-
-
+    
     init {
         coroutineScope.launch {
             snackbarManager.snackbarMessages.filterNotNull().collect { message ->
@@ -66,47 +64,22 @@ class AppState(
     fun setLoggedIn(user: User) {
         coroutineScope.launch {
             loginState.value = LoginState.LoggedIn(user)
-            clearAndNavigate(if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route + "/${user.id}")
+            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route + "/${user.id}"
+            navigate(route = route, clear = true)
         }
     }
 
     fun setLoggedOut() {
         Firebase.auth.signOut()
         loginState.value = LoginState.LoggedOut
-        clearAndNavigate(MainDestinations.Login.route)
+        navigate(route = MainDestinations.Login.route, clear = true)
     }
 
-    fun navigateToBottomBarRoute(route: String) {
-        if (route != currentRoute) {
-            navController.navigate(route) {
-                navController.graph.startDestinationRoute?.let { route ->
-                    popUpTo(route) {
-                        saveState = true
-                    }
-                }
-                launchSingleTop = true  // Avoid multiple copies of the same destination when re-selecting the same item
-                restoreState = true   // Restore state when re-selecting a previously selected item
-            }
-        }
-    }
-
-    fun navigate(route: String) {
+    fun navigate(route: String, clear: Boolean = false, popUpDestination: String? = null) {
         navController.navigate(route) {
             launchSingleTop = true
-        }
-    }
-
-    fun navigateAndPopUp(route: String, popUp: String) {
-        navController.navigate(route) {
-            launchSingleTop = true
-            popUpTo(popUp) { inclusive = true }
-        }
-    }
-
-    fun clearAndNavigate(route: String) {
-        navController.navigate(route) {
-            launchSingleTop = true
-            popUpTo(0) { inclusive = true }
+            if (clear) popUpTo(0) { inclusive = true }
+            else if (popUpDestination != null) popUpTo(popUpDestination) { inclusive = true }
         }
     }
 
@@ -121,6 +94,5 @@ class AppState(
         object LoggedOut : LoginState()
 
     }
-
 
 }
