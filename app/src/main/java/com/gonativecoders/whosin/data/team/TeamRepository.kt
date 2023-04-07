@@ -15,4 +15,8 @@ class TeamRepository(private val service: TeamService) {
         val firebaseUser = Firebase.auth.currentUser ?: throw Exception("No logged in user!")
         service.joinTeam(firebaseUser.uid, code)
     }
+
+    suspend fun getTeamMembers(teamId: String) {
+        service.getTeamMembers(teamId)
+    }
 }

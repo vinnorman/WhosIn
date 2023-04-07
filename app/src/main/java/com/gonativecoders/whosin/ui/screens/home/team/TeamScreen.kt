@@ -10,9 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun TeamScreen() {
+fun TeamScreen(
+    viewModel: TeamViewModel = getViewModel()
+) {
+
+}
+
+@Composable
+fun TeamContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()

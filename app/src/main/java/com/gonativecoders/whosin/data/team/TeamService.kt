@@ -60,4 +60,8 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
             ).await()
     }
 
+    fun getTeamMembers(teamId: String) {
+        database.collection("teams").document(teamId)
+    }
+
 }
