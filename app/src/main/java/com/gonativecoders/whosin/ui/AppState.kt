@@ -64,7 +64,7 @@ class AppState(
     fun setLoggedIn(user: User) {
         coroutineScope.launch {
             loginState.value = LoginState.LoggedIn(user)
-            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route + "/${user.id}"
+            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route
             navigate(route = route, clear = true)
         }
     }
@@ -85,6 +85,10 @@ class AppState(
 
     fun onCreateNewTeam() {
         navigate(OnboardingDestinations.CreateTeam.route)
+    }
+
+    fun onJoinNewTeam() {
+        navigate(OnboardingDestinations.JoinTeam.route)
     }
 
     sealed class LoginState {

@@ -7,8 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -54,17 +52,21 @@ fun AppScaffold() {
         },
         topBar = {
             val loginState = appState.loginState.value
-            if (loginState is AppState.LoginState.LoggedIn) {
+            if (appState.isBottomNavigationRoute) {
                 CenterAlignedTopAppBar(
-                    title = { Text(text = loginState.user.team?.name ?: "Who's In?") },
-                    actions = {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Rounded.AccountCircle,
-                                contentDescription = "Account Button",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
+                    title = {
+                        if (loginState is AppState.LoginState.LoggedIn) {
+                            Text(text = loginState.user.team?.name ?: "Who's In?")
                         }
+                    },
+                    actions = {
+//                        IconButton(onClick = { }) {
+//                            Icon(
+//                                imageVector = Icons.Rounded.AccountCircle,
+//                                contentDescription = "Account Button",
+//                                tint = MaterialTheme.colorScheme.onSurface
+//                            )
+//                        }
                     }
                 )
             }

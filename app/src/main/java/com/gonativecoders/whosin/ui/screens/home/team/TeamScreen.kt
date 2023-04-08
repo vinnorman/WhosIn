@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.ui.screens.home.team
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,17 +11,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.getViewModel
+import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.data.team.model.Member
+import com.gonativecoders.whosin.data.team.model.Team
+import com.gonativecoders.whosin.ui.common.ErrorView
+import com.gonativecoders.whosin.ui.screens.home.whosin.Loading
 
 @Composable
 fun TeamScreen(
-    viewModel: TeamViewModel = getViewModel()
+    viewModel: TeamViewModel
 ) {
-
+    TeamContent(uiState = viewModel.uiState)
 }
 
 @Composable
-fun TeamContent() {
+fun TeamContent(
+    uiState: TeamViewModel.UiState
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 24.dp, start = 12.dp, end = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        when (uiState) {
+            is TeamViewModel.UiState.Error -> ErrorView(uiState.error.message)
+            TeamViewModel.UiState.Loading -> Loading()
+            is TeamViewModel.UiState.Success -> TeamView(user = uiState.user, team = uiState.team)
+        }
+    }
+}
+
+@Composable
+fun TeamView(
+    user: User,
+    team: Team
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -28,6 +54,13 @@ fun TeamContent() {
             .padding(top = 96.dp, start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "The team screen")
+        team.members.forEach { member ->
+            if (member.id == user.id) Text(text = "${member.displayName} (You)") else Text(text = member.displayName)
+        }
     }
 }
+
+data class TeamScreenData(
+    val user: User,
+    val members: List<Member>
+)

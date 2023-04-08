@@ -12,7 +12,7 @@ import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.launch
 import java.util.*
 
-class WhosInViewModel(private val userId: String, private val repository: WhosInRepository) : ViewModel() {
+class WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
 
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
@@ -24,7 +24,6 @@ class WhosInViewModel(private val userId: String, private val repository: WhosIn
     }
 
     private suspend fun loadData() {
-        val user = repository.getUser(userId)
         val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
         val workDays = repository.getWeek(team.id, Date())
         uiState = UiState.Success(user, team, workDays)
@@ -33,7 +32,7 @@ class WhosInViewModel(private val userId: String, private val repository: WhosIn
     fun updateAttendance(day: WorkDay) {
         viewModelScope.launch {
             (uiState as? UiState.Success)?.let {
-                repository.updateAttendance(userId, it.team.id, day)
+                repository.updateAttendance(user.id, it.team.id, day)
                 loadData()
             }
         }

@@ -1,18 +1,15 @@
 package com.gonativecoders.whosin.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.navArgument
 import com.gonativecoders.whosin.ui.AppState
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.team.TeamScreen
+import com.gonativecoders.whosin.ui.screens.home.team.TeamViewModel
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInViewModel
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
@@ -84,30 +81,28 @@ private fun NavGraphBuilder.onboardingNavGraph(appState: AppState) {
 
 private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
     navigation(
-        route = MainDestinations.Home.route + "/{userId}",
-        startDestination = HomeDestinations.WhosIn.route,
-        arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        route = MainDestinations.Home.route,
+        startDestination = HomeDestinations.WhosIn.route
     ) {
-        composable(route = HomeDestinations.WhosIn.route) { entry ->
-            val userId = appState.getUserId(entry)
-            val viewModel: WhosInViewModel = getViewModel(parameters = { parametersOf(userId) })
+        composable(route = HomeDestinations.WhosIn.route) {
+            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val viewModel: WhosInViewModel = getViewModel(parameters = { parametersOf(user) })
             WhosInScreen(viewModel)
         }
-
-        composable(HomeDestinations.Team.route) { entry ->
-            TeamScreen()
+        composable(HomeDestinations.Team.route) {
+            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val viewModel: TeamViewModel = getViewModel(parameters = { parametersOf(user) })
+            TeamScreen(viewModel)
         }
-        composable(HomeDestinations.Account.route) { entry ->
-            val userId = appState.getUserId(entry)
+        composable(HomeDestinations.Account.route) {
+            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+
             AccountScreen(
-                onLoggedOut = appState::setLoggedOut,
-                onCreateNewTeam = appState::onCreateNewTeam
+                user = user,
+                onLogOut = appState::setLoggedOut,
+                onCreateNewTeam = appState::onCreateNewTeam,
+                onJoinNewTeam = appState::onJoinNewTeam
             )
         }
     }
-}
-
-@Composable
-private fun AppState.getUserId(entry: NavBackStackEntry): String? {
-    return remember(entry) { navController.getBackStackEntry(MainDestinations.Home.route + "/{userId}").arguments?.getString("userId") }
 }

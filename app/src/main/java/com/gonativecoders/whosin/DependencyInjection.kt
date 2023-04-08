@@ -2,6 +2,7 @@ package com.gonativecoders.whosin
 
 import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.data.team.TeamRepository
 import com.gonativecoders.whosin.data.team.TeamService
@@ -24,8 +25,8 @@ val koinModules = module {
     viewModel { RegisterViewModel(repository = get()) }
     viewModel { CreateTeamViewModel(repository = get(), dataStore = get()) }
     viewModel { JoinTeamViewModel(repository = get()) }
-    viewModel { TeamViewModel() }
-    viewModel { (userId: String) -> WhosInViewModel(userId, repository = get()) }
+    viewModel {  (user: User) -> TeamViewModel(user = user, repository = get()) }
+    viewModel { (user: User) -> WhosInViewModel(user = user, repository = get()) }
 
     factory { AuthRepository(service = get()) }
     factory { WhosInRepository(service = get()) }

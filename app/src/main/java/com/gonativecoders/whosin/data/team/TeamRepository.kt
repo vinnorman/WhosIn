@@ -16,7 +16,7 @@ class TeamRepository(private val service: TeamService) {
         service.joinTeam(firebaseUser.uid, code)
     }
 
-    suspend fun getTeamMembers(teamId: String) {
-        service.getTeamMembers(teamId)
+    suspend fun getTeam(teamId: String): Team {
+        return service.getTeam(teamId)
     }
 }
