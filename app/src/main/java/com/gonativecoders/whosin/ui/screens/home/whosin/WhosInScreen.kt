@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -108,7 +108,6 @@ fun DayColumn(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DayHeader(
     userId: String,
@@ -116,9 +115,13 @@ fun DayHeader(
     modifier: Modifier = Modifier,
     onCardClicked: (WorkDay) -> Unit
 ) {
+    var showCheckMark: Boolean by remember { mutableStateOf(day.attendance.any { it.userId == userId }) }
     val formatter = SimpleDateFormat("EEE\nd MMM", Locale.getDefault())
     Box {
-        Card(modifier = modifier, onClick = { onCardClicked(day) }) {
+        Card(modifier = modifier, onClick = {
+            onCardClicked(day)
+            showCheckMark = !showCheckMark
+        }) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,7 +130,7 @@ fun DayHeader(
                 Text(text = formatter.format(day.date), textAlign = TextAlign.Center, fontSize = 14.sp)
             }
         }
-        if (day.attendance.any { it.userId == userId }) {
+        if (showCheckMark) {
             Image(
                 painter = painterResource(R.drawable.checked),
                 contentDescription = "Check",
@@ -142,7 +145,6 @@ fun DayHeader(
     }
 
 }
-
 
 @Composable
 private fun AvatarList(team: Team, attendees: List<Attendee>) {
