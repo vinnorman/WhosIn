@@ -5,7 +5,8 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.Week
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import com.gonativecoders.whosin.util.calendar.getCurrentWeekCalendar
+import com.gonativecoders.whosin.util.calendar.getCalendarFromDate
+import com.gonativecoders.whosin.util.calendar.getCurrentWorkingWeek
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -19,7 +20,7 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
     suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
 
-        val calendar = getCurrentWeekCalendar(date)
+        val calendar = getCurrentWorkingWeek(date)
         val (year, week) = calendar.run { get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR) }
 
 
@@ -69,12 +70,7 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
     }
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, attendee: Attendee, isAttending: Boolean) {
-        val calendar = Calendar.getInstance().apply {
-            firstDayOfWeek = Calendar.MONDAY
-            time = day.date
-            set(Calendar.HOUR_OF_DAY, 0)
-        }
-
+        val calendar = getCalendarFromDate(day.date)
         val (year, weekNumber) = calendar.run {
             get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR)
         }

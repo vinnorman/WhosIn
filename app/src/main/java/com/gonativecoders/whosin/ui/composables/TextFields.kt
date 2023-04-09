@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
@@ -28,7 +29,13 @@ fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier =
 
     OutlinedTextField(
         singleLine = true,
-        modifier = modifier,
+        modifier = Modifier.onKeyEvent {
+            // The below works, but it stills adds a space. Need to figure it out
+//            if (it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_TAB) {
+//                focusManager.moveFocus(FocusDirection.Next)
+//            }
+            false
+        },
         value = value,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),

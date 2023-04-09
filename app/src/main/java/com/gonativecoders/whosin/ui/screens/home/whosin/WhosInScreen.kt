@@ -60,7 +60,12 @@ fun Loading() {
 }
 
 @Composable
-fun WeekView(days: List<WorkDay>, userId: String, team: Team, onDayClicked: (WorkDay) -> Unit) {
+fun WeekView(
+    days: List<WorkDay>,
+    userId: String,
+    team: Team,
+    onDayClicked: (WorkDay) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -105,7 +110,12 @@ fun DayColumn(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayHeader(userId: String, day: WorkDay, modifier: Modifier = Modifier, onCardClicked: (WorkDay) -> Unit) {
+fun DayHeader(
+    userId: String,
+    day: WorkDay,
+    modifier: Modifier = Modifier,
+    onCardClicked: (WorkDay) -> Unit
+) {
     val formatter = SimpleDateFormat("EEE\nd MMM", Locale.getDefault())
     Box {
         Card(modifier = modifier, onClick = { onCardClicked(day) }) {
@@ -173,7 +183,7 @@ fun Avatar(teamMember: Member) {
 
 @Preview(showBackground = true)
 @Composable
-fun TeamScreenPreview() {
+fun WhosInScreenPreview() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
