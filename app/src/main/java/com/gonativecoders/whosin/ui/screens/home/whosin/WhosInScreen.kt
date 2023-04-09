@@ -31,26 +31,32 @@ import java.util.*
 
 @Composable
 fun WhosInScreen(viewModel: WhosInViewModel) {
-    WhosInContent(
-        uiState = viewModel.uiState,
-        onDayClicked = { day -> viewModel.updateAttendance(day) }
-    )
+
+    val uiState = viewModel.uiState
+    when (uiState) {
+        is WhosInViewModel.UiState.Error -> {}
+        WhosInViewModel.UiState.Loading -> Loading()
+        is WhosInViewModel.UiState.Success -> WhosInContent(
+            days = uiState.workDays,
+            userId = uiState.user.id,
+            onDayClicked = { day -> viewModel.updateAttendance(day) },
+            team = uiState.team
+        )
+    }
 }
 
 @Composable
 fun WhosInContent(
-    uiState: WhosInViewModel.UiState,
+    days: List<WorkDay>,
+    userId: String,
+    team: Team,
     onDayClicked: (WorkDay) -> Unit
 ) {
-    when (uiState) {
-        is WhosInViewModel.UiState.Error -> {}
-        WhosInViewModel.UiState.Loading -> Loading()
-        is WhosInViewModel.UiState.Success -> WeekView(
-            days = uiState.workDays,
-            userId = uiState.user.id,
-            onDayClicked = onDayClicked,
-            team = uiState.team
-        )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Current Week")
+        WeekView(days = days, userId = userId, team = team, onDayClicked = onDayClicked)
     }
 }
 
@@ -163,7 +169,6 @@ private fun AvatarList(team: Team, attendees: List<Attendee>) {
     }
 }
 
-
 @Composable
 fun Avatar(teamMember: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -208,7 +213,12 @@ fun WhosInScreenPreview() {
         val team = Team("Some team", members = listOf(Member("1")))
 
         WhosInTheme {
-            WhosInContent(uiState = WhosInViewModel.UiState.Success(user, team, workDays), onDayClicked = {})
+            WhosInContent(
+                days = workDays,
+                userId = user.id,
+                onDayClicked = { },
+                team = team
+            )
         }
 
     }

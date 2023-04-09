@@ -19,6 +19,7 @@ sealed class MainDestinations(val route: String) {
 sealed class HomeDestinations(val route: String, @StringRes val title: Int, val icon: ImageVector) {
     object WhosIn : HomeDestinations("whosin", R.string.screen_name_whos_in, Icons.Filled.Search)
     object Team : HomeDestinations("team", R.string.screen_name_team, Icons.Filled.Group)
+    object TeamInfo : HomeDestinations("team-info", R.string.screen_name_team, Icons.Filled.Group)
     object Account : HomeDestinations("account", R.string.screen_name_account, Icons.Filled.AccountCircle)
 }
 

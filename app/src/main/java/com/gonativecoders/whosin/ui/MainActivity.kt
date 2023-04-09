@@ -7,12 +7,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CalendarToday
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.ui.composables.BottomBar
 import com.gonativecoders.whosin.ui.navigation.AppNavigation
+import com.gonativecoders.whosin.ui.navigation.HomeDestinations
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 
@@ -60,13 +64,24 @@ fun AppScaffold() {
                         }
                     },
                     actions = {
-//                        IconButton(onClick = { }) {
-//                            Icon(
-//                                imageVector = Icons.Rounded.AccountCircle,
-//                                contentDescription = "Account Button",
-//                                tint = MaterialTheme.colorScheme.onSurface
-//                            )
-//                        }
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.CalendarToday,
+                                contentDescription = "Go to Current Week",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        IconButton(onClick = {
+                            appState.navigate(HomeDestinations.TeamInfo.route)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.Info,
+                                contentDescription = "Account Button",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 )
             }

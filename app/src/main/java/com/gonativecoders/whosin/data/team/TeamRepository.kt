@@ -19,4 +19,5 @@ class TeamRepository(private val service: TeamService) {
     suspend fun getTeam(teamId: String): Team {
         return service.getTeam(teamId)
     }
+
 }

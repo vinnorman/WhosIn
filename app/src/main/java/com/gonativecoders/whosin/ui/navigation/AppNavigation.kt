@@ -10,6 +10,8 @@ import com.gonativecoders.whosin.ui.AppState
 import com.gonativecoders.whosin.ui.screens.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.screens.home.team.TeamScreen
 import com.gonativecoders.whosin.ui.screens.home.team.TeamViewModel
+import com.gonativecoders.whosin.ui.screens.home.teaminfo.TeamInfoScreen
+import com.gonativecoders.whosin.ui.screens.home.teaminfo.TeamInfoViewModel
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInViewModel
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
@@ -103,6 +105,11 @@ private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
                 onCreateNewTeam = appState::onCreateNewTeam,
                 onJoinNewTeam = appState::onJoinNewTeam
             )
+        }
+        composable(route = HomeDestinations.TeamInfo.route) {
+            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val viewModel: TeamInfoViewModel = getViewModel(parameters = { parametersOf(user) })
+            TeamInfoScreen(viewModel)
         }
     }
 }
