@@ -30,8 +30,8 @@ jobs:
         KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
         GOOGLE_SERVICES_FILE: ${{ secrets.GOOGLE_SERVICES_FILE }}
       run: |
-        echo KEYSTORE_FILE | base64 -di > keystore.jks
-        echo GOOGLE_SERVICES_FILE | base64 -di > app/google-services.json
+        echo $KEYSTORE_FILE | base64 -di > keystore.jks
+        echo $GOOGLE_SERVICES_FILE | base64 -di > app/google-services.json
 
     - name: Build with Gradle
       env:
