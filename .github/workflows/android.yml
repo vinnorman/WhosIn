@@ -24,5 +24,16 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Decode Keystore
+      env:
+        ENCODED_STRING: ${{ secrets.KEYSTORE_FILE }}
+      run: |
+        echo $ENCODED_STRING | base64 -di > keystore.jks
     - name: Build with Gradle
-      run: ./gradlew buildDebug
+      env:
+        KEYSTORE_PATH: keystore.jks
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      run: ./gradlew assembleRelease

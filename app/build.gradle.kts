@@ -25,8 +25,17 @@ android {
 
     signingConfigs {
         create("release") {
+
             val keystoreProperties = Properties().apply {
-                load(File("keystore.properties").reader())
+                val keystorePropertiesFile = File("keystore.properties")
+                if (keystorePropertiesFile.exists()) {
+                    load(keystorePropertiesFile.reader())
+                } else {
+                    put("storeFile", System.getenv("KEYSTORE_PATH") ?: "../keystore.jks")
+                    put("storePassword", System.getenv("KEYSTORE_PASSWORD") ?: "devkeystore")
+                    put("keyAlias", System.getenv("KEY_ALIAS") ?: "whosindev")
+                    put("keyPassword", System.getenv("KEY_PASSWORD") ?: "whosindevpassword")
+                }
             }
 
             storeFile = file(keystoreProperties.getProperty("storeFile"))
