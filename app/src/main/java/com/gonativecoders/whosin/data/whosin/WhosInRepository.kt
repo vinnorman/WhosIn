@@ -1,16 +1,11 @@
 package com.gonativecoders.whosin.data.whosin
 
-import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import java.util.*
 
 class WhosInRepository(private val service: WhosInService) {
-
-    suspend fun getUser(userId: String): User {
-        return service.getUser(userId)
-    }
 
     suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
         return service.getWeek(teamId, date)

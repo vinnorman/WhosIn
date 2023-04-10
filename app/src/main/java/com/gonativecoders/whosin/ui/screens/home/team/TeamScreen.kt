@@ -1,44 +1,52 @@
 package com.gonativecoders.whosin.ui.screens.home.team
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.ui.common.ErrorView
 import com.gonativecoders.whosin.ui.screens.home.whosin.Loading
+import com.gonativecoders.whosin.ui.theme.WhosInTheme
 
 @Composable
 fun TeamScreen(
     viewModel: TeamViewModel
 ) {
-    TeamContent(uiState = viewModel.uiState)
+    when (val uiState = viewModel.uiState) {
+        is TeamViewModel.UiState.Error -> ErrorView(uiState.error.message)
+        TeamViewModel.UiState.Loading -> Loading()
+        is TeamViewModel.UiState.Success -> TeamContent(user = uiState.user, team = uiState.team)
+    }
 }
 
 @Composable
 fun TeamContent(
-    uiState: TeamViewModel.UiState
+    user: User,
+    team: Team
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 24.dp, start = 12.dp, end = 12.dp),
-        contentAlignment = Alignment.Center
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        when (uiState) {
-            is TeamViewModel.UiState.Error -> ErrorView(uiState.error.message)
-            TeamViewModel.UiState.Loading -> Loading()
-            is TeamViewModel.UiState.Success -> TeamView(user = uiState.user, team = uiState.team)
-        }
+        TeamView(user = user, team = team)
     }
 }
 
@@ -47,20 +55,46 @@ fun TeamView(
     user: User,
     team: Team
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 96.dp, start = 24.dp, end = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        team.members.forEach { member ->
-            if (member.id == user.id) Text(text = "${member.displayName} (You)") else Text(text = member.displayName)
+    LazyColumn {
+        items(team.members) { member ->
+            TeamMemberView(member = member, member.id == user.id)
         }
     }
 }
 
-data class TeamScreenData(
-    val user: User,
-    val members: List<Member>
-)
+@Composable
+fun TeamMemberView(member: Member, isUser: Boolean) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.man),
+            contentDescription = "User avatar",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        Text(text = if (isUser) member.displayName + " (You)" else member.displayName)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TeamScreenPreview() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        WhosInTheme {
+            TeamContent(
+                user = User(name = "Vin").apply { id = "123" },
+                team = Team("Some team", members = listOf(Member(id = "123", displayName = "Vin Norman"), Member(id = "234", displayName = "Maria Hampson")))
+            )
+        }
+    }
+}

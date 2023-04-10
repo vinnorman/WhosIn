@@ -31,9 +31,7 @@ import java.util.*
 
 @Composable
 fun WhosInScreen(viewModel: WhosInViewModel) {
-
-    val uiState = viewModel.uiState
-    when (uiState) {
+    when (val uiState = viewModel.uiState) {
         is WhosInViewModel.UiState.Error -> {}
         WhosInViewModel.UiState.Loading -> Loading()
         is WhosInViewModel.UiState.Success -> WhosInContent(

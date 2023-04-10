@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+@Suppress("UnstableApiUsage")
 android {
     compileSdk = 33
 
@@ -24,7 +25,7 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystoreProperties = Properties().apply{
+            val keystoreProperties = Properties().apply {
                 load(File("keystore.properties").reader())
             }
 

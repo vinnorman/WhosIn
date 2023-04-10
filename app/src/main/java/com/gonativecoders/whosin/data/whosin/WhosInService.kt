@@ -1,6 +1,5 @@
 package com.gonativecoders.whosin.data.whosin
 
-import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.Week
@@ -19,10 +18,8 @@ import java.util.*
 class WhosInService(private val database: FirebaseFirestore = Firebase.firestore) {
 
     suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
-
         val calendar = getCurrentWorkingWeek(date)
         val (year, week) = calendar.run { get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR) }
-
 
         val weekDocument = database.collection("teams")
             .document(teamId)
@@ -63,10 +60,6 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
     suspend fun getTeam(teamId: String): Team {
         return database.collection("teams").document(teamId).get().await().toObject<Team>() ?: throw Exception("Team not found")
-    }
-
-    suspend fun getUser(userId: String): User {
-        return database.collection("users").document(userId).get().await().toObject() ?: throw Exception("No user found")
     }
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, attendee: Attendee, isAttending: Boolean) {
