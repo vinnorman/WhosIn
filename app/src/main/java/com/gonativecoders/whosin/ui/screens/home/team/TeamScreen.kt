@@ -1,26 +1,21 @@
 package com.gonativecoders.whosin.ui.screens.home.team
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.ui.common.ErrorView
+import com.gonativecoders.whosin.ui.composables.InitialsCircle
 import com.gonativecoders.whosin.ui.screens.home.whosin.Loading
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 
@@ -70,14 +65,7 @@ fun TeamMemberView(member: Member, isUser: Boolean) {
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.man),
-            contentDescription = "User avatar",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-        )
+        InitialsCircle(name = member.displayName, member.initialsColor)
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = if (isUser) member.displayName + " (You)" else member.displayName)
     }
@@ -93,7 +81,7 @@ fun TeamScreenPreview() {
         WhosInTheme {
             TeamContent(
                 user = User(name = "Vin").apply { id = "123" },
-                team = Team("Some team", members = listOf(Member(id = "123", displayName = "Vin Norman"), Member(id = "234", displayName = "Maria Hampson")))
+                team = Team("Some team", members = listOf(Member(id = "123", displayName = "Vin", initialsColor = "FF0000"), Member(id = "234", displayName = "Maria Hampson", initialsColor = "FF0000")))
             )
         }
     }

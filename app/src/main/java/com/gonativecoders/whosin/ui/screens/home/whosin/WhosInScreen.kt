@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +24,7 @@ import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
+import com.gonativecoders.whosin.ui.composables.InitialsCircle
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import java.text.SimpleDateFormat
 import java.util.*
@@ -168,21 +168,11 @@ private fun AvatarList(team: Team, attendees: List<Attendee>) {
 }
 
 @Composable
-fun Avatar(teamMember: Member) {
+fun Avatar(member: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box {
-            Image(
-                painter = painterResource(R.drawable.man),
-                contentDescription = "Avatar",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-            )
-        }
+        InitialsCircle(name = member.displayName, color = member.initialsColor)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = teamMember.displayName)
-
+        Text(text = member.displayName, textAlign = TextAlign.Center)
     }
 }
 
@@ -207,7 +197,7 @@ fun WhosInScreenPreview() {
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        val user = User("Vin", UserTeam("", "1", "My team")).apply { id = "1" }
+        val user = User(name = "Vin", initialsColor = "FF0000", team = UserTeam("", "1", "My team")).apply { id = "1" }
         val team = Team("Some team", members = listOf(Member("1")))
 
         WhosInTheme {

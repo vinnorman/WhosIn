@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.screens.register
+package com.gonativecoders.whosin.ui.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,6 @@ import com.gonativecoders.whosin.ui.composables.EmailField
 import com.gonativecoders.whosin.ui.composables.NameField
 import com.gonativecoders.whosin.ui.composables.PasswordField
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
-import com.gonativecoders.whosin.ui.screens.login.RegisterViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable

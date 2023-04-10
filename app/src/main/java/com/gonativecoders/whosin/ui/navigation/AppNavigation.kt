@@ -15,10 +15,10 @@ import com.gonativecoders.whosin.ui.screens.home.teaminfo.TeamInfoViewModel
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInScreen
 import com.gonativecoders.whosin.ui.screens.home.whosin.WhosInViewModel
 import com.gonativecoders.whosin.ui.screens.login.LoginScreen
+import com.gonativecoders.whosin.ui.screens.login.RegisterScreen
 import com.gonativecoders.whosin.ui.screens.onboarding.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.screens.onboarding.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.screens.onboarding.welcome.WelcomeScreen
-import com.gonativecoders.whosin.ui.screens.register.RegisterScreen
 import com.gonativecoders.whosin.ui.screens.splash.SplashScreen
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf

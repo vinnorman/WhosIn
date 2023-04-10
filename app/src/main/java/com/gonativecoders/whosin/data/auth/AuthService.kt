@@ -1,6 +1,7 @@
 package com.gonativecoders.whosin.data.auth
 
 import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.util.getRandomHexColor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -23,9 +24,13 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
     }
 
     private suspend fun saveUser(user: FirebaseUser, displayName: String): User {
+        val randomColor = getRandomHexColor()
         database.collection("users")
             .document(user.uid)
-            .set(mapOf("name" to displayName)).await()
+            .set(mapOf(
+                "name" to displayName,
+                "initialsColor" to randomColor
+            )).await()
         return User(name = displayName).apply { id = user.uid }
     }
 

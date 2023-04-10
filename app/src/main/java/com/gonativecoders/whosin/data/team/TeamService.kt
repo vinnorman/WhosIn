@@ -53,6 +53,7 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
                 "members", FieldValue.arrayUnion(
                     mapOf(
                         "displayName" to user.name,
+                        "initialsColor" to user.initialsColor,
                         "avatar" to 0,
                         "id" to user.id
                     )

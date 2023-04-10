@@ -34,7 +34,7 @@ class CreateTeamViewModel(private val repository: TeamRepository, private val da
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
                 dataStore.putBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING, true)
                 val user = Firebase.auth.currentUser
-                navigate(MainDestinations.Home.route + "/${user!!.uid}")
+                navigate(MainDestinations.Home.route)
             }catch (exception :Exception) {
                 uiState = uiState.copy(error = exception)
             }
