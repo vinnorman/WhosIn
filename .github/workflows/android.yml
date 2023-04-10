@@ -27,9 +27,12 @@ jobs:
 
     - name: Decode Keystore
       env:
-        ENCODED_STRING: ${{ secrets.KEYSTORE_FILE }}
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        GOOGLE_SERVICES_FILE: ${{ secrets.GOOGLE_SERVICES_FILE }}
       run: |
-        echo $ENCODED_STRING | base64 -di > keystore.jks
+        echo KEYSTORE_FILE | base64 -di > keystore.jks
+        echo GOOGLE_SERVICES_FILE | base64 -di > app/google-services.json
+
     - name: Build with Gradle
       env:
         KEYSTORE_PATH: keystore.jks
