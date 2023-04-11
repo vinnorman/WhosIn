@@ -5,13 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.data.auth.AuthRepository
+import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.data.team.TeamRepository
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
-class JoinTeamViewModel(private val repository: TeamRepository) : ViewModel() {
+class JoinTeamViewModel(
+    private val repository: TeamRepository,
+    private val authRepository: AuthRepository,
+    private val dataStore: DataStoreRepository
+) : ViewModel() {
 
     data class UiState(
         val teamCode: String = "",
@@ -26,13 +31,15 @@ class JoinTeamViewModel(private val repository: TeamRepository) : ViewModel() {
         uiState = uiState.copy(teamCode = newValue)
     }
 
-    fun onJoinTeamClicked(navigate: (route: String) -> Unit) {
+    fun onJoinTeamClicked(onUserUpdated: (user: User) -> Unit, navigate: (route: String) -> Unit) {
         viewModelScope.launch {
             try {
-                repository.joinTeam(uiState.teamCode)
-                val user = Firebase.auth.currentUser
-                navigate(MainDestinations.Home.route + "/${user!!.uid}")
-            }catch (exception :Exception) {
+                val team = repository.joinTeam(uiState.teamCode)
+                dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
+                dataStore.putBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING, true)
+                onUserUpdated(authRepository.getCurrentUser())
+                navigate(MainDestinations.Home.route)
+            } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }
         }

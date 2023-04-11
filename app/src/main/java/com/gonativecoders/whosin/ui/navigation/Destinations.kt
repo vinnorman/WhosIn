@@ -14,6 +14,10 @@ sealed class MainDestinations(val route: String) {
     object Register : MainDestinations("register")
     object Home : MainDestinations("home")
     object Onboarding: MainDestinations("onboarding")
+
+    override fun toString(): String {
+        return route
+    }
 }
 
 sealed class HomeDestinations(val route: String, @StringRes val title: Int, val icon: ImageVector) {

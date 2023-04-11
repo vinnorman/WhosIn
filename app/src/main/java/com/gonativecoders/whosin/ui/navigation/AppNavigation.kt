@@ -70,11 +70,13 @@ private fun NavGraphBuilder.onboardingNavGraph(appState: AppState) {
         }
         composable(OnboardingDestinations.CreateTeam.route) {
             CreateTeamScreen(
+                onUserUpdated = { user -> appState.onUserUpdated(user) },
                 navigate = { route -> appState.navigate(route) }
             )
         }
         composable(OnboardingDestinations.JoinTeam.route) {
             JoinTeamScreen(
+                onUserUpdated = { user -> appState.onUserUpdated(user) },
                 navigate = { route -> appState.navigate(route) }
             )
         }
@@ -87,27 +89,27 @@ private fun NavGraphBuilder.homeNavGraph(appState: AppState) {
         startDestination = HomeDestinations.WhosIn.route
     ) {
         composable(route = HomeDestinations.WhosIn.route) {
-            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: return@composable
             val viewModel: WhosInViewModel = getViewModel(parameters = { parametersOf(user) })
             WhosInScreen(viewModel)
         }
         composable(HomeDestinations.Team.route) {
-            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: return@composable
             val viewModel: TeamViewModel = getViewModel(parameters = { parametersOf(user) })
             TeamScreen(viewModel)
         }
         composable(HomeDestinations.Account.route) {
-            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: return@composable
 
             AccountScreen(
                 user = user,
                 onLogOut = appState::setLoggedOut,
-                onCreateNewTeam = appState::onCreateNewTeam,
-                onJoinNewTeam = appState::onJoinNewTeam
+                onCreateNewTeam = { appState.navigate(OnboardingDestinations.CreateTeam.route) },
+                onJoinNewTeam = { appState.navigate(OnboardingDestinations.JoinTeam.route) }
             )
         }
         composable(route = HomeDestinations.TeamInfo.route) {
-            val user = (appState.loginState.value as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+            val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: return@composable
             val viewModel: TeamInfoViewModel = getViewModel(parameters = { parametersOf(user) })
             TeamInfoScreen(viewModel)
         }

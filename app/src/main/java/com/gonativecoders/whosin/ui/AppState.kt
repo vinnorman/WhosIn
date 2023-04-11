@@ -9,7 +9,6 @@ import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.navigation.HomeDestinations
 import com.gonativecoders.whosin.ui.navigation.MainDestinations
-import com.gonativecoders.whosin.ui.navigation.OnboardingDestinations
 import com.gonativecoders.whosin.ui.util.SnackbarManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -51,8 +50,9 @@ class AppState(
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in homeDestinations.map { it.route }
     val currentRoute: String? get() = navController.currentDestination?.route
 
-    val loginState = mutableStateOf<LoginState>(LoginState.LoggedOut)
-    
+    var loginState by mutableStateOf<LoginState>(LoginState.LoggedOut)
+        private set
+
     init {
         coroutineScope.launch {
             snackbarManager.snackbarMessages.filterNotNull().collect { message ->
@@ -63,7 +63,7 @@ class AppState(
 
     fun setLoggedIn(user: User) {
         coroutineScope.launch {
-            loginState.value = LoginState.LoggedIn(user)
+            loginState = LoginState.LoggedIn(user)
             val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route
             navigate(route = route, clear = true)
         }
@@ -71,7 +71,7 @@ class AppState(
 
     fun setLoggedOut() {
         Firebase.auth.signOut()
-        loginState.value = LoginState.LoggedOut
+        loginState = LoginState.LoggedOut
         navigate(route = MainDestinations.Login.route, clear = true)
     }
 
@@ -83,17 +83,15 @@ class AppState(
         }
     }
 
-    fun onCreateNewTeam() {
-        navigate(OnboardingDestinations.CreateTeam.route)
-    }
-
-    fun onJoinNewTeam() {
-        navigate(OnboardingDestinations.JoinTeam.route)
+    fun onUserUpdated(user: User) {
+        (loginState as? LoginState.LoggedIn)?.let {
+            it.user = user
+        }
     }
 
     sealed class LoginState {
 
-        data class LoggedIn(val user: User) : LoginState()
+        data class LoggedIn(var user: User) : LoginState()
 
         object LoggedOut : LoginState()
 

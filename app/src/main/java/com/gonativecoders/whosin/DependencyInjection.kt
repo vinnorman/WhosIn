@@ -24,9 +24,9 @@ val koinModules = module {
     viewModel { SplashViewModel(repository = get()) }
     viewModel { LoginViewModel(repository = get(), dataStore = get()) }
     viewModel { RegisterViewModel(repository = get()) }
-    viewModel { CreateTeamViewModel(repository = get(), dataStore = get()) }
-    viewModel { JoinTeamViewModel(repository = get()) }
-    viewModel {  (user: User) -> TeamViewModel(user = user, repository = get()) }
+    viewModel { CreateTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
+    viewModel { JoinTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
+    viewModel { (user: User) -> TeamViewModel(user = user, repository = get()) }
     viewModel { (user: User) -> WhosInViewModel(user = user, repository = get()) }
 
     viewModel { (user: User) -> TeamInfoViewModel(user = user, repository = get()) }

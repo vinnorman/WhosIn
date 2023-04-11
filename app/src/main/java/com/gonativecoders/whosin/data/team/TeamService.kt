@@ -29,11 +29,12 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
         return team
     }
 
-    suspend fun joinTeam(userId: String, code: String) {
+    suspend fun joinTeam(userId: String, code: String): Team {
         val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
         val team: Team = database.collection("teams").whereEqualTo("code", code).get().await().first().toObject()
         addTeamToUser(userId, team)
         addUserToTeam(user, team.id)
+        return team
     }
 
     private suspend fun addTeamToUser(userId: String, team: Team) {

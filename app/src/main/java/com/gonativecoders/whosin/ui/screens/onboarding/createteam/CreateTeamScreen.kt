@@ -12,20 +12,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.composables.TeamNameField
+import com.gonativecoders.whosin.ui.navigation.MainDestinations
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun CreateTeamScreen(
-    navigate: (route: String) -> Unit,
-    viewModel: CreateTeamViewModel = getViewModel()
-) {
+    viewModel: CreateTeamViewModel = getViewModel(),
+    onUserUpdated: (user: User) -> Unit,
+    navigate: (route: String) -> Unit
+    ) {
 
     CreateTeamContent(
         uiState = viewModel.uiState,
         onTeamNameChanged = viewModel::onTeamNameChanged,
-        onCreateTeamClicked = { viewModel.onCreateTeamClicked(navigate) })
+        onCreateTeamClicked = {
+            viewModel.onCreateTeamClicked(onUserUpdated, navigate)
+        })
 
 }
 

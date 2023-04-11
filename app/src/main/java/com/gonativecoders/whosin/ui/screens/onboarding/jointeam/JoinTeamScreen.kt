@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.composables.TextFieldWithIcon
 import com.gonativecoders.whosin.ui.theme.WhosInTheme
 import org.koin.androidx.compose.getViewModel
@@ -21,12 +22,16 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun JoinTeamScreen(
     navigate: (route: String) -> Unit,
+    onUserUpdated: (user: User) -> Unit,
     viewModel: JoinTeamViewModel = getViewModel()
 ) {
     Column {
         JoinTeamContent(uiState = viewModel.uiState,
             onTeamNameChanged = viewModel::onTeamNameChanged,
-            onCreateTeamClicked = { viewModel.onJoinTeamClicked(navigate) })
+            onCreateTeamClicked = {
+                viewModel.onJoinTeamClicked(onUserUpdated, navigate)
+            }
+        )
     }
 }
 

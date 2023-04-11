@@ -55,7 +55,7 @@ fun AppScaffold() {
             }
         },
         topBar = {
-            val loginState = appState.loginState.value
+            val loginState = appState.loginState
             if (appState.isBottomNavigationRoute) {
                 CenterAlignedTopAppBar(
                     title = {
