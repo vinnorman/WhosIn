@@ -34,9 +34,10 @@ jobs:
 #        echo $GOOGLE_SERVICES_FILE | base64 -di > app/google-services.json
 
     - name: Login to Firebase CLI
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       run: |
         curl -sL https://firebase.tools | bash
-        firebase login:ci
         firebase projects:list
 
 
