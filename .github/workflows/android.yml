@@ -35,8 +35,8 @@ jobs:
 
     - name: Login to Firebase CLI
       run: |
-      curl -sL https://firebase.tools | bash
-      firebase login
+        curl -sL https://firebase.tools | bash
+        firebase login
 
 
 
