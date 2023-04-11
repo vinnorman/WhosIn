@@ -12,12 +12,17 @@ android {
 
     namespace = "com.gonativecoders.whosin"
 
+    task("checkVersionName") {
+        println(generateVersionName())
+        println(generateVersionCode())
+    }
+
     defaultConfig {
         applicationId = "com.gonativecoders.whosin"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = generateVersionCode()
+        versionName = generateVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

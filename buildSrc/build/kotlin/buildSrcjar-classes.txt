@@ -1,0 +1,1 @@
+C:\Users\Public\Development\Vin\Projects\WhosIn\buildSrc\build\classes\kotlin\main\Version.class;C:\Users\Public\Development\Vin\Projects\WhosIn\buildSrc\build\classes\kotlin\main\VersioningKt$gitDescribe$1.class;C:\Users\Public\Development\Vin\Projects\WhosIn\buildSrc\build\classes\kotlin\main\VersioningKt.class
