@@ -24,9 +24,14 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
     }
 
     private suspend fun loadData() {
-        val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
-        val workDays = repository.getWeek(team.id, Date())
-        uiState = UiState.Success(user, team, workDays)
+        uiState = try {
+            val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
+            val workDays = repository.getWeek(team.id, Date())
+            UiState.Success(user, team, workDays)
+        } catch (exception: Exception) {
+            UiState.Error(exception)
+        }
+
     }
 
     fun updateAttendance(day: WorkDay) {

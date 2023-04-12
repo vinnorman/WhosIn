@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -64,15 +63,6 @@ fun AppScaffold() {
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.CalendarToday,
-                                contentDescription = "Go to Current Week",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
                         IconButton(onClick = {
                             appState.navigate(HomeDestinations.TeamInfo.route)
                         }) {

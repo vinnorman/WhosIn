@@ -28,7 +28,7 @@ fun JoinTeamScreen(
     Column {
         JoinTeamContent(uiState = viewModel.uiState,
             onTeamNameChanged = viewModel::onTeamNameChanged,
-            onCreateTeamClicked = {
+            onJoinTeamClicked = {
                 viewModel.onJoinTeamClicked(onUserUpdated, navigate)
             }
         )
@@ -39,7 +39,7 @@ fun JoinTeamScreen(
 fun JoinTeamContent(
     uiState: JoinTeamViewModel.UiState,
     onTeamNameChanged: (String) -> Unit,
-    onCreateTeamClicked: () -> Unit
+    onJoinTeamClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -50,7 +50,7 @@ fun JoinTeamContent(
     ) {
         TeamCodeField(value = uiState.teamCode, onNewValue = onTeamNameChanged)
         Spacer(modifier = Modifier.size(48.dp))
-        Button(onClick = onCreateTeamClicked) {
+        Button(onClick = onJoinTeamClicked) {
             Text(text = "Join Team")
         }
         if (uiState.error != null) {
@@ -84,7 +84,7 @@ fun DefaultPreview() {
             JoinTeamContent(
                 uiState = JoinTeamViewModel.UiState(),
                 onTeamNameChanged = {},
-                onCreateTeamClicked = {}
+                onJoinTeamClicked = {}
             )
         }
 

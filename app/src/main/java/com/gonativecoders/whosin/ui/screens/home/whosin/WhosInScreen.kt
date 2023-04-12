@@ -9,10 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,8 +25,9 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import com.gonativecoders.whosin.ui.composables.InitialsCircle
-import com.gonativecoders.whosin.ui.theme.WhosInTheme
-import java.text.SimpleDateFormat
+import com.gonativecoders.whosin.ui.theme.*
+import com.gonativecoders.whosin.util.calendar.dayOfMonth
+import com.gonativecoders.whosin.util.calendar.dayOfWeek
 import java.util.*
 
 @Composable
@@ -103,7 +104,7 @@ fun DayColumn(
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         DayHeader(userId = userId, day = day, onCardClicked = onDayClicked)
@@ -120,18 +121,35 @@ fun DayHeader(
     onCardClicked: (WorkDay) -> Unit
 ) {
     var showCheckMark: Boolean by remember { mutableStateOf(day.attendance.any { it.userId == userId }) }
-    val formatter = SimpleDateFormat("EEE\nd MMM", Locale.getDefault())
+
     Box {
-        Card(modifier = modifier, onClick = {
-            onCardClicked(day)
-            showCheckMark = !showCheckMark
-        }) {
+        Card(modifier = modifier,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            onClick = {
+                onCardClicked(day)
+                showCheckMark = !showCheckMark
+            }) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = formatter.format(day.date), textAlign = TextAlign.Center, fontSize = 14.sp)
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+                ) {
+                Text(
+                    text = day.date.dayOfWeek(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Grey600
+                )
+                Text(
+                    text = day.date.dayOfMonth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Grey800
+                )
             }
         }
         if (showCheckMark) {
@@ -153,7 +171,7 @@ fun DayHeader(
 @Composable
 private fun AvatarList(team: Team, attendees: List<Attendee>) {
     LazyColumn(
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val teamMembers = attendees.mapNotNull { attendee ->
             team.members.find { it.id == attendee.userId }
