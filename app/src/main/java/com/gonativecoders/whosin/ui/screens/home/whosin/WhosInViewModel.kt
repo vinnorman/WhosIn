@@ -14,6 +14,8 @@ import java.util.*
 
 class WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
 
+    var selectedWeek: Calendar = Calendar.getInstance()
+
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
 
@@ -26,12 +28,26 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
     private suspend fun loadData() {
         uiState = try {
             val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
-            val workDays = repository.getWeek(team.id, Date())
+            val workDays = repository.getWeek(team.id, selectedWeek.time)
             UiState.Success(user, team, workDays)
         } catch (exception: Exception) {
             UiState.Error(exception)
         }
 
+    }
+
+    fun goToNextWeek() {
+        selectedWeek.add(Calendar.WEEK_OF_YEAR, 1)
+        viewModelScope.launch {
+            loadData()
+        }
+    }
+
+    fun goToPreviousWeek() {
+        selectedWeek.add(Calendar.WEEK_OF_YEAR, -1)
+        viewModelScope.launch {
+            loadData()
+        }
     }
 
     fun updateAttendance(day: WorkDay) {
@@ -42,6 +58,13 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
             }
         }
 
+    }
+
+    fun goToToday() {
+        selectedWeek = Calendar.getInstance()
+        viewModelScope.launch {
+            loadData()
+        }
     }
 
     sealed class UiState {

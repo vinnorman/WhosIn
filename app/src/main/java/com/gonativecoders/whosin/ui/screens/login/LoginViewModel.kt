@@ -35,19 +35,10 @@ class LoginViewModel(private val repository: AuthRepository, private val dataSto
             try {
                 val user = repository.login(uiState.email, uiState.password)
                 onLoggedIn(user)
-//                onLoggedIn(navigate)
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }
         }
     }
-
-//    suspend fun onLoggedIn(navigate: (route: String) -> Unit) {
-//        if (dataStore.getBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING)) {
-//            navigate(MainDestinations.Home.route)
-//        } else {
-//            navigate(MainDestinations.Onboarding.route)
-//        }
-//    }
 
 }
