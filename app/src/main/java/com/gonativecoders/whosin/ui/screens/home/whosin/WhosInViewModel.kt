@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
+import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -51,13 +52,32 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
     }
 
     fun updateAttendance(day: WorkDay) {
-        viewModelScope.launch {
-            (uiState as? UiState.Success)?.let {
+        (uiState as? UiState.Success)?.let {
+            viewModelScope.launch {
                 repository.updateAttendance(user.id, it.team.id, day)
                 loadData()
             }
+            toggleAttendance(it, day)
         }
+    }
 
+    private fun toggleAttendance(
+        it: UiState.Success,
+        day: WorkDay
+    ) {
+        uiState = it.copy(workDays = it.workDays.map { workDay ->
+            if (day == workDay) {
+
+                workDay.copy(attendance = workDay.attendance.toMutableList().apply {
+                    val wasRemoved = removeIf { attendee -> attendee.userId == user.id }
+                    if (!wasRemoved) add(Attendee(user.id))
+                }).apply {
+                    id = workDay.id
+                }
+            } else {
+                workDay
+            }
+        })
     }
 
     fun goToToday() {
@@ -69,7 +89,7 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
 
     sealed class UiState {
 
-        object Loading: UiState()
+        object Loading : UiState()
 
         data class Success(
             val user: User,

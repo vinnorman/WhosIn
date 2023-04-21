@@ -33,7 +33,7 @@ import com.gonativecoders.whosin.ui.theme.*
 import com.gonativecoders.whosin.util.calendar.*
 import java.util.*
 
-val today = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2) }.time
+val today = Calendar.getInstance().time
 
 @Composable
 fun WhosInScreen(viewModel: WhosInViewModel) {
@@ -45,9 +45,9 @@ fun WhosInScreen(viewModel: WhosInViewModel) {
             userId = uiState.user.id,
             onDayClicked = { day -> viewModel.updateAttendance(day) },
             team = uiState.team,
-            onNextWeekClicked = { viewModel.goToNextWeek()},
-            onPreviousWeekClicked = { viewModel.goToPreviousWeek()},
-            onTodayClicked = { viewModel.goToToday()}
+            onNextWeekClicked = { viewModel.goToNextWeek() },
+            onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
+            onTodayClicked = { viewModel.goToToday() }
         )
     }
 }
@@ -65,49 +65,75 @@ fun WhosInContent(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val currentWeek = getCurrentWorkingWeek(today)
-            val firstDay = getCalendarFromDate(days.first().date)
-            val lastDay = getCalendarFromDate(days.last().date)
-            if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
-                Text(text = "Current Week", modifier = Modifier.weight(1.0f).padding(start = 12.dp), textAlign = TextAlign.Start)
-            } else {
-                IconButton(onClick = onTodayClicked) {
-                    Icon(
-                        imageVector = Icons.Rounded.Today,
-                        contentDescription = "Today",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-                var dateRange =  monthFormatter.format(firstDay.time)
-                if (firstDay.get(Calendar.MONTH) != lastDay.get(Calendar.MONTH)) {
-                    dateRange += " - ${monthFormatter.format(lastDay.time)}"
-                }
-                Text(text = dateRange, modifier = Modifier.weight(1.0f).padding(start = 12.dp), textAlign = TextAlign.Start)
-            }
-            IconButton(onClick = onPreviousWeekClicked) {
+        WeekHeader(
+            days = days,
+            onTodayClicked = onTodayClicked,
+            onPreviousWeekClicked = onPreviousWeekClicked,
+            onNextWeekClicked = onNextWeekClicked
+        )
+        WeekView(
+            days = days,
+            userId = userId,
+            team = team,
+            onDayClicked = onDayClicked
+        )
+    }
+}
+
+@Composable
+private fun WeekHeader(
+    days: List<WorkDay>,
+    onTodayClicked: () -> Unit,
+    onPreviousWeekClicked: () -> Unit,
+    onNextWeekClicked: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val currentWeek = getCurrentWorkingWeek(today)
+        val firstDay = getCalendarFromDate(days.first().date)
+        val lastDay = getCalendarFromDate(days.last().date)
+        if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
+            Text(
+                text = "Current Week", modifier = Modifier
+                    .weight(1.0f)
+                    .padding(start = 12.dp), textAlign = TextAlign.Start
+            )
+        } else {
+            IconButton(onClick = onTodayClicked) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
-                    contentDescription = "Previous Week",
+                    imageVector = Icons.Rounded.Today,
+                    contentDescription = "Today",
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-            IconButton(onClick = onNextWeekClicked) {
-                Icon(
-                    imageVector = Icons.Rounded.ArrowForward,
-                    contentDescription = "Previous Week",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+            var dateRange = monthFormatter.format(firstDay.time)
+            if (firstDay.get(Calendar.MONTH) != lastDay.get(Calendar.MONTH)) {
+                dateRange += " - ${monthFormatter.format(lastDay.time)}"
             }
-
-
+            Text(
+                text = dateRange, modifier = Modifier
+                    .weight(1.0f)
+                    .padding(start = 12.dp), textAlign = TextAlign.Start
+            )
         }
-        WeekView(days = days, userId = userId, team = team, onDayClicked = onDayClicked)
+        IconButton(onClick = onPreviousWeekClicked) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = "Previous Week",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        IconButton(onClick = onNextWeekClicked) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowForward,
+                contentDescription = "Previous Week",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
@@ -158,8 +184,11 @@ fun DayColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        DayHeader(userId = userId, day = day, onCardClicked = onDayClicked)
+        DayHeader(
+            day = day,
+            onCardClicked = onDayClicked,
+            isAttending = day.attendance.any { it.userId == userId }
+        )
         Spacer(modifier = Modifier.height(12.dp))
         AvatarList(team, day.attendance)
     }
@@ -167,19 +196,17 @@ fun DayColumn(
 
 @Composable
 fun DayHeader(
-    userId: String,
     day: WorkDay,
     modifier: Modifier = Modifier,
-    onCardClicked: (WorkDay) -> Unit
+    onCardClicked: (WorkDay) -> Unit,
+    isAttending: Boolean
 ) {
-    var showCheckMark: Boolean by remember { mutableStateOf(day.attendance.any { it.userId == userId }) }
 
     Box {
         Card(modifier = modifier,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             onClick = {
                 onCardClicked(day)
-                showCheckMark = !showCheckMark
             }) {
             Column(
                 modifier = Modifier
@@ -204,7 +231,7 @@ fun DayHeader(
                 )
             }
         }
-        if (showCheckMark) {
+        if (isAttending) {
             Image(
                 painter = painterResource(R.drawable.checked),
                 contentDescription = "Check",
