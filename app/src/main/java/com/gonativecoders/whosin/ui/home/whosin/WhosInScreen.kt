@@ -64,22 +64,22 @@ fun WhosInContent(
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        WeekHeader(
-            days = days,
-            onTodayClicked = onTodayClicked,
-            onPreviousWeekClicked = onPreviousWeekClicked,
-            onNextWeekClicked = onNextWeekClicked
-        )
-        WeekView(
-            days = days,
-            userId = userId,
-            team = team,
-            onDayClicked = onDayClicked
-        )
-    }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            WeekHeader(
+                days = days,
+                onTodayClicked = onTodayClicked,
+                onPreviousWeekClicked = onPreviousWeekClicked,
+                onNextWeekClicked = onNextWeekClicked
+            )
+            WeekView(
+                days = days,
+                userId = userId,
+                team = team,
+                onDayClicked = onDayClicked
+            )
+        }
 }
 
 @Composable

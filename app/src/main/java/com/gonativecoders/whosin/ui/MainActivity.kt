@@ -57,72 +57,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable(MainDestinations.Home.route) {
-                val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: return@composable
+                val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: kotlin.run {
+                    return@composable
+                }
                 HomeScreen(
                     user = user,
                     onLoggedOut = { appState.setLoggedOut() }
                 )
             }
         }
-
     }
 }
-
-
-//@Composable
-//fun AppScaffold() {
-//    val appState = rememberAppState()
-//    Scaffold(
-//        bottomBar = {
-//            if (appState.isBottomNavigationRoute) {
-//                BottomBar(
-//                    items = appState.homeDestinations,
-//                    currentRoute = appState.currentRoute!!,
-//                    navController = appState.navController
-//                )
-//            }
-//        },
-//        topBar = {
-//            val loginState = appState.loginState
-//            if (appState.isBottomNavigationRoute) {
-//                CenterAlignedTopAppBar(
-//                    title = {
-//                        if (loginState is AppState.LoginState.LoggedIn) {
-//                            Text(text = loginState.user.team?.name ?: "Who's In?")
-//                        }
-//                    },
-//                    actions = {
-//                        IconButton(onClick = {
-//                            appState.navigate(HomeDestinations.TeamInfo.route)
-//                        }) {
-//                            Icon(
-//                                imageVector = Icons.Rounded.Info,
-//                                contentDescription = "Account Button",
-//                                tint = MaterialTheme.colorScheme.onSurface
-//                            )
-//                        }
-//                    }
-//                )
-//            }
-//        },
-//        snackbarHost = {
-//            SnackbarHost(
-//                hostState = appState.snackbarHostState,
-//                modifier = Modifier.padding(8.dp),
-//                snackbar = { snackbarData ->
-//                    Snackbar(
-//                        snackbarData = snackbarData,
-//                        contentColor = MaterialTheme.colorScheme.onPrimary
-//                    )
-//                }
-//            )
-//        },
-//        content = { innerPadding ->
-//            AppNavigation(
-//                appState = appState,
-//                startDestination = MainDestinations.Splash.route,
-//                modifier = Modifier.padding(innerPadding)
-//            )
-//        }
-//    )
-//}

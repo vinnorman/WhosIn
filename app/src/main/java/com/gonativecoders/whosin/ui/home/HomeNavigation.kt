@@ -15,6 +15,7 @@ sealed class HomeDestinations(val route: String) {
     object CreateTeam : HomeDestinations("Create Team")
     object JoinTeam : HomeDestinations("Join Team")
 
+
     sealed class BottomNavDestination(route: String, @StringRes val title: Int, val icon: ImageVector) : HomeDestinations(route) {
         object WhosIn : BottomNavDestination("Who's In", R.string.screen_name_whos_in, Icons.Filled.Search)
         object TeamMembers : BottomNavDestination("Team Members", R.string.screen_name_team, Icons.Filled.Group)
@@ -28,11 +29,20 @@ val bottomDestinations = listOf(
     HomeDestinations.BottomNavDestination.TeamMembers,
     HomeDestinations.BottomNavDestination.Account
 )
-val teamTitleDestinations = listOf(
+
+val topBarDestinations = listOf(
     HomeDestinations.BottomNavDestination.WhosIn,
-    HomeDestinations.BottomNavDestination.TeamMembers,
+    HomeDestinations.BottomNavDestination.TeamMembers
 )
 
-fun NavBackStackEntry.isBottomNavDestination(): Boolean {
+fun NavBackStackEntry?.isBottomNavDestination(): Boolean {
+    this ?: return false
     return this.destination.route in bottomDestinations.map { it.route }
 }
+
+fun NavBackStackEntry?.shouldShowTopBar(): Boolean {
+    this ?: return false
+    return this.destination.route in topBarDestinations.map { it.route }
+}
+
+

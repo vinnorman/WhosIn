@@ -27,13 +27,7 @@ fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier =
 
     OutlinedTextField(
         singleLine = true,
-        modifier = Modifier.onKeyEvent {
-            // The below works, but it stills adds a space. Need to figure it out
-//            if (it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_TAB) {
-//                focusManager.moveFocus(FocusDirection.Next)
-//            }
-            false
-        },
+        modifier = modifier,
         value = value,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),

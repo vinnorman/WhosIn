@@ -2,15 +2,17 @@
 
 package com.gonativecoders.whosin.ui.home
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,63 +35,76 @@ fun HomeScreen(
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     Scaffold(
         topBar = {
-
-                CenterAlignedTopAppBar(
-                    title = {
-                        val titleText = if (currentBackStackEntry?.destination?.route in teamTitleDestinations.map { it.route }) {
-                            user.team?.name
-                        } else {
-                            currentBackStackEntry?.destination?.route
-                        }  ?: "Who's In?"
-
-                        Text(text = titleText)
-                    },
-                    actions = {
-
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Info,
-                                contentDescription = "Account Button",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                )
-
-        },
-        bottomBar = {
-            NavigationBar {
-                bottomDestinations.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.route) },
-                        label = { Text(stringResource(screen.title)) },
-                        selected = currentBackStackEntry?.destination?.route == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
+                if (currentBackStackEntry.shouldShowTopBar()) {
+                    TopAppBar(
+                        title = {
+                            Column {
+                                Text(
+                                    text = "Who's In",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Normal,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = user.team?.name ?: "No team",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
-
+                        },
+                        actions = {
+                            IconButton(onClick = {
+                                navController.navigate(HomeDestinations.TeamInfo.route)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = "Account Button",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     )
                 }
+
+
+        },
+        bottomBar = {
+            if (currentBackStackEntry.isBottomNavDestination()) {
+                NavigationBar {
+                    bottomDestinations.forEach { screen ->
+                        NavigationBarItem(
+                            icon = { Icon(screen.icon, contentDescription = screen.route) },
+                            label = { Text(stringResource(screen.title)) },
+                            selected = currentBackStackEntry?.destination?.route == screen.route,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    // Pop up to the start destination of the graph to
+                                    // avoid building up a large stack of destinations
+                                    // on the back stack as users select items
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    // Avoid multiple copies of the same destination when
+                                    // reselecting the same item
+                                    launchSingleTop = true
+                                    // Restore state when reselecting a previously selected item
+                                    restoreState = true
+                                }
+
+                            }
+                        )
+                    }
+                }
             }
+
         },
         content = { innerPadding ->
             HomeNavigation(
                 navController = navController,
                 innerPadding = innerPadding,
                 user = user,
-                onLoggedOut = onLoggedOut)
+                onLoggedOut = onLoggedOut
+            )
         }
     )
 }
@@ -104,7 +119,6 @@ private fun HomeNavigation(
     NavHost(
         navController = navController,
         modifier = Modifier.padding(innerPadding),
-
         startDestination = HomeDestinations.BottomNavDestination.WhosIn.route
     ) {
         composable(route = HomeDestinations.BottomNavDestination.WhosIn.route) {
@@ -126,6 +140,9 @@ private fun HomeNavigation(
         }
         composable(route = HomeDestinations.JoinTeam.route) {
             Text(text = "Join Team")
+        }
+        composable(route = HomeDestinations.TeamInfo.route) {
+            Text(text = "Team Info")
         }
     }
 }
