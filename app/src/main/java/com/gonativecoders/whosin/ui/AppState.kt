@@ -7,13 +7,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.ui.navigation.HomeDestinations
-import com.gonativecoders.whosin.ui.navigation.MainDestinations
-import com.gonativecoders.whosin.ui.util.SnackbarManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.get
 
@@ -22,14 +18,12 @@ import org.koin.androidx.compose.get
 fun rememberAppState(
     navController: NavHostController = rememberNavController(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    snackbarManager: SnackbarManager = SnackbarManager,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     dataStore: DataStoreRepository = get()
-) = remember(navController, snackbarHostState, snackbarManager, coroutineScope) {
+) = remember(navController, snackbarHostState, coroutineScope) {
     AppState(
         navController,
         snackbarHostState,
-        snackbarManager,
         coroutineScope,
         dataStore
     )
@@ -39,7 +33,6 @@ fun rememberAppState(
 class AppState(
     val navController: NavHostController,
     val snackbarHostState: SnackbarHostState,
-    val snackbarManager: SnackbarManager,
     val coroutineScope: CoroutineScope,
     val dataStore: DataStoreRepository
 ) {
@@ -52,14 +45,6 @@ class AppState(
 
     var loginState by mutableStateOf<LoginState>(LoginState.LoggedOut)
         private set
-
-    init {
-        coroutineScope.launch {
-            snackbarManager.snackbarMessages.filterNotNull().collect { message ->
-                snackbarHostState.showSnackbar(message)
-            }
-        }
-    }
 
     fun setLoggedIn(user: User) {
         coroutineScope.launch {

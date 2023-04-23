@@ -13,11 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gonativecoders.whosin.ui.composables.BottomBar
-import com.gonativecoders.whosin.ui.navigation.AppNavigation
-import com.gonativecoders.whosin.ui.navigation.HomeDestinations
-import com.gonativecoders.whosin.ui.navigation.MainDestinations
-import com.gonativecoders.whosin.ui.theme.WhosInTheme
+import com.gonativecoders.whosin.core.components.BottomBar
+import com.gonativecoders.whosin.core.theme.WhosInTheme
 
 class MainActivity : ComponentActivity() {
 

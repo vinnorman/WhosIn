@@ -4,8 +4,9 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.Week
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import com.gonativecoders.whosin.util.calendar.getCalendarFromDate
-import com.gonativecoders.whosin.util.calendar.getCurrentWorkingWeek
+import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
+import com.gonativecoders.whosin.core.util.calendar.weekString
+import com.gonativecoders.whosin.core.util.calendar.yearString
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -18,15 +19,12 @@ import java.util.*
 class WhosInService(private val database: FirebaseFirestore = Firebase.firestore) {
 
     suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
-        val calendar = getCurrentWorkingWeek(date)
-        val (year, week) = calendar.run { get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR) }
-
         val weekDocument = database.collection("teams")
             .document(teamId)
             .collection("years")
-            .document(year.toString())
+            .document(date.yearString)
             .collection("weeks")
-            .document(week.toString())
+            .document(date.weekString)
 
         val result = weekDocument
             .collection("days")
@@ -35,6 +33,7 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
         return if (!result.isEmpty) {
             result.toObjects()
         } else {
+            val calendar = getWorkingWeekCalendar(date)
             weekDocument.set(Week(calendar.time)).await()
 
             val workDays = listOf(
@@ -46,7 +45,6 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
             )
 
             workDays.forEach { day ->
-
                 val dayOfWeek = Calendar.getInstance().apply { time = day.date }.get(Calendar.DAY_OF_WEEK)
                 weekDocument.collection("days").document(dayOfWeek.toString()).set(day)
                 day.id = dayOfWeek.toString()
@@ -54,8 +52,6 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
 
             workDays
         }
-
-
     }
 
     suspend fun getTeam(teamId: String): Team {
@@ -63,22 +59,16 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
     }
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, attendee: Attendee, isAttending: Boolean) {
-        val calendar = getCalendarFromDate(day.date)
-        val (year, weekNumber) = calendar.run {
-            get(Calendar.YEAR) to get(Calendar.WEEK_OF_YEAR)
-        }
-
         val data = mapOf(
             "attendance" to if (isAttending) FieldValue.arrayUnion(attendee) else FieldValue.arrayRemove(attendee)
         )
 
-
         val dayDocument = database.collection("teams")
             .document(teamId)
             .collection("years")
-            .document(year.toString())
+            .document(day.date.yearString)
             .collection("weeks")
-            .document(weekNumber.toString())
+            .document(day.date.weekString)
             .collection("days")
             .document(day.id)
 

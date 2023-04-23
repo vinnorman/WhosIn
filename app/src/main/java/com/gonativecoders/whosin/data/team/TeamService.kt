@@ -2,7 +2,7 @@ package com.gonativecoders.whosin.data.team
 
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
-import com.gonativecoders.whosin.util.getRandomString
+import com.gonativecoders.whosin.core.util.getRandomString
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
