@@ -2,7 +2,6 @@ package com.gonativecoders.whosin.ui
 
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
@@ -33,12 +32,6 @@ class AppState(
     val dataStore: DataStoreRepository
 ) {
 
-    val homeDestinations = listOf(HomeDestinations.WhosIn, HomeDestinations.Team, HomeDestinations.Account)
-
-    val isBottomNavigationRoute: Boolean
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route in homeDestinations.map { it.route }
-    val currentRoute: String? get() = navController.currentDestination?.route
-
     var loginState by mutableStateOf<LoginState>(LoginState.LoggedOut)
         private set
 
@@ -46,8 +39,6 @@ class AppState(
         coroutineScope.launch {
             loginState = LoginState.LoggedIn(user)
             navigate(route = MainDestinations.Home.route, clear = true)
-//            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route
-//            navigate(route = route, clear = true)
         }
     }
 
