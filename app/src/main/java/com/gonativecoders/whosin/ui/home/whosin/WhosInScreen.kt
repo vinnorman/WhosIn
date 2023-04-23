@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -32,9 +33,6 @@ import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import com.gonativecoders.whosin.core.components.InitialsCircle
-import com.gonativecoders.whosin.ui.theme.*
-import com.gonativecoders.whosin.util.calendar.*
 import java.util.*
 
 val today = Calendar.getInstance().time

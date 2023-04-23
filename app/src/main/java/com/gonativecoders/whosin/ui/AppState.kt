@@ -1,6 +1,5 @@
 package com.gonativecoders.whosin.ui
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -17,13 +16,11 @@ import org.koin.androidx.compose.get
 @Composable
 fun rememberAppState(
     navController: NavHostController = rememberNavController(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     dataStore: DataStoreRepository = get()
-) = remember(navController, snackbarHostState, coroutineScope) {
+) = remember(navController, coroutineScope) {
     AppState(
         navController,
-        snackbarHostState,
         coroutineScope,
         dataStore
     )
@@ -32,7 +29,6 @@ fun rememberAppState(
 @Stable
 class AppState(
     val navController: NavHostController,
-    val snackbarHostState: SnackbarHostState,
     val coroutineScope: CoroutineScope,
     val dataStore: DataStoreRepository
 ) {
@@ -49,8 +45,9 @@ class AppState(
     fun setLoggedIn(user: User) {
         coroutineScope.launch {
             loginState = LoginState.LoggedIn(user)
-            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route
-            navigate(route = route, clear = true)
+            navigate(route = MainDestinations.Home.route, clear = true)
+//            val route = if (user.team == null) MainDestinations.Onboarding.route else MainDestinations.Home.route
+//            navigate(route = route, clear = true)
         }
     }
 
