@@ -5,7 +5,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-class MainApplication : Application() {
+class WhosInApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -13,7 +13,7 @@ class MainApplication : Application() {
         startKoin {
             androidLogger()
 
-            androidContext(this@MainApplication)
+            androidContext(this@WhosInApplication)
 
             modules(koinModules)
         }

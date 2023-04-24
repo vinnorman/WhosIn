@@ -17,12 +17,11 @@ import com.gonativecoders.whosin.core.components.EmailField
 import com.gonativecoders.whosin.core.components.PasswordField
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.ui.MainDestinations
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LoginScreen(
-    navigate: (route: String) -> Unit,
+    navigateToRegisterScreen: () -> Unit,
     onLoggedIn: (user: User) -> Unit,
     viewModel: LoginViewModel = getViewModel()
 ) {
@@ -32,7 +31,7 @@ fun LoginScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChanged,
         onLoginClicked = { viewModel.onLoginClicked(onLoggedIn) },
-        onCreateAccountClicked = { navigate(MainDestinations.Register.route) }
+        onCreateAccountClicked = navigateToRegisterScreen
     )
 
 }

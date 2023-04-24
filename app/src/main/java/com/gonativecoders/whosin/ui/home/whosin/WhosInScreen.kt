@@ -38,7 +38,10 @@ import java.util.*
 val today = Calendar.getInstance().time
 
 @Composable
-fun WhosInScreen(viewModel: WhosInViewModel) {
+fun WhosInScreen(
+    viewModel: WhosInViewModel,
+    navigate: (String) -> Unit
+) {
     when (val uiState = viewModel.uiState) {
         is WhosInViewModel.UiState.Error -> {}
         WhosInViewModel.UiState.Loading -> Loading()
@@ -49,7 +52,8 @@ fun WhosInScreen(viewModel: WhosInViewModel) {
             team = uiState.team,
             onNextWeekClicked = { viewModel.goToNextWeek() },
             onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
-            onTodayClicked = { viewModel.goToToday() }
+            onTodayClicked = { viewModel.goToToday() },
+            navigate = navigate
         )
     }
 }
@@ -62,24 +66,25 @@ fun WhosInContent(
     onDayClicked: (WorkDay) -> Unit,
     onNextWeekClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
-    onTodayClicked: () -> Unit
+    onTodayClicked: () -> Unit,
+    navigate: (String) -> Unit
 ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            WeekHeader(
-                days = days,
-                onTodayClicked = onTodayClicked,
-                onPreviousWeekClicked = onPreviousWeekClicked,
-                onNextWeekClicked = onNextWeekClicked
-            )
-            WeekView(
-                days = days,
-                userId = userId,
-                team = team,
-                onDayClicked = onDayClicked
-            )
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        WeekHeader(
+            days = days,
+            onTodayClicked = onTodayClicked,
+            onPreviousWeekClicked = onPreviousWeekClicked,
+            onNextWeekClicked = onNextWeekClicked
+        )
+        WeekView(
+            days = days,
+            userId = userId,
+            team = team,
+            onDayClicked = onDayClicked
+        )
+    }
 }
 
 @Composable
@@ -307,7 +312,8 @@ fun WhosInScreenPreview() {
                 team = team,
                 onNextWeekClicked = {},
                 onPreviousWeekClicked = {},
-                onTodayClicked = {}
+                onTodayClicked = {},
+                navigate = {}
             )
         }
 

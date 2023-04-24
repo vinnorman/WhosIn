@@ -6,7 +6,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavBackStackEntry
 import com.gonativecoders.whosin.R
 
 sealed class HomeDestinations(val route: String) {
@@ -14,6 +13,7 @@ sealed class HomeDestinations(val route: String) {
     object TeamInfo : HomeDestinations("Team Info")
     object CreateTeam : HomeDestinations("Create Team")
     object JoinTeam : HomeDestinations("Join Team")
+    object BottomBarContent : HomeDestinations("Bottom Bar Content")
 
 
     sealed class BottomNavDestination(route: String, @StringRes val title: Int, val icon: ImageVector) : HomeDestinations(route) {
@@ -29,20 +29,4 @@ val bottomDestinations = listOf(
     HomeDestinations.BottomNavDestination.TeamMembers,
     HomeDestinations.BottomNavDestination.Account
 )
-
-val topBarDestinations = listOf(
-    HomeDestinations.BottomNavDestination.WhosIn,
-    HomeDestinations.BottomNavDestination.TeamMembers
-)
-
-fun NavBackStackEntry?.isBottomNavDestination(): Boolean {
-    this ?: return false
-    return this.destination.route in bottomDestinations.map { it.route }
-}
-
-fun NavBackStackEntry?.shouldShowTopBar(): Boolean {
-    this ?: return false
-    return this.destination.route in topBarDestinations.map { it.route }
-}
-
 

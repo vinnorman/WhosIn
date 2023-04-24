@@ -9,7 +9,6 @@ import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.data.team.TeamRepository
-import com.gonativecoders.whosin.ui.MainDestinations
 import kotlinx.coroutines.launch
 
 class CreateTeamViewModel(
@@ -31,14 +30,14 @@ class CreateTeamViewModel(
         uiState = uiState.copy(teamName = newValue)
     }
 
-    fun onCreateTeamClicked(onUserUpdated: (user: User) -> Unit, navigate: (route: String) -> Unit) {
+    fun onCreateTeamClicked(onUserUpdated: (user: User) -> Unit, onCreateTeamSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 val team = repository.createTeam(uiState.teamName)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
                 dataStore.putBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING, true)
                 onUserUpdated(authRepository.getCurrentUser())
-                navigate(MainDestinations.Home.route)
+                onCreateTeamSuccess()
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }

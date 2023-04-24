@@ -1,11 +1,11 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gonativecoders.whosin.ui.home.teammembers
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,24 +21,29 @@ import com.gonativecoders.whosin.ui.home.whosin.Loading
 
 @Composable
 fun TeamScreen(
-    viewModel: TeamViewModel
+    viewModel: TeamViewModel,
+    navigate: (String) -> Unit
 ) {
     when (val uiState = viewModel.uiState) {
         is TeamViewModel.UiState.Error -> ErrorView(uiState.error.message)
         TeamViewModel.UiState.Loading -> Loading()
-        is TeamViewModel.UiState.Success -> TeamContent(user = uiState.user, team = uiState.team)
+        is TeamViewModel.UiState.Success -> TeamContent(
+            user = uiState.user,
+            team = uiState.team,
+            navigate = navigate
+        )
     }
 }
 
 @Composable
 fun TeamContent(
     user: User,
-    team: Team
+    team: Team,
+    navigate: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TeamView(user = user, team = team)
@@ -50,7 +55,7 @@ fun TeamView(
     user: User,
     team: Team
 ) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(24.dp)) {
         items(team.members) { member ->
             TeamMemberView(member = member, member.id == user.id)
         }
@@ -81,7 +86,14 @@ fun TeamScreenPreview() {
         WhosInTheme {
             TeamContent(
                 user = User(name = "Vin").apply { id = "123" },
-                team = Team("Some team", members = listOf(Member(id = "123", displayName = "Vin", initialsColor = "FF0000"), Member(id = "234", displayName = "Maria Hampson", initialsColor = "FF0000")))
+                team = Team(
+                    "Some team",
+                    members = listOf(
+                        Member(id = "123", displayName = "Vin", initialsColor = "FF0000"),
+                        Member(id = "234", displayName = "Maria Hampson", initialsColor = "FF0000")
+                    )
+                ),
+                navigate = {}
             )
         }
     }

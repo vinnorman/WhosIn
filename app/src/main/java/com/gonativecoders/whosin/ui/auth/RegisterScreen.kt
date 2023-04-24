@@ -13,17 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.core.components.EmailField
 import com.gonativecoders.whosin.core.components.NameField
 import com.gonativecoders.whosin.core.components.PasswordField
-import com.gonativecoders.whosin.ui.MainDestinations
+import com.gonativecoders.whosin.data.auth.model.User
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterScreen(
     onLoggedIn: (User) -> Unit,
-    navigate: (route: String) -> Unit
+    navigateToLoginScreen: () -> Unit
 ) {
     val viewModel = getViewModel<RegisterViewModel>()
 
@@ -48,7 +47,7 @@ fun RegisterScreen(
             Text(text = "Create Account")
         }
         Spacer(modifier = Modifier.size(24.dp))
-        TextButton(onClick = { navigate(MainDestinations.Login.route) }) {
+        TextButton(onClick = navigateToLoginScreen) {
             Text(text = "Already have an account? Login")
         }
         if (uiState.error != null) {

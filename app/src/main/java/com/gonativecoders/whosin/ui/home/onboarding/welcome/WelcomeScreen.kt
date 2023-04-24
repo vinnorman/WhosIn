@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gonativecoders.whosin.ui.OnboardingDestinations
+import com.gonativecoders.whosin.ui.home.HomeDestinations
 
 @Composable
 fun WelcomeScreen(navigate: (route: String) -> Unit) {
@@ -24,11 +24,11 @@ fun WelcomeScreen(navigate: (route: String) -> Unit) {
     ) {
 
 
-        Button(onClick = { navigate(OnboardingDestinations.CreateTeam.route) }) {
+        Button(onClick = { navigate(HomeDestinations.CreateTeam.route) }) {
             Text(text = "Create new team")
         }
         Spacer(modifier = Modifier.size(24.dp))
-        TextButton(onClick = { navigate(OnboardingDestinations.JoinTeam.route) }) {
+        TextButton(onClick = { navigate(HomeDestinations.JoinTeam.route) }) {
             Text(text = "Join a team")
         }
     }

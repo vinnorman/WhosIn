@@ -8,63 +8,37 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.ui.auth.LoginScreen
-import com.gonativecoders.whosin.ui.auth.RegisterScreen
-import com.gonativecoders.whosin.ui.home.HomeScreen
-import com.gonativecoders.whosin.ui.splash.SplashScreen
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContent {
-            val appState = rememberAppState()
-            WhosInTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainNavigation(appState)
-                }
-            }
-        }
-
+        setContent { MainScreen() }
     }
 
     @Composable
-    fun MainNavigation(appState: AppState) {
-        NavHost(navController = appState.navController, startDestination = MainDestinations.Splash.route) {
-            composable(MainDestinations.Splash.route) {
-                SplashScreen(
-                    navigate = { route -> appState.navigate(route = route, clear = true) },
-                    onLoggedIn = { user -> appState.setLoggedIn(user) }
+    fun MainScreen(
+        viewModel: MainViewModel = getViewModel(),
+    ) {
+        val uiState = viewModel.uiState
+
+        WhosInTheme {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+
+                MainNavigator(
+                    onLoggedIn = viewModel::setLoggedIn,
+                    onLoggedOut = viewModel::setLoggedOut,
+                    uiState = uiState,
+                    onUserUpdated = viewModel::onUserUpdated
                 )
-            }
-            composable(MainDestinations.Login.route) {
-                LoginScreen(
-                    navigate = { route -> appState.navigate(route) },
-                    onLoggedIn = { user -> appState.setLoggedIn(user) }
-                )
-            }
-            composable(MainDestinations.Register.route) {
-                RegisterScreen(
-                    navigate = { route -> appState.navigate(route = route, popUpDestination = route) },
-                    onLoggedIn = { user -> appState.setLoggedIn(user) }
-                )
-            }
-            composable(MainDestinations.Home.route) {
-                val user = (appState.loginState as? AppState.LoginState.LoggedIn)?.user ?: kotlin.run {
-                    return@composable
-                }
-                HomeScreen(
-                    user = user,
-                    onLoggedOut = { appState.setLoggedOut() }
-                )
+
             }
         }
     }
+
 }
