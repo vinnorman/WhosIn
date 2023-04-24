@@ -16,7 +16,6 @@ sealed class MainDestinations(val route: String) {
     object Login : MainDestinations("login")
     object Register : MainDestinations("register")
     object Home : MainDestinations("home")
-
 }
 
 @Composable

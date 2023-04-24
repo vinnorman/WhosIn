@@ -9,13 +9,15 @@ class WhosInApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        setupDependencyInjection()
+    }
 
+    private fun setupDependencyInjection() {
         startKoin {
             androidLogger()
-
             androidContext(this@WhosInApplication)
-
             modules(koinModules)
         }
     }
+
 }
