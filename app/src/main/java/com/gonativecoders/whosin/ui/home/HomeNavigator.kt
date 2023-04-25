@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -16,6 +15,9 @@ import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.home.onboarding.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamScreen
+import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoScreen
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 sealed class HomeDestinations(val route: String) {
 
@@ -23,7 +25,6 @@ sealed class HomeDestinations(val route: String) {
     object CreateTeam : HomeDestinations("Create Team")
     object JoinTeam : HomeDestinations("Join Team")
     object HomeScaffold : HomeDestinations("Bottom Bar Content")
-
 
     sealed class BottomNavDestination(route: String, @StringRes val title: Int, val icon: ImageVector) : HomeDestinations(route) {
         object WhosIn : BottomNavDestination("Who's In", R.string.screen_name_whos_in, Icons.Filled.Search)
@@ -60,17 +61,21 @@ fun HomeNavigator(
         composable(route = HomeDestinations.CreateTeam.route) {
             CreateTeamScreen(
                 onUserUpdated = onUserUpdated,
-                onCreateTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) }
+                onCreateTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) },
+                onBackArrowPressed = { navController.popBackStack() }
             )
         }
         composable(route = HomeDestinations.JoinTeam.route) {
             JoinTeamScreen(
                 onUserUpdated = onUserUpdated,
-                onJoinTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) }
+                onJoinTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) },
+                onBackArrowPressed = { navController.popBackStack() }
             )
         }
         composable(route = HomeDestinations.TeamInfo.route) {
-            Text(text = "Team Info")
+            TeamInfoScreen(viewModel = getViewModel(parameters = { parametersOf(user) }),
+                onBackArrowPressed = { navController.popBackStack() }
+            )
         }
     }
 }

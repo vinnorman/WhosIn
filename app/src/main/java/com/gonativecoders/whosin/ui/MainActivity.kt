@@ -19,9 +19,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun MainScreen(
-        viewModel: MainViewModel = getViewModel(),
-    ) {
+    fun MainScreen(viewModel: MainViewModel = getViewModel()) {
         val uiState = viewModel.uiState
 
         WhosInTheme {

@@ -13,11 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.InitialsCircle
+import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
-import com.gonativecoders.whosin.ui.home.whosin.Loading
 
 @Composable
 fun TeamScreen(

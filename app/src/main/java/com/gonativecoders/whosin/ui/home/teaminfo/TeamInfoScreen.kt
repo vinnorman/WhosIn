@@ -1,47 +1,45 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gonativecoders.whosin.ui.home.teaminfo
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.core.components.Loading
+import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
+import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel.UiState
-import com.gonativecoders.whosin.ui.home.whosin.Loading
-import com.gonativecoders.whosin.core.theme.WhosInTheme
 
 @Composable
 fun TeamInfoScreen(
-    viewModel: TeamInfoViewModel
+    viewModel: TeamInfoViewModel,
+    onBackArrowPressed: () -> Unit,
 ) {
     when (val uiState = viewModel.uiState) {
         is UiState.Error -> {}
         UiState.Loading -> Loading()
-        is UiState.Success -> TeamInfoContent(uiState.team)
+        is UiState.Success -> TeamInfoContent(
+            uiState = uiState,
+            onBackArrowPressed = onBackArrowPressed
+        )
     }
 }
 
 @Composable
-fun TeamInfoContent(team: Team) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = team.name!!)
+fun TeamInfoContent(uiState: UiState.Success, onBackArrowPressed: () -> Unit) {
+    ScreenWithBackArrow(onBackArrowPressed = onBackArrowPressed) {
+        Text(text = uiState.team.name!!)
         Spacer(modifier = Modifier.padding(20.dp))
         Row {
             Text(text = "Join Code")
             Spacer(modifier = Modifier.padding(4.dp))
-            Text(text = team.code!!)
+            Text(text = uiState.team.code!!)
         }
-
     }
 }
 
@@ -53,11 +51,9 @@ fun TeamInfoScreenPreview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val team = Team(name = "Some team", code = "123ABC", members = listOf(Member("1")))
-
+        val uiState = UiState.Success(Team(name = "Some team", code = "123ABC", members = listOf(Member("1"))))
         WhosInTheme {
-            TeamInfoContent(team)
+            TeamInfoContent(uiState = uiState, onBackArrowPressed = { })
         }
-
     }
 }

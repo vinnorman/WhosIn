@@ -1,17 +1,19 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
 package com.gonativecoders.whosin.ui.home.whosin
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.InitialsCircle
+import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -68,7 +71,13 @@ fun WhosInContent(
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit,
     navigate: (String) -> Unit
+
+
 ) {
+
+    val pagerState = rememberPagerState()
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -78,12 +87,15 @@ fun WhosInContent(
             onPreviousWeekClicked = onPreviousWeekClicked,
             onNextWeekClicked = onNextWeekClicked
         )
-        WeekView(
-            days = days,
-            userId = userId,
-            team = team,
-            onDayClicked = onDayClicked
-        )
+//        HorizontalPager(pageCount = Int.MAX_VALUE) { page ->
+            WeekView(
+                days = days,
+                userId = userId,
+                team = team,
+                onDayClicked = onDayClicked
+            )
+//        }
+
     }
 }
 
@@ -144,10 +156,6 @@ private fun WeekHeader(
     }
 }
 
-@Composable
-fun Loading() {
-    CircularProgressIndicator()
-}
 
 @Composable
 fun WeekView(

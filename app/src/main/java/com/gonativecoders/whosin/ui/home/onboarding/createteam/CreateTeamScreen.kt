@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
 import com.gonativecoders.whosin.core.components.TeamNameField
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
@@ -21,15 +22,17 @@ import org.koin.androidx.compose.getViewModel
 fun CreateTeamScreen(
     viewModel: CreateTeamViewModel = getViewModel(),
     onUserUpdated: (user: User) -> Unit,
-    onCreateTeamSuccess: () -> Unit
-    ) {
-
-    CreateTeamContent(
-        uiState = viewModel.uiState,
-        onTeamNameChanged = viewModel::onTeamNameChanged,
-        onCreateTeamClicked = {
-            viewModel.onCreateTeamClicked(onUserUpdated, onCreateTeamSuccess)
-        })
+    onCreateTeamSuccess: () -> Unit,
+    onBackArrowPressed: () -> Unit
+) {
+    ScreenWithBackArrow(onBackArrowPressed = onBackArrowPressed) {
+        CreateTeamContent(
+            uiState = viewModel.uiState,
+            onTeamNameChanged = viewModel::onTeamNameChanged,
+            onCreateTeamClicked = {
+                viewModel.onCreateTeamClicked(onUserUpdated, onCreateTeamSuccess)
+            })
+    }
 
 }
 
@@ -42,9 +45,9 @@ fun CreateTeamContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 96.dp, start = 24.dp, end = 24.dp),
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         TeamNameField(value = uiState.teamName, onNewValue = onTeamNameChanged)
         Spacer(modifier = Modifier.size(48.dp))

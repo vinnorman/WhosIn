@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
 import com.gonativecoders.whosin.core.components.TextFieldWithIcon
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
@@ -23,9 +24,10 @@ import org.koin.androidx.compose.getViewModel
 fun JoinTeamScreen(
     onJoinTeamSuccess: () -> Unit,
     onUserUpdated: (user: User) -> Unit,
-    viewModel: JoinTeamViewModel = getViewModel()
+    viewModel: JoinTeamViewModel = getViewModel(),
+    onBackArrowPressed: () -> Unit
 ) {
-    Column {
+    ScreenWithBackArrow(onBackArrowPressed = onBackArrowPressed) {
         JoinTeamContent(uiState = viewModel.uiState,
             onTeamNameChanged = viewModel::onTeamNameChanged,
             onJoinTeamClicked = {
@@ -44,9 +46,9 @@ fun JoinTeamContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 96.dp, start = 24.dp, end = 24.dp),
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         TeamCodeField(value = uiState.teamCode, onNewValue = onTeamNameChanged)
         Spacer(modifier = Modifier.size(48.dp))

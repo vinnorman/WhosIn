@@ -52,6 +52,7 @@ fun MainNavigator(
         }
         composable(MainDestinations.Home.route) {
             val user = (uiState as? MainViewModel.UiState.LoggedIn)?.user ?: kotlin.run {
+                onLoggedOut()
                 return@composable
             }
             HomeScreen(

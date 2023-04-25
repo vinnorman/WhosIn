@@ -13,7 +13,7 @@ import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.launch
 import java.util.*
 
-class WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
+class  WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
 
     var selectedWeek: Calendar = Calendar.getInstance()
 
