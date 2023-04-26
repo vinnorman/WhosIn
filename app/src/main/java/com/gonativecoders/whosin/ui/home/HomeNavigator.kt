@@ -47,6 +47,7 @@ fun HomeNavigator(
     onUserUpdated: (User) -> Unit,
     onLoggedOut: () -> Unit
 ) {
+
     NavHost(
         navController = navController,
         startDestination = HomeDestinations.HomeScaffold.route

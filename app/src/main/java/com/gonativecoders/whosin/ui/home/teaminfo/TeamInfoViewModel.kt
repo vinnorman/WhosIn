@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.TeamRepository
+import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import kotlinx.coroutines.launch
 
@@ -18,7 +19,8 @@ class TeamInfoViewModel(private val user: User, private val repository: TeamRepo
     init {
         viewModelScope.launch {
             val team = repository.getTeam(user.team?.id ?: throw Exception("No team ID found for user"))
-            uiState = UiState.Success(team)
+            val admin = team.members.find { it.id == team.createdBy }
+            uiState = UiState.Success(team, user, admin)
         }
     }
 
@@ -28,7 +30,9 @@ class TeamInfoViewModel(private val user: User, private val repository: TeamRepo
         object Loading: UiState()
 
         data class Success(
-            val team: Team
+            val team: Team,
+            val user: User,
+            val admin: Member?
         ) : UiState()
 
         data class Error(val error: Throwable) : UiState()
