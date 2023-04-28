@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gonativecoders.whosin.core.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,14 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.theme.Blue200
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.TeamCodeField
 
 @Composable
@@ -29,6 +33,7 @@ fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier =
         singleLine = true,
         modifier = modifier,
         value = value,
+        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
         onValueChange = { onNewValue(it) },
@@ -43,6 +48,7 @@ fun TeamNameField(value: String, onNewValue: (String) -> Unit, modifier: Modifie
     OutlinedTextField(
         singleLine = true,
         modifier = modifier,
+        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
         value = value,
         onValueChange = { onNewValue(it) },
         keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
@@ -66,6 +72,7 @@ fun TextFieldWithIcon(
     OutlinedTextField(
         singleLine = true,
         modifier = modifier,
+        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
         value = value,
         onValueChange = { onNewValue(it) },
         keyboardOptions = keyboardOptions,
@@ -81,6 +88,8 @@ fun NameField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = 
         singleLine = true,
         modifier = modifier,
         value = value,
+        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
+
         onValueChange = { onNewValue(it) },
         keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
         placeholder = { Text("Full Name") },
@@ -99,6 +108,7 @@ fun PasswordField(
     OutlinedTextField(
         modifier = modifier,
         value = value,
+        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
         onValueChange = { onNewValue(it) },
         placeholder = { Text(text = stringResource(R.string.password_field_placeholder)) },
         leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock") },
@@ -122,8 +132,9 @@ fun DefaultPreview() {
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .background(Blue200)
             .padding(24.dp),
-        color = MaterialTheme.colorScheme.background
+        color = Blue200
     ) {
         Column {
             EmailField(value = "", onNewValue = { })

@@ -42,3 +42,6 @@ val Grey868 = Color(0xFF282A2D)
 val Grey900 = Color(0xFF202124)
 val Grey928 = Color(0xFF17181B)
 val Grey958 = Color(0xFF0E1013)
+
+val Blue200 = Color(0xFF0091FF)
+val Blue100 = Color(0xFF26A1FF)
