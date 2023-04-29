@@ -26,6 +26,11 @@ private val appFontFamily = FontFamily(
             resId = R.font.poppins_bold,
             weight = FontWeight.Bold,
             style = FontStyle.Normal
+        ),
+        Font(
+            resId = R.font.poppins_semi_bold,
+            weight = FontWeight.SemiBold,
+            style = FontStyle.Normal
         )
     )
 )
@@ -36,6 +41,13 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = appFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
         letterSpacing = 0.5.sp
     )
     /* Other default text styles to override
