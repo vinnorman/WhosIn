@@ -4,7 +4,16 @@ package com.gonativecoders.whosin.ui.home.whosin
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -12,7 +21,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Today
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,14 +45,18 @@ import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.core.util.calendar.*
+import com.gonativecoders.whosin.core.util.calendar.dayOfMonth
+import com.gonativecoders.whosin.core.util.calendar.dayOfWeek
+import com.gonativecoders.whosin.core.util.calendar.getCalendarFromDate
+import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
+import com.gonativecoders.whosin.core.util.calendar.monthFormatter
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.auth.model.UserTeam
 import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import java.util.*
+import java.util.Calendar
 
 val today = Calendar.getInstance().time
 
@@ -71,12 +91,9 @@ fun WhosInContent(
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit,
     navigate: (String) -> Unit
-
-
 ) {
 
     val pagerState = rememberPagerState()
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
