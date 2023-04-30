@@ -1,9 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.gonativecoders.whosin.ui.home.whosin
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,33 +15,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material.icons.rounded.Today
+import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gonativecoders.whosin.R
+import androidx.compose.ui.window.DialogProperties
 import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
+import com.gonativecoders.whosin.core.components.OutlinedIconButton
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -49,7 +57,7 @@ import com.gonativecoders.whosin.core.util.calendar.dayOfMonth
 import com.gonativecoders.whosin.core.util.calendar.dayOfWeek
 import com.gonativecoders.whosin.core.util.calendar.getCalendarFromDate
 import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
-import com.gonativecoders.whosin.core.util.calendar.monthFormatter
+import com.gonativecoders.whosin.core.util.calendar.shortDate
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.auth.model.UserTeam
 import com.gonativecoders.whosin.data.team.model.Member
@@ -57,8 +65,9 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import java.util.Calendar
+import java.util.Date
 
-val today = Calendar.getInstance().time
+val today: Date = Calendar.getInstance().time
 
 @Composable
 fun WhosInScreen(
@@ -93,84 +102,144 @@ fun WhosInContent(
     navigate: (String) -> Unit
 ) {
 
-    val pagerState = rememberPagerState()
+    var showCalendar by remember { mutableStateOf(false) }
+
+    if (showCalendar) {
+        AlertDialog(
+            modifier = Modifier.fillMaxWidth(),
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { showCalendar = false },
+
+
+        ) {
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large
+            ) {
+                val datePickerState = rememberDatePickerState(initialSelectedDateMillis = 1578096000000)
+
+                androidx.compose.material3.DatePicker(
+                    state = datePickerState,
+                    colors = DatePickerDefaults.colors(
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    )
+                )
+            }
+
+
+        }
+
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(top = 20.dp)
     ) {
-        WeekHeader(
+        WeekNavigation(
             days = days,
             onTodayClicked = onTodayClicked,
             onPreviousWeekClicked = onPreviousWeekClicked,
-            onNextWeekClicked = onNextWeekClicked
+            onNextWeekClicked = onNextWeekClicked,
+            onCalendarClicked = { showCalendar = true }
         )
-//        HorizontalPager(pageCount = Int.MAX_VALUE) { page ->
-            WeekView(
-                days = days,
-                userId = userId,
-                team = team,
-                onDayClicked = onDayClicked
-            )
-//        }
+        WeekView(
+            days = days,
+            userId = userId,
+            team = team,
+            onDayClicked = onDayClicked
+        )
 
     }
 }
 
 @Composable
-private fun WeekHeader(
+private fun WeekNavigation(
     days: List<WorkDay>,
     onTodayClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
-    onNextWeekClicked: () -> Unit
+    onNextWeekClicked: () -> Unit,
+    onCalendarClicked: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val currentWeek = getWorkingWeekCalendar(today)
-        val firstDay = getCalendarFromDate(days.first().date)
-        val lastDay = getCalendarFromDate(days.last().date)
-        if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
+    val currentWeek = getWorkingWeekCalendar(today)
+    val firstDay = getCalendarFromDate(days.first().date)
+    val lastDay = getCalendarFromDate(days.last().date)
+
+    val dateText = if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
+        "Current Week"
+    } else if (firstDay.get(Calendar.MONTH) == lastDay.get(Calendar.MONTH)) {
+        "${dayOfMonth.format(firstDay.time)} - ${shortDate.format(lastDay.time)}"
+    } else {
+        "${shortDate.format(firstDay.time)} - ${shortDate.format(lastDay.time)}"
+    }
+
+    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            OutlinedIconButton(
+                onClick = onPreviousWeekClicked,
+                icon = Icons.Rounded.ArrowBack,
+                contentDescription = "Previous Week"
+            )
             Text(
-                text = "Current Week", modifier = Modifier
-                    .weight(1.0f)
-                    .padding(start = 12.dp), textAlign = TextAlign.Start
+                text = dateText,
+                modifier = Modifier
+                    .padding(12.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
             )
-        } else {
-            IconButton(onClick = onTodayClicked) {
-                Icon(
-                    imageVector = Icons.Rounded.Today,
-                    contentDescription = "Today",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            var dateRange = monthFormatter.format(firstDay.time)
-            if (firstDay.get(Calendar.MONTH) != lastDay.get(Calendar.MONTH)) {
-                dateRange += " - ${monthFormatter.format(lastDay.time)}"
-            }
-            Text(
-                text = dateRange, modifier = Modifier
-                    .weight(1.0f)
-                    .padding(start = 12.dp), textAlign = TextAlign.Start
+            OutlinedIconButton(
+                onClick = onNextWeekClicked,
+                icon = Icons.Rounded.ArrowForward,
+                contentDescription = "Next Week"
             )
-        }
-        IconButton(onClick = onPreviousWeekClicked) {
-            Icon(
-                imageVector = Icons.Rounded.ArrowBack,
-                contentDescription = "Previous Week",
-                tint = MaterialTheme.colorScheme.onSurface
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             )
-        }
-        IconButton(onClick = onNextWeekClicked) {
-            Icon(
-                imageVector = Icons.Rounded.ArrowForward,
-                contentDescription = "Previous Week",
-                tint = MaterialTheme.colorScheme.onSurface
+
+            OutlinedIconButton(
+                onClick = onCalendarClicked,
+                icon = Icons.Rounded.CalendarMonth,
+                contentDescription = "Next Week"
             )
+
+
+//        if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
+//            Text(
+//                text = "Current Week", modifier = Modifier
+//                    .weight(1.0f)
+//                    .padding(start = 12.dp), textAlign = TextAlign.Start
+//            )
+//        } else {
+//            IconButton(onClick = onTodayClicked) {
+//                Icon(
+//                    imageVector = Icons.Rounded.Today,
+//                    contentDescription = "Today",
+//                    tint = MaterialTheme.colorScheme.onSurface
+//                )
+//            }
+//            var dateRange = monthFormatter.format(firstDay.time)
+//            if (firstDay.get(Calendar.MONTH) != lastDay.get(Calendar.MONTH)) {
+//                dateRange += " - ${monthFormatter.format(lastDay.time)}"
+//            }
+//            Text(
+//                text = dateRange, modifier = Modifier
+//                    .weight(1.0f)
+//                    .padding(start = 12.dp), textAlign = TextAlign.Start
+//            )
+//        }
+
         }
     }
+
 }
 
 
@@ -265,13 +334,15 @@ fun DayHeader(
         }
         if (isAttending) {
             Image(
-                painter = painterResource(R.drawable.checked),
+                imageVector = Icons.Filled.Check,
+                colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = "Check",
                 modifier = Modifier
-                    .padding(end = 2.dp)
-                    .size(12.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+                    .size(16.dp)
+                    .padding(2.dp)
                     .align(Alignment.BottomEnd)
-                    .clip(CircleShape)
+
             )
         }
 
@@ -326,8 +397,8 @@ fun WhosInScreenPreview() {
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        val user = User(name = "Vin", initialsColor = "FF0000", team = UserTeam("", "1", "My team")).apply { id = "1" }
-        val team = Team("Some team", members = listOf(Member("1")))
+        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team")).apply { id = "1" }
+        val team = Team("Some team", members = listOf(Member("1", displayName = "Vin Norman", initialsColor = "18434129578667540480")))
 
         WhosInTheme {
             WhosInContent(

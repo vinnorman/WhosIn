@@ -107,12 +107,12 @@ private fun Portrait(
                     .align(Alignment.Center)
             )
         }
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(1.5f)) {
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.login_background_blue),
+                modifier = Modifier.fillMaxSize(),
+                imageVector = ImageVector.vectorResource(id = R.drawable.login_background),
                 contentDescription = null,
-                modifier = Modifier.scale(2f),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
             LoginScreenFields(
                 modifier = Modifier
@@ -134,21 +134,22 @@ private fun Landscape(
     onCreateAccountClicked: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.fillMaxSize().weight(1f)) {
             LoginScreenLogo(
                 Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
             )
         }
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.fillMaxSize().weight(1.25f)) {
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.login_background_blue),
+                imageVector = ImageVector.vectorResource(id = R.drawable.login_background),
                 contentDescription = null,
                 modifier = Modifier
-                    .scale(1.85f)
+                    .fillMaxSize()
+                    .scale(1.25f)
                     .rotate(-90f),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
             LoginScreenFields(
                 modifier = Modifier

@@ -68,7 +68,7 @@ fun HomeScaffold(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                HomeTopBar(user = User("Vin", "", UserTeam(name = "Sky Bet")), navigate = {})
+                HomeTopBar(user = User("Vin", "", UserTeam(name = "Sky Bet")), navigate = navigate)
             },
             bottomBar = {
                 NavigationBar {
@@ -83,7 +83,6 @@ fun HomeScaffold(
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-
                             }
                         )
                     }
@@ -154,10 +153,7 @@ private fun HomeTopBar(
                 color = Color.White
             )
         },
-
-
         actions = {
-
             IconButton(onClick = {
                 navigate(HomeDestinations.TeamInfo.route)
             }) {
