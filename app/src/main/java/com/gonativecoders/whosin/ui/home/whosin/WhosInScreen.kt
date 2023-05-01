@@ -21,21 +21,23 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +48,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
@@ -85,11 +86,13 @@ fun WhosInScreen(
             onNextWeekClicked = { viewModel.goToNextWeek() },
             onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
             onTodayClicked = { viewModel.goToToday() },
-            navigate = navigate
+            navigate = navigate,
+            onDateSelected = { date -> viewModel.goToDate(date)}
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhosInContent(
     days: List<WorkDay>,
@@ -99,36 +102,41 @@ fun WhosInContent(
     onNextWeekClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit,
-    navigate: (String) -> Unit
+    navigate: (String) -> Unit,
+    onDateSelected: (Date) -> Unit,
 ) {
 
-    var showCalendar by remember { mutableStateOf(false) }
+    var showCalendar by rememberSaveable { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
 
     if (showCalendar) {
-        AlertDialog(
-            modifier = Modifier.fillMaxWidth(),
-            properties = DialogProperties(usePlatformDefaultWidth = false),
+
+        DatePickerDialog(
             onDismissRequest = { showCalendar = false },
-
-
+            confirmButton = {
+                TextButton(onClick = {
+                    showCalendar = false
+                    onDateSelected(Date(datePickerState.selectedDateMillis ?: return@TextButton))
+                }) {
+                    Text(text = "Ok")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCalendar = false }) {
+                    Text(text = "Cancel")
+                }
+            }
         ) {
 
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large
-            ) {
-                val datePickerState = rememberDatePickerState(initialSelectedDateMillis = 1578096000000)
 
-                androidx.compose.material3.DatePicker(
-                    state = datePickerState,
-                    colors = DatePickerDefaults.colors(
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    )
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    titleContentColor = MaterialTheme.colorScheme.primary,
                 )
-            }
-
-
+            )
         }
+
 
     }
 
@@ -153,6 +161,7 @@ fun WhosInContent(
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 private fun WeekNavigation(
     days: List<WorkDay>,
@@ -409,7 +418,8 @@ fun WhosInScreenPreview() {
                 onNextWeekClicked = {},
                 onPreviousWeekClicked = {},
                 onTodayClicked = {},
-                navigate = {}
+                navigate = {},
+                onDateSelected = {}
             )
         }
 

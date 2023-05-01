@@ -45,6 +45,7 @@ import com.gonativecoders.whosin.data.auth.model.UserTeam
 import com.gonativecoders.whosin.ui.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.home.teammembers.TeamScreen
 import com.gonativecoders.whosin.ui.home.whosin.WhosInScreen
+import com.gonativecoders.whosin.ui.home.whosin.WhosInScreenPreview
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -200,7 +201,7 @@ private fun TopBarPreview() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        Text(text = "Hi Mate")
+                        WhosInScreenPreview()
                     }
 
                 }

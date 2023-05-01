@@ -11,7 +11,8 @@ import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 class  WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
 
@@ -82,6 +83,13 @@ class  WhosInViewModel(private val user: User, private val repository: WhosInRep
 
     fun goToToday() {
         selectedWeek = Calendar.getInstance()
+        viewModelScope.launch {
+            loadData()
+        }
+    }
+
+    fun goToDate(date: Date) {
+        selectedWeek = Calendar.getInstance().apply { time = date }
         viewModelScope.launch {
             loadData()
         }
