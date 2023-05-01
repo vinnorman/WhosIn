@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.gonativecoders.whosin.ui.home.whosin
 
@@ -51,6 +51,8 @@ import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
+import com.gonativecoders.whosin.core.theme.Blue50
+import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -110,7 +112,6 @@ fun WhosInContent(
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
 
     if (showCalendar) {
-
         DatePickerDialog(
             onDismissRequest = { showCalendar = false },
             confirmButton = {
@@ -127,10 +128,9 @@ fun WhosInContent(
                 }
             }
         ) {
-
-
             DatePicker(
                 state = datePickerState,
+                showModeToggle = false,
                 colors = DatePickerDefaults.colors(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 )
@@ -142,7 +142,7 @@ fun WhosInContent(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 20.dp)
+        modifier = Modifier.padding(top = 12.dp)
     ) {
         WeekNavigation(
             days = days,
@@ -220,32 +220,6 @@ private fun WeekNavigation(
                 contentDescription = "Next Week"
             )
 
-
-//        if (currentWeek.get(Calendar.WEEK_OF_YEAR) == firstDay.get(Calendar.WEEK_OF_YEAR)) {
-//            Text(
-//                text = "Current Week", modifier = Modifier
-//                    .weight(1.0f)
-//                    .padding(start = 12.dp), textAlign = TextAlign.Start
-//            )
-//        } else {
-//            IconButton(onClick = onTodayClicked) {
-//                Icon(
-//                    imageVector = Icons.Rounded.Today,
-//                    contentDescription = "Today",
-//                    tint = MaterialTheme.colorScheme.onSurface
-//                )
-//            }
-//            var dateRange = monthFormatter.format(firstDay.time)
-//            if (firstDay.get(Calendar.MONTH) != lastDay.get(Calendar.MONTH)) {
-//                dateRange += " - ${monthFormatter.format(lastDay.time)}"
-//            }
-//            Text(
-//                text = dateRange, modifier = Modifier
-//                    .weight(1.0f)
-//                    .padding(start = 12.dp), textAlign = TextAlign.Start
-//            )
-//        }
-
         }
     }
 
@@ -262,7 +236,7 @@ fun WeekView(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 24.dp, start = 12.dp, end = 12.dp)
+            .padding(top = 12.dp, start = 12.dp, end = 12.dp)
     ) {
 
         days.forEach { day ->
@@ -299,7 +273,6 @@ fun DayColumn(
             onCardClicked = onDayClicked,
             isAttending = day.attendance.any { it.userId == userId }
         )
-        Spacer(modifier = Modifier.height(12.dp))
         AvatarList(team, day.attendance)
     }
 }
@@ -311,31 +284,30 @@ fun DayHeader(
     onCardClicked: (WorkDay) -> Unit,
     isAttending: Boolean
 ) {
-
+    val cardColor = if (getCalendarFromDate(day.date).get(Calendar.DAY_OF_YEAR) == getCalendarFromDate(today).get(Calendar.DAY_OF_YEAR)) Blue50 else Grey50
     Box {
         Card(modifier = modifier,
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            colors = CardDefaults.cardColors(containerColor = cardColor),
             onClick = {
                 onCardClicked(day)
             }) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-
                 ) {
                 Text(
-                    text = day.date.dayOfWeek(),
+                    text = day.date.dayOfWeek().uppercase(),
                     textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     color = Grey600
                 )
                 Text(
                     text = day.date.dayOfMonth(),
                     textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Grey800
                 )
@@ -369,8 +341,8 @@ private fun AvatarList(team: Team, attendees: List<Attendee>) {
         }
         teamMembers.forEach { teamMember ->
             item {
+                Spacer(modifier = Modifier.height(8.dp))
                 Avatar(teamMember)
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -381,7 +353,12 @@ fun Avatar(member: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         InitialsCircle(name = member.displayName, color = member.initialsColor)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = member.displayName, textAlign = TextAlign.Center, fontSize = 14.sp, lineHeight = 18.sp)
+        Text(
+            text = member.displayName,
+            textAlign = TextAlign.Center,
+            fontSize = 12.sp,
+            lineHeight = 18.sp
+        )
     }
 }
 
@@ -394,20 +371,22 @@ fun WhosInScreenPreview() {
     ) {
 
         val calendar = Calendar.getInstance().apply {
-            set(Calendar.YEAR, 2023)
-            set(Calendar.WEEK_OF_YEAR, 6)
+
         }
 
         val workDays = listOf(
-            WorkDay(calendar.time, listOf(Attendee("1"))),
+            WorkDay(calendar.time, listOf(Attendee("1"), Attendee("2"))),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
+        val member1 = Member("1", displayName = "Vin Norman", initialsColor = "18434129578667540480")
+        val member2 = Member("2", displayName = "Maria Norman", initialsColor = "18434129578667540480")
+
         val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team")).apply { id = "1" }
-        val team = Team("Some team", members = listOf(Member("1", displayName = "Vin Norman", initialsColor = "18434129578667540480")))
+        val team = Team("Some team", members = listOf(member1, member2))
 
         WhosInTheme {
             WhosInContent(

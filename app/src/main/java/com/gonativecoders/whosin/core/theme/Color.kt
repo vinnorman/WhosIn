@@ -45,3 +45,4 @@ val Grey958 = Color(0xFF0E1013)
 
 val Blue200 = Color(0xFF0091FF)
 val Blue100 = Color(0xFF26A1FF)
+val Blue50 = Color(0x3332C5FF)

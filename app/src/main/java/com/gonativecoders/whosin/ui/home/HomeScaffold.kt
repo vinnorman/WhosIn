@@ -94,7 +94,7 @@ fun HomeScaffold(
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White,
                     ),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -146,7 +146,7 @@ private fun HomeTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent
         ),
-        modifier = Modifier.padding(bottom = 8.dp),
+        modifier = Modifier,
         title = {
             Text(
                 text = user.team?.name ?: "Who's In",
