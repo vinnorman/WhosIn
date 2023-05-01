@@ -5,15 +5,21 @@ package com.gonativecoders.whosin.ui.home.teammembers
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
+import com.gonativecoders.whosin.core.theme.Grey100
+import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Member
@@ -41,13 +47,31 @@ fun TeamContent(
     team: Team,
     navigate: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(imageVector = Icons.Outlined.GroupAdd, contentDescription = "Add Icon")
+                    Text(
+                        text = "Invite",
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                    )
+                }
+
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) {
         TeamView(user = user, team = team)
     }
+
 }
 
 @Composable
@@ -55,9 +79,10 @@ fun TeamView(
     user: User,
     team: Team
 ) {
-    LazyColumn(modifier = Modifier.padding(24.dp)) {
+    LazyColumn {
         items(team.members) { member ->
             TeamMemberView(member = member, member.id == user.id)
+            Divider(color = Grey100, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
         }
     }
 }
@@ -67,12 +92,17 @@ fun TeamMemberView(member: Member, isUser: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         InitialsCircle(name = member.displayName, member.initialsColor)
         Spacer(modifier = Modifier.padding(8.dp))
-        Text(text = if (isUser) member.displayName + " (You)" else member.displayName)
+        Text(
+            text = if (isUser) member.displayName + " (You)" else member.displayName,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            color = Grey928
+        )
     }
 }
 
@@ -89,8 +119,8 @@ fun TeamScreenPreview() {
                 team = Team(
                     "Some team",
                     members = listOf(
-                        Member(id = "123", displayName = "Vin", initialsColor = "FF0000"),
-                        Member(id = "234", displayName = "Maria Hampson", initialsColor = "FF0000")
+                        Member(id = "123", displayName = "Vin", initialsColor = "18434129578667540480"),
+                        Member(id = "234", displayName = "Maria Hampson", initialsColor = "18434129578667540480")
                     )
                 ),
                 navigate = {}
