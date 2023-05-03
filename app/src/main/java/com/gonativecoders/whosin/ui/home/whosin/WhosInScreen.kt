@@ -385,7 +385,7 @@ fun WhosInScreenPreview() {
         val member1 = Member("1", displayName = "Vin Norman", initialsColor = "18434129578667540480")
         val member2 = Member("2", displayName = "Maria Norman", initialsColor = "18434129578667540480")
 
-        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team")).apply { id = "1" }
+        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team"), email = "vin.norman@gmail.com").apply { id = "1" }
         val team = Team("Some team", members = listOf(member1, member2))
 
         WhosInTheme {

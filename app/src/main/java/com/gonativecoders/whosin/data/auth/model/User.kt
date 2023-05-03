@@ -6,6 +6,7 @@ data class User(
     val name: String = "",
     val initialsColor: String = "",
     val team: UserTeam? = null,
+    val email: String = ""
 ) {
 
     @DocumentId

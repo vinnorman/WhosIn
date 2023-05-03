@@ -115,7 +115,7 @@ fun TeamScreenPreview() {
     ) {
         WhosInTheme {
             TeamContent(
-                user = User(name = "Vin").apply { id = "123" },
+                user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" },
                 team = Team(
                     "Some team",
                     members = listOf(

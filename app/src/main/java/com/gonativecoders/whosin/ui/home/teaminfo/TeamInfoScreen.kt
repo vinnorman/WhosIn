@@ -83,7 +83,7 @@ private fun Preview() {
         color = MaterialTheme.colorScheme.background
     ) {
         val team = Team(name = "Some team", createdBy = "123", code = "123ABC", members = listOf(Member("1")))
-        val user = User("Vin").apply { id = "123" }
+        val user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" }
         val admin = Member("123", displayName = "The Admin Name")
         val uiState = UiState.Success(team, user, admin)
         WhosInTheme {

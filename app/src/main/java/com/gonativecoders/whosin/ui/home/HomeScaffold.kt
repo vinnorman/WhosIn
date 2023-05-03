@@ -69,7 +69,7 @@ fun HomeScaffold(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                HomeTopBar(user = User("Vin", "", UserTeam(name = "Sky Bet")), navigate = navigate)
+                HomeTopBar(user = user, navigate = navigate)
             },
             bottomBar = {
                 NavigationBar {
@@ -189,7 +189,7 @@ private fun TopBarPreview() {
                 containerColor = Color.Transparent,
                 topBar = {
                     HomeTopBar(
-                        user = User("Vin", "", UserTeam(name = "Sky Bet")), navigate = {})
+                        user = User("Vin", "", UserTeam(name = "Sky Bet"), "vin.norman@gmail.com"), navigate = {})
                 },
                 content = { innerPadding ->
                     Card(
