@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,9 +30,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.components.AppLogo
 import com.gonativecoders.whosin.core.components.EmailField
 import com.gonativecoders.whosin.core.components.PasswordField
-import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
 import org.koin.androidx.compose.getViewModel
@@ -101,7 +100,7 @@ private fun Portrait(
         Box(modifier = Modifier
             .fillMaxWidth()
             .weight(1f)) {
-            LoginScreenLogo(
+            AppLogo(
                 Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
@@ -135,7 +134,7 @@ private fun Landscape(
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize().weight(1f)) {
-            LoginScreenLogo(
+            AppLogo(
                 Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
@@ -161,25 +160,7 @@ private fun Landscape(
     }
 }
 
-@Composable
-private fun LoginScreenLogo(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            modifier = Modifier.size(80.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            imageVector = ImageVector.vectorResource(id = R.drawable.logo_blue),
-            contentDescription = "Welcome Image"
-        )
-        Spacer(modifier = Modifier.padding(2.dp))
-        Text(text = "Who's In", style = MaterialTheme.typography.headlineMedium, color = Grey800)
-    }
-}
+
 
 @Composable
 private fun LoginScreenFields(
@@ -195,16 +176,20 @@ private fun LoginScreenFields(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         EmailField(value = uiState.email, onNewValue = onEmailChange)
         Spacer(modifier = Modifier.size(16.dp))
         PasswordField(value = uiState.password, onNewValue = onPasswordChange)
         Spacer(modifier = Modifier.size(24.dp))
         OutlinedButton(
             onClick = onLoginClicked,
-            border = BorderStroke(1.dp, Color.White)
+            border = BorderStroke(1.dp, Color.White),
+            modifier = Modifier.size(height = 48.dp, width = 200.dp)
         ) {
-            Text(text = "Log In", modifier = Modifier.padding(12.dp), color = Color.White)
+            if (uiState.isLoggingIn) {
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+            } else {
+                Text(text = "Log In", color = Color.White)
+            }
         }
         Spacer(modifier = Modifier.size(12.dp))
         TextButton(onClick = onCreateAccountClicked) {
@@ -248,7 +233,7 @@ private fun Landscape() {
     ) {
         WhosInTheme {
             LoginContent(
-                uiState = LoginViewModel.UiState(),
+                uiState = LoginViewModel.UiState(isLoggingIn = true),
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClicked = {},

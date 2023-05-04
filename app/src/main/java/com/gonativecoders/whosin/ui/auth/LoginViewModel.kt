@@ -31,12 +31,13 @@ class LoginViewModel(private val repository: AuthRepository, private val dataSto
     }
 
     fun onLoginClicked(onLoggedIn: (user: User) -> Unit) {
+        uiState = uiState.copy(isLoggingIn = true)
         viewModelScope.launch {
             try {
                 val user = repository.login(uiState.email, uiState.password)
                 onLoggedIn(user)
             } catch (exception: Exception) {
-                uiState = uiState.copy(error = exception)
+                uiState = uiState.copy(error = exception, isLoggingIn = false)
             }
         }
     }

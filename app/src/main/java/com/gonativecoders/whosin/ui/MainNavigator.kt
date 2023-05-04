@@ -6,8 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.ui.auth.CreateAccountScreen
 import com.gonativecoders.whosin.ui.auth.LoginScreen
-import com.gonativecoders.whosin.ui.auth.RegisterScreen
 import com.gonativecoders.whosin.ui.home.HomeScreen
 import com.gonativecoders.whosin.ui.splash.SplashScreen
 
@@ -40,7 +40,7 @@ fun MainNavigator(
             )
         }
         composable(MainDestinations.Register.route) {
-            RegisterScreen(
+            CreateAccountScreen(
                 navigateToLoginScreen = {
                     navController.navigate(
                         destination = MainDestinations.Login,
@@ -65,7 +65,7 @@ fun MainNavigator(
 
     when (uiState) {
         is MainViewModel.UiState.LoggedIn -> navController.navigate(destination = MainDestinations.Home, clear = true)
-        MainViewModel.UiState.LoggedOut -> navController.navigate(MainDestinations.Login)
+        MainViewModel.UiState.LoggedOut -> navController.navigate(destination = MainDestinations.Login, clear = true)
         MainViewModel.UiState.Splash -> navController.navigate(MainDestinations.Splash)
     }
 

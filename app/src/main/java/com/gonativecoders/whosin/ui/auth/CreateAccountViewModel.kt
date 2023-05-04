@@ -9,7 +9,7 @@ import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.model.User
 import kotlinx.coroutines.launch
 
-class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
+class CreateAccountViewModel(private val repository: AuthRepository) : ViewModel() {
 
     data class UiState(
         val displayName: String = "",
