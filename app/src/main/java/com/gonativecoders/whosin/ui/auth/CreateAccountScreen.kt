@@ -35,7 +35,7 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun CreateAccountScreen(
-    onLoggedIn: (User) -> Unit,
+    onAccountCreated: (User) -> Unit,
     navigateToLoginScreen: () -> Unit
 ) {
     val viewModel = getViewModel<CreateAccountViewModel>()
@@ -46,7 +46,7 @@ fun CreateAccountScreen(
         onNameChange = viewModel::onNameChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChanged,
-        onCreateAccountClicked = { viewModel.onCreateAccountClicked(onLoggedIn) },
+        onCreateAccountClicked = { viewModel.onCreateAccountClicked(onAccountCreated) },
         uiState = uiState,
         navigateToLoginScreen = navigateToLoginScreen
     )

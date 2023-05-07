@@ -9,8 +9,8 @@ import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.WhosInService
 import com.gonativecoders.whosin.ui.MainViewModel
-import com.gonativecoders.whosin.ui.auth.LoginViewModel
 import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
+import com.gonativecoders.whosin.ui.auth.LoginViewModel
 import com.gonativecoders.whosin.ui.home.onboarding.createteam.CreateTeamViewModel
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamViewModel
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel
@@ -22,9 +22,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val koinModules = module {
-    viewModel { MainViewModel()}
+    viewModel { MainViewModel(dataStoreRepository = get())}
 
-    viewModel { SplashViewModel(repository = get()) }
+    viewModel { SplashViewModel(repository = get(), dataStoreRepository = get()) }
     viewModel { LoginViewModel(repository = get(), dataStore = get()) }
     viewModel { CreateAccountViewModel(repository = get()) }
     viewModel { CreateTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }

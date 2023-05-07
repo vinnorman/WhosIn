@@ -1,7 +1,11 @@
 package com.gonativecoders.whosin.ui.splash
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,6 +25,7 @@ import org.koin.androidx.compose.getViewModel
 fun SplashScreen(
     onLoggedOut: () -> Unit,
     onLoggedIn: (user: User) -> Unit,
+    onOnboarding: (user: User) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = getViewModel()
 ) {
@@ -40,6 +45,7 @@ fun SplashScreen(
         when (val loginStatus = viewModel.getLoginStatus()) {
             is SplashViewModel.LoginStatus.LoggedIn -> onLoggedIn(loginStatus.user)
             SplashViewModel.LoginStatus.LoggedOut -> onLoggedOut()
+            is SplashViewModel.LoginStatus.Onboarding -> onOnboarding(loginStatus.user)
         }
     }
 }
@@ -52,7 +58,7 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            SplashScreen(onLoggedOut = {}, onLoggedIn = {})
+            SplashScreen(onLoggedOut = {}, onLoggedIn = {}, onOnboarding = {})
         }
     }
 }

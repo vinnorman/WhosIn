@@ -9,6 +9,7 @@ import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.auth.CreateAccountScreen
 import com.gonativecoders.whosin.ui.auth.LoginScreen
 import com.gonativecoders.whosin.ui.home.HomeScreen
+import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupScreen
 import com.gonativecoders.whosin.ui.splash.SplashScreen
 
 sealed class MainDestinations(val route: String) {
@@ -16,13 +17,16 @@ sealed class MainDestinations(val route: String) {
     object Login : MainDestinations("login")
     object Register : MainDestinations("register")
     object Home : MainDestinations("home")
+    object Onboarding : MainDestinations("onboarding")
 }
 
 @Composable
 fun MainNavigator(
     navController: NavHostController = rememberNavController(),
     onLoggedIn: (User) -> Unit,
+    onAccountCreated: (User) -> Unit,
     onLoggedOut: () -> Unit,
+    onOnboarding: (User) -> Unit,
     uiState: MainViewModel.UiState,
     onUserUpdated: (User) -> Unit
 ) {
@@ -30,13 +34,23 @@ fun MainNavigator(
         composable(MainDestinations.Splash.route) {
             SplashScreen(
                 onLoggedOut = onLoggedOut,
-                onLoggedIn = onLoggedIn
+                onLoggedIn = onLoggedIn,
+                onOnboarding = onOnboarding
             )
         }
         composable(MainDestinations.Login.route) {
             LoginScreen(
                 navigateToRegisterScreen = { navController.navigate(MainDestinations.Register) },
                 onLoggedIn = onLoggedIn
+            )
+        }
+        composable(MainDestinations.Onboarding.route) {
+            val user = (uiState as? MainViewModel.UiState.Onboarding)?.user ?: kotlin.run {
+                onLoggedOut()
+                return@composable
+            }
+            ProfileSetupScreen(
+                onProfileSetupComplete = { onLoggedIn(user) }
             )
         }
         composable(MainDestinations.Register.route) {
@@ -47,7 +61,7 @@ fun MainNavigator(
                         popUpDestination = MainDestinations.Login
                     )
                 },
-                onLoggedIn = onLoggedIn
+                onAccountCreated = onAccountCreated
             )
         }
         composable(MainDestinations.Home.route) {
@@ -67,6 +81,7 @@ fun MainNavigator(
         is MainViewModel.UiState.LoggedIn -> navController.navigate(destination = MainDestinations.Home, clear = true)
         MainViewModel.UiState.LoggedOut -> navController.navigate(destination = MainDestinations.Login, clear = true)
         MainViewModel.UiState.Splash -> navController.navigate(MainDestinations.Splash)
+        is MainViewModel.UiState.Onboarding -> navController.navigate(MainDestinations.Onboarding, clear = true)
     }
 
 }

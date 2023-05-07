@@ -35,7 +35,6 @@ class JoinTeamViewModel(
             try {
                 val team = repository.joinTeam(uiState.teamCode)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
-                dataStore.putBoolean(DataStoreRepository.HAS_SEEN_ONBOARDING, true)
                 onUserUpdated(authRepository.getCurrentUser())
                 onJoinTeamSuccess
             } catch (exception: Exception) {
