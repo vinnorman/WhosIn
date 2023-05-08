@@ -2,6 +2,7 @@
 
 package com.gonativecoders.whosin.ui.home.whosin
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -78,7 +79,9 @@ fun WhosInScreen(
     navigate: (String) -> Unit
 ) {
     when (val uiState = viewModel.uiState) {
-        is WhosInViewModel.UiState.Error -> {}
+        is WhosInViewModel.UiState.Error -> {
+            Log.e("vin", uiState.error.message!!, uiState.error)
+        }
         WhosInViewModel.UiState.Loading -> Loading()
         is WhosInViewModel.UiState.Success -> WhosInContent(
             days = uiState.workDays,

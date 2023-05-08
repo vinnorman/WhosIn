@@ -10,32 +10,35 @@ import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class  WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
+class WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
 
-    var selectedWeek: Calendar = Calendar.getInstance()
+    private var selectedWeek = Calendar.getInstance()
 
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
 
     init {
+
         viewModelScope.launch {
             loadData()
         }
     }
 
     private suspend fun loadData() {
-        uiState = try {
+        try {
             val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
-            val workDays = repository.getWeek(team.id, selectedWeek.time)
-            UiState.Success(user, team, workDays)
+            val flow: Flow<List<WorkDay>> = repository.getWeek(team.id, selectedWeek.time)
+            flow.collect {
+                uiState = UiState.Success(user, team, it)
+            }
         } catch (exception: Exception) {
-            UiState.Error(exception)
+            uiState = UiState.Error(exception)
         }
-
     }
 
     fun goToNextWeek() {

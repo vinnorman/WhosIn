@@ -3,11 +3,12 @@ package com.gonativecoders.whosin.data.whosin
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
-import java.util.*
+import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 class WhosInRepository(private val service: WhosInService) {
 
-    suspend fun getWeek(teamId: String, date: Date): List<WorkDay> {
+    suspend fun getWeek(teamId: String, date: Date): Flow<List<WorkDay>> {
         return service.getWeek(teamId, date)
     }
 
