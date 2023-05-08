@@ -30,7 +30,8 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
             .set(mapOf(
                 "name" to displayName,
                 "initialsColor" to randomColor,
-                "email" to user.email
+                "email" to user.email,
+                "hasCompletedOnboarding" to false
             )).await()
         return User(name = displayName, initialsColor = randomColor, email = user.email ?: "" ).apply { id = user.uid }
     }
@@ -42,6 +43,12 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
 
     suspend fun getUser(userId: String): User  {
         return database.collection("users").document(userId).get().await().toObject() ?: throw Exception("No user found")
+    }
+
+    suspend fun updateUser(user: User) {
+        database.collection("users")
+            .document(user.id)
+            .set(user).await()
     }
 
 }

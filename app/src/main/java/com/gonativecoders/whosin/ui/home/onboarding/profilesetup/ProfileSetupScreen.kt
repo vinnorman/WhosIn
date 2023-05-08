@@ -2,7 +2,11 @@
 
 package com.gonativecoders.whosin.ui.home.onboarding.profilesetup
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,25 +31,37 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
+import com.gonativecoders.whosin.data.auth.model.User
 
 @Composable
 fun ProfileSetupScreen(
-    onProfileSetupComplete: () -> Unit
+    viewModel: ProfileSetupViewModel,
+    onOnboardingComplete: (User) -> Unit
 ) {
-    ProfileSetupContent(onProfileSetupComplete)
+    ProfileSetupContent(onNextClicked = {
+        viewModel.onNextClicked(it) { user -> onOnboardingComplete(user) }
+    })
 }
 
 @Composable
-fun ProfileSetupContent(onProfileSetupComplete: () -> Unit) {
+fun ProfileSetupContent(onNextClicked: (Uri) -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -93,7 +109,66 @@ fun ProfileSetupContent(onProfileSetupComplete: () -> Unit) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                ProfileSetupUi()
+                var hasImage by remember {
+                    mutableStateOf(false)
+                }
+                var imageUri by remember {
+                    mutableStateOf<Uri?>(null)
+                }
+                val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                    hasImage = success
+                }
+
+                val context = LocalContext.current
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ElevatedCard(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clickable {
+                                val uri = ComposeFileProvider.getImageUri(context)
+                                imageUri = uri
+                                cameraLauncher.launch(uri)
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        ),
+                        elevation = CardDefaults.elevatedCardElevation(
+                            defaultElevation = 2.dp
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (hasImage) {
+                                val image = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageUri)
+                                    .build()
+                                AsyncImage(
+                                    model = image,
+                                    contentDescription = "Profile photo",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Icon(
+                                    modifier = Modifier.padding(12.dp),
+                                    imageVector = Icons.Filled.PhotoCamera,
+                                    contentDescription = "Take Profile Photo"
+                                )
+                            }
+
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(32.dp))
+                    Text(text = "Choose your profile photo", style = MaterialTheme.typography.bodyLarge)
+
+                }
+
                 Button(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
@@ -101,7 +176,7 @@ fun ProfileSetupContent(onProfileSetupComplete: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
-                    onClick = { onProfileSetupComplete() }) {
+                    onClick = { onNextClicked(imageUri!!) }) {
                     Text(text = "Next")
                 }
             }
@@ -114,35 +189,6 @@ fun ProfileSetupContent(onProfileSetupComplete: () -> Unit) {
 
 @Composable
 fun ProfileSetupUi() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        ElevatedCard(
-            modifier = Modifier.size(120.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-            ),
-            elevation = CardDefaults.elevatedCardElevation(
-                defaultElevation = 2.dp
-            )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.padding(12.dp),
-                    imageVector = Icons.Filled.PhotoCamera,
-                    contentDescription = "Take Profile Photo"
-                )
-            }
-        }
-        Spacer(modifier = Modifier.size(32.dp))
-        Text(text = "Choose your profile photo", style = MaterialTheme.typography.bodyLarge)
-
-    }
 
 }
 
@@ -150,5 +196,5 @@ fun ProfileSetupUi() {
 @Composable
 @Preview(showBackground = true)
 fun Preview() {
-    ProfileSetupContent(onProfileSetupComplete = {})
+    ProfileSetupContent(onNextClicked = {})
 }

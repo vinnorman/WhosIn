@@ -12,19 +12,12 @@ class SplashViewModel(private val repository: AuthRepository, private val dataSt
     suspend fun getLoginStatus(): LoginStatus {
         val firebaseUser = Firebase.auth.currentUser ?: return LoginStatus.LoggedOut
         val user = repository.getUserDetails(firebaseUser.uid)
-
-        return if (dataStoreRepository.getBoolean(DataStoreRepository.HAS_COMPLETED_ONBOARDING)) {
-            LoginStatus.LoggedIn(user)
-        } else {
-            LoginStatus.Onboarding(user)
-        }
+        return LoginStatus.LoggedIn(user)
     }
 
     sealed class LoginStatus {
 
         data class LoggedIn(val user: User) : LoginStatus()
-
-        data class Onboarding(val user: User) : LoginStatus()
 
         object LoggedOut : LoginStatus()
 

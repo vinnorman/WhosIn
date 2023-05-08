@@ -96,6 +96,13 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.4.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
+    implementation ("androidx.activity:activity-ktx:1.2.3")
+    implementation ("androidx.fragment:fragment-ktx:1.3.3")
+
+    implementation("androidx.camera:camera-camera2:1.3.0-alpha06")
+
     implementation("io.insert-koin:koin-android:3.2.2")
     implementation("io.insert-koin:koin-androidx-compose:3.2.1")
 
@@ -106,6 +113,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.insert-koin:koin-test:3.2.2")

@@ -31,10 +31,9 @@ class MainActivity : ComponentActivity() {
                 MainNavigator(
                     onLoggedIn = viewModel::setLoggedIn,
                     onLoggedOut = viewModel::setLoggedOut,
-                    onAccountCreated = viewModel::onStartOnboarding,
+                    onAccountCreated = viewModel::setLoggedIn,
                     uiState = uiState,
-                    onUserUpdated = viewModel::onUserUpdated,
-                    onOnboarding = viewModel::onStartOnboarding
+                    onUserUpdated = viewModel::onUserUpdated
                 )
 
             }

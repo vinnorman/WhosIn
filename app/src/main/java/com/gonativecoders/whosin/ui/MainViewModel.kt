@@ -27,16 +27,12 @@ class MainViewModel(private val dataStoreRepository: DataStoreRepository) : View
         uiState = UiState.LoggedIn(user)
     }
 
-    fun onStartOnboarding(user: User) {
-        uiState = UiState.Onboarding(user)
-    }
-
     sealed class UiState {
 
         object Splash : UiState()
         object LoggedOut : UiState()
+
         data class LoggedIn(var user: User) : UiState()
-        data class Onboarding(var user: User) : UiState()
 
     }
 

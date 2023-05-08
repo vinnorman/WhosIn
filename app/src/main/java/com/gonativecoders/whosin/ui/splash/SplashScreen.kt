@@ -25,7 +25,6 @@ import org.koin.androidx.compose.getViewModel
 fun SplashScreen(
     onLoggedOut: () -> Unit,
     onLoggedIn: (user: User) -> Unit,
-    onOnboarding: (user: User) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = getViewModel()
 ) {
@@ -45,7 +44,6 @@ fun SplashScreen(
         when (val loginStatus = viewModel.getLoginStatus()) {
             is SplashViewModel.LoginStatus.LoggedIn -> onLoggedIn(loginStatus.user)
             SplashViewModel.LoginStatus.LoggedOut -> onLoggedOut()
-            is SplashViewModel.LoginStatus.Onboarding -> onOnboarding(loginStatus.user)
         }
     }
 }
@@ -58,7 +56,7 @@ fun DefaultPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
         WhosInTheme {
-            SplashScreen(onLoggedOut = {}, onLoggedIn = {}, onOnboarding = {})
+            SplashScreen(onLoggedOut = {}, onLoggedIn = {})
         }
     }
 }

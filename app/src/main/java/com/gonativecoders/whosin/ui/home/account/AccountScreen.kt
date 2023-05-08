@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.theme.Blue200
 import com.gonativecoders.whosin.core.theme.Blue50
@@ -79,14 +80,24 @@ private fun AccountContent(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.man),
-                contentDescription = "Avatar",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-            )
+            if (user.photoUri != null) {
+                AsyncImage(
+                    model = user.photoUri, contentDescription = "User Profile Photo", contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.man),
+                    contentDescription = "Avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
+            }
+
             Spacer(modifier = Modifier.padding(8.dp))
             Text(text = user.name, style = MaterialTheme.typography.headlineSmall)
             Text(text = user.email, style = MaterialTheme.typography.bodyMedium, color = Grey600)

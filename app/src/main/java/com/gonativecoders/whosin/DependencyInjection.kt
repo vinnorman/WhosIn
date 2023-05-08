@@ -13,6 +13,7 @@ import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
 import com.gonativecoders.whosin.ui.auth.LoginViewModel
 import com.gonativecoders.whosin.ui.home.onboarding.createteam.CreateTeamViewModel
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamViewModel
+import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupViewModel
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel
 import com.gonativecoders.whosin.ui.home.teammembers.TeamViewModel
 import com.gonativecoders.whosin.ui.home.whosin.WhosInViewModel
@@ -25,6 +26,7 @@ val koinModules = module {
     viewModel { MainViewModel(dataStoreRepository = get())}
 
     viewModel { SplashViewModel(repository = get(), dataStoreRepository = get()) }
+    viewModel { (user: User) -> ProfileSetupViewModel(user = user, authRepository = get(), dataStoreRepository = get()) }
     viewModel { LoginViewModel(repository = get(), dataStore = get()) }
     viewModel { CreateAccountViewModel(repository = get()) }
     viewModel { CreateTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
