@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,13 +56,19 @@ fun ProfileSetupScreen(
     viewModel: ProfileSetupViewModel,
     onOnboardingComplete: (User) -> Unit
 ) {
-    ProfileSetupContent(onNextClicked = {
-        viewModel.onNextClicked(it) { user -> onOnboardingComplete(user) }
-    })
+    ProfileSetupContent(
+        onNextClicked = {
+            viewModel.onNextClicked(it) { user -> onOnboardingComplete(user) }
+        },
+        onSkipped = {}
+    )
 }
 
 @Composable
-fun ProfileSetupContent(onNextClicked: (Uri) -> Unit) {
+fun ProfileSetupContent(
+    onNextClicked: (Uri) -> Unit,
+    onSkipped: () -> Unit,
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -127,12 +134,8 @@ fun ProfileSetupContent(onNextClicked: (Uri) -> Unit) {
                 ) {
                     ElevatedCard(
                         modifier = Modifier
-                            .size(120.dp)
-                            .clickable {
-                                val uri = ComposeFileProvider.getImageUri(context)
-                                imageUri = uri
-                                cameraLauncher.launch(uri)
-                            },
+                            .size(150.dp),
+                        shape = CircleShape,
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White,
                         ),
@@ -144,41 +147,63 @@ fun ProfileSetupContent(onNextClicked: (Uri) -> Unit) {
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (hasImage) {
-                                val image = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageUri)
-                                    .build()
-                                AsyncImage(
-                                    model = image,
-                                    contentDescription = "Profile photo",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                Icon(
-                                    modifier = Modifier.padding(12.dp),
-                                    imageVector = Icons.Filled.PhotoCamera,
-                                    contentDescription = "Take Profile Photo"
-                                )
-                            }
+
+                            AsyncImage(
+                                model = if (hasImage) {
+                                    imageUri?.let {
+                                        ImageRequest.Builder(context)
+                                            .data(it)
+                                            .build()
+                                    }
+                                } else null,
+                                placeholder = painterResource(id = R.drawable.profile),
+                                error = painterResource(id = R.drawable.profile),
+                                contentDescription = "Profile photo",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+
 
                         }
                     }
-                    Spacer(modifier = Modifier.size(32.dp))
-                    Text(text = "Choose your profile photo", style = MaterialTheme.typography.bodyLarge)
-
+                    Spacer(modifier = Modifier.size(48.dp))
+                    Button(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp),
+                        onClick = {
+                            val uri = ComposeFileProvider.getImageUri(context)
+                            imageUri = uri
+                            cameraLauncher.launch(uri)
+                        }) {
+                        Text(text = "Take Photo")
+                    }
                 }
 
-                Button(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ),
-                    onClick = { onNextClicked(imageUri!!) }) {
-                    Text(text = "Next")
+                Column {
+                    Button(
+                        enabled = hasImage,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        onClick = { onNextClicked(imageUri!!) }) {
+                        Text(text = "Next")
+                    }
+
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    TextButton(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        onClick = { onNextClicked(imageUri!!) }) {
+                        Text(text = "Skip")
+                    }
                 }
+
+
             }
 
         }
@@ -188,13 +213,10 @@ fun ProfileSetupContent(onNextClicked: (Uri) -> Unit) {
 }
 
 @Composable
-fun ProfileSetupUi() {
-
-}
-
-
-@Composable
 @Preview(showBackground = true)
 fun Preview() {
-    ProfileSetupContent(onNextClicked = {})
+    ProfileSetupContent(
+        onNextClicked = {},
+        onSkipped = {}
+    )
 }

@@ -2,7 +2,7 @@ package com.gonativecoders.whosin.data.team.model
 
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
-import java.util.*
+import java.util.Date
 
 data class Team(
     val name: String? = null,

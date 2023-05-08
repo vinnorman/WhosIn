@@ -1,6 +1,5 @@
 package com.gonativecoders.whosin.ui.home.account
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,12 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.theme.Blue200
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey600
@@ -80,23 +77,15 @@ private fun AccountContent(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (user.photoUri != null) {
-                AsyncImage(
-                    model = user.photoUri, contentDescription = "User Profile Photo", contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
-            } else {
-                Image(
-                    painter = painterResource(R.drawable.man),
-                    contentDescription = "Avatar",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
-            }
+
+            AsyncImage(
+                model = user.photoUri,
+                contentDescription = "User Profile Photo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+            )
 
             Spacer(modifier = Modifier.padding(8.dp))
             Text(text = user.name, style = MaterialTheme.typography.headlineSmall)
@@ -115,6 +104,7 @@ private fun AccountContent(
         SettingOption(Icons.Default.Logout, "Logout", onClick = onLogOut)
     }
 }
+
 
 @Composable
 fun SettingOption(

@@ -1,8 +1,8 @@
 package com.gonativecoders.whosin.data.team
 
+import com.gonativecoders.whosin.core.util.getRandomString
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
-import com.gonativecoders.whosin.core.util.getRandomString
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -14,7 +14,6 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
 
     suspend fun createTeam(userId: String, teamName: String): Team {
         val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
-
         val team = Team(
             name = teamName,
             createdBy = userId,
@@ -55,8 +54,8 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
                     mapOf(
                         "displayName" to user.name,
                         "initialsColor" to user.initialsColor,
-                        "avatar" to 0,
-                        "id" to user.id
+                        "id" to user.id,
+                        "photoUri" to user.photoUri
                     )
                 )
             ).await()

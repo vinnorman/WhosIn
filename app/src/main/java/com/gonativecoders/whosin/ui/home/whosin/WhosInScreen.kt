@@ -48,9 +48,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
+import com.gonativecoders.whosin.core.components.UserAvatar
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
@@ -351,10 +351,10 @@ private fun AvatarList(team: Team, attendees: List<Attendee>) {
 @Composable
 fun Avatar(member: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        InitialsCircle(name = member.displayName, color = member.initialsColor)
+        UserAvatar(member = member)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = member.displayName,
+            text = member.displayName.split(" ").first(),
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             lineHeight = 18.sp

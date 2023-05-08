@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.ErrorView
-import com.gonativecoders.whosin.core.components.InitialsCircle
 import com.gonativecoders.whosin.core.components.Loading
+import com.gonativecoders.whosin.core.components.UserAvatar
 import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -95,7 +95,7 @@ fun TeamMemberView(member: Member, isUser: Boolean) {
             .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        InitialsCircle(name = member.displayName, member.initialsColor)
+        UserAvatar(member = member)
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
             text = if (isUser) member.displayName + " (You)" else member.displayName,
