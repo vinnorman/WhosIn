@@ -48,13 +48,15 @@ fun AccountScreen(
     user: User,
     onLogOut: () -> Unit,
     onCreateNewTeam: () -> Unit,
-    onJoinNewTeam: () -> Unit
+    onJoinNewTeam: () -> Unit,
+    onEditProfile: () -> Unit
 ) {
     AccountContent(
         user = user,
         onLogOut = onLogOut,
         onCreateNewTeam = onCreateNewTeam,
-        onJoinNewTeam = onJoinNewTeam
+        onJoinNewTeam = onJoinNewTeam,
+        onEditProfile = onEditProfile
     )
 }
 
@@ -63,7 +65,8 @@ private fun AccountContent(
     user: User,
     onLogOut: () -> Unit,
     onCreateNewTeam: () -> Unit,
-    onJoinNewTeam: () -> Unit
+    onJoinNewTeam: () -> Unit,
+    onEditProfile: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -93,7 +96,7 @@ private fun AccountContent(
             Text(text = user.email, style = MaterialTheme.typography.bodyMedium, color = Grey600)
         }
         Spacer(modifier = Modifier.size(20.dp))
-        SettingOption(Icons.Default.Edit, "Edit Profile", onClick = {})
+        SettingOption(Icons.Default.Edit, "Edit Profile", onClick = onEditProfile)
         Spacer(modifier = Modifier.size(12.dp))
         SettingOption(Icons.Default.GroupAdd, "Create New Team", onClick = onCreateNewTeam)
         Spacer(modifier = Modifier.size(12.dp))
@@ -153,7 +156,8 @@ fun DefaultPreview() {
                 user = User("Vin", "", UserTeam("", "", ""), "vin.norman@gmail.com"),
                 onLogOut = {},
                 onCreateNewTeam = {},
-                onJoinNewTeam = {}
+                onJoinNewTeam = {},
+                onEditProfile = {},
             )
         }
     }

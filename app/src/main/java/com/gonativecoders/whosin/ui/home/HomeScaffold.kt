@@ -120,7 +120,8 @@ fun HomeScaffold(
                                 user = user,
                                 onLogOut = onLoggedOut,
                                 onCreateNewTeam = { navigate(HomeDestinations.CreateTeam.route) },
-                                onJoinNewTeam = { navigate(HomeDestinations.JoinTeam.route) }
+                                onJoinNewTeam = { navigate(HomeDestinations.JoinTeam.route) },
+                                onEditProfile = { navigate(HomeDestinations.EditProfile.route) },
                             )
                         }
                     }

@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.ui.home.account.EditProfileScreen
 import com.gonativecoders.whosin.ui.home.onboarding.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoScreen
@@ -22,6 +23,7 @@ import org.koin.core.parameter.parametersOf
 sealed class HomeDestinations(val route: String) {
 
     object TeamInfo : HomeDestinations("Team Info")
+    object EditProfile : HomeDestinations("Edit Profile")
     object CreateTeam : HomeDestinations("Create Team")
     object JoinTeam : HomeDestinations("Join Team")
     object HomeScaffold : HomeDestinations("Bottom Bar Content")
@@ -76,6 +78,13 @@ fun HomeNavigator(
         composable(route = HomeDestinations.TeamInfo.route) {
             TeamInfoScreen(viewModel = getViewModel(parameters = { parametersOf(user) }),
                 onBackArrowPressed = { navController.popBackStack() }
+            )
+        }
+        composable(route = HomeDestinations.EditProfile.route) {
+            EditProfileScreen(
+                viewModel = getViewModel(parameters = { parametersOf(user) }),
+                onCancel = { navController.popBackStack() },
+                onUserUpdated = onUserUpdated
             )
         }
     }

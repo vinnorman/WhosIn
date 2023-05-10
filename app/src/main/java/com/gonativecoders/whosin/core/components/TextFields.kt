@@ -83,16 +83,15 @@ fun TextFieldWithIcon(
 
 
 @Composable
-fun NameField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
+fun NameField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier, placeholder: String = "Full Name") {
     OutlinedTextField(
         singleLine = true,
         modifier = modifier,
         value = value,
         colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
-
         onValueChange = { onNewValue(it) },
         keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
-        placeholder = { Text("Full Name") },
+        placeholder = { Text(placeholder) },
         leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Full Name") }
     )
 }
@@ -138,6 +137,8 @@ fun DefaultPreview() {
     ) {
         Column {
             EmailField(value = "", onNewValue = { })
+            Spacer(modifier = Modifier.height(12.dp))
+            NameField(value = "cheese", onNewValue = { })
             Spacer(modifier = Modifier.height(12.dp))
             PasswordField(value = "", onNewValue = {})
             Spacer(modifier = Modifier.height(12.dp))
