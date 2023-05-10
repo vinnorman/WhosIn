@@ -17,12 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.Loading
-import com.gonativecoders.whosin.core.components.UserAvatar
+import com.gonativecoders.whosin.core.components.UserPhoto
 import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 
 @Composable
@@ -36,6 +35,7 @@ fun TeamScreen(
         is TeamViewModel.UiState.Success -> TeamContent(
             user = uiState.user,
             team = uiState.team,
+            members = uiState.members,
             navigate = navigate
         )
     }
@@ -45,6 +45,7 @@ fun TeamScreen(
 fun TeamContent(
     user: User,
     team: Team,
+    members: List<User>,
     navigate: (String) -> Unit
 ) {
 
@@ -69,7 +70,7 @@ fun TeamContent(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        TeamView(user = user, team = team)
+        TeamView(user = user, team = team, members = members)
     }
 
 }
@@ -77,28 +78,29 @@ fun TeamContent(
 @Composable
 fun TeamView(
     user: User,
-    team: Team
+    team: Team,
+    members: List<User>
 ) {
     LazyColumn {
-        items(team.members) { member ->
-            TeamMemberView(member = member, member.id == user.id)
+        items(members) { user ->
+            TeamMemberView(user = user, user.id == user.id)
             Divider(color = Grey100, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
         }
     }
 }
 
 @Composable
-fun TeamMemberView(member: Member, isUser: Boolean) {
+fun TeamMemberView(user: User, isUser: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UserAvatar(member = member)
+        UserPhoto(user = user)
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
-            text = if (isUser) member.displayName + " (You)" else member.displayName,
+            text = if (isUser) user.name + " (You)" else user.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             color = Grey928
@@ -117,11 +119,12 @@ fun TeamScreenPreview() {
             TeamContent(
                 user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" },
                 team = Team(
-                    "Some team",
-                    members = listOf(
-                        Member(id = "123", displayName = "Vin", initialsColor = "18434129578667540480"),
-                        Member(id = "234", displayName = "Maria Hampson", initialsColor = "18434129578667540480")
-                    )
+                    "Some team"
+                ),
+                members = listOf(
+                    User("Vin", "", email = "vin.norman@gmail.com"),
+                    User("Dave", "", email = "vin.norman@gmail.com"),
+                    User("Graham", "", email = "vin.norman@gmail.com")
                 ),
                 navigate = {}
             )

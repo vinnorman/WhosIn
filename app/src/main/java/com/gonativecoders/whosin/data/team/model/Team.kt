@@ -9,7 +9,6 @@ data class Team(
     val createdBy: String? = null,
     val code: String? = null,
     @ServerTimestamp val createdAt: Date? = null,
-    val members: List<Member> = listOf()
 ) {
 
     @DocumentId lateinit var id: String

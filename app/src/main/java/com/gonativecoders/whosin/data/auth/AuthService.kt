@@ -49,6 +49,10 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
         database.collection("users")
             .document(user.id)
             .set(user).await()
+
+        val teamId = user.team?.id ?: return
+
+        database.collection("teams").document(teamId).collection("members").document(user.id).set(user)
     }
 
 }

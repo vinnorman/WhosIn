@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.data.team
 
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -18,6 +19,10 @@ class TeamRepository(private val service: TeamService) {
 
     suspend fun getTeam(teamId: String): Team {
         return service.getTeam(teamId)
+    }
+
+    suspend fun getTeamMembers(teamId: String): List<User> {
+        return service.getTeamMembers(teamId)
     }
 
 }

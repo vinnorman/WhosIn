@@ -39,7 +39,7 @@ val koinModules = module {
     viewModel { (user: User) -> EditProfileViewModel(user = user, authRepository = get()) }
 
     factory { AuthRepository(service = get()) }
-    factory { WhosInRepository(service = get()) }
+    factory { WhosInRepository(service = get(), teamService = get() ) }
     factory { TeamRepository(service = get()) }
 
     single { WhosInService() }

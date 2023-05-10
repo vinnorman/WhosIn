@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
-import com.gonativecoders.whosin.core.components.UserAvatar
+import com.gonativecoders.whosin.core.components.UserPhoto
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
@@ -64,8 +64,6 @@ import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
 import com.gonativecoders.whosin.core.util.calendar.shortDate
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.auth.model.UserTeam
-import com.gonativecoders.whosin.data.team.model.Member
-import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import java.util.Calendar
@@ -75,8 +73,7 @@ val today: Date = Calendar.getInstance().time
 
 @Composable
 fun WhosInScreen(
-    viewModel: WhosInViewModel,
-    navigate: (String) -> Unit
+    viewModel: WhosInViewModel
 ) {
     when (val uiState = viewModel.uiState) {
         is WhosInViewModel.UiState.Error -> {
@@ -87,11 +84,10 @@ fun WhosInScreen(
             days = uiState.workDays,
             userId = uiState.user.id,
             onDayClicked = { day -> viewModel.updateAttendance(day) },
-            team = uiState.team,
+            members = uiState.members,
             onNextWeekClicked = { viewModel.goToNextWeek() },
             onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
             onTodayClicked = { viewModel.goToToday() },
-            navigate = navigate,
             onDateSelected = { date -> viewModel.goToDate(date)}
         )
     }
@@ -102,12 +98,11 @@ fun WhosInScreen(
 fun WhosInContent(
     days: List<WorkDay>,
     userId: String,
-    team: Team,
+    members: List<User>,
     onDayClicked: (WorkDay) -> Unit,
     onNextWeekClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit,
-    navigate: (String) -> Unit,
     onDateSelected: (Date) -> Unit,
 ) {
 
@@ -157,7 +152,7 @@ fun WhosInContent(
         WeekView(
             days = days,
             userId = userId,
-            team = team,
+            members = members,
             onDayClicked = onDayClicked
         )
 
@@ -233,7 +228,7 @@ private fun WeekNavigation(
 fun WeekView(
     days: List<WorkDay>,
     userId: String,
-    team: Team,
+    members: List<User>,
     onDayClicked: (WorkDay) -> Unit
 ) {
     Row(
@@ -250,7 +245,7 @@ fun WeekView(
                     .weight(1f),
                 userId = userId,
                 day = day,
-                team = team,
+                members = members,
                 onDayClicked = onDayClicked
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -265,7 +260,7 @@ fun DayColumn(
     userId: String,
     day: WorkDay,
     onDayClicked: (WorkDay) -> Unit,
-    team: Team,
+    members: List<User>
 ) {
     Column(
         modifier = modifier,
@@ -276,7 +271,7 @@ fun DayColumn(
             onCardClicked = onDayClicked,
             isAttending = day.attendance.any { it.userId == userId }
         )
-        AvatarList(team, day.attendance)
+        AvatarList(members, day.attendance)
     }
 }
 
@@ -335,12 +330,12 @@ fun DayHeader(
 }
 
 @Composable
-private fun AvatarList(team: Team, attendees: List<Attendee>) {
+private fun AvatarList(members: List<User>, attendees: List<Attendee>) {
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val teamMembers = attendees.mapNotNull { attendee ->
-            team.members.find { it.id == attendee.userId }
+            members.find { it.id == attendee.userId }
         }
         teamMembers.forEach { teamMember ->
             item {
@@ -352,12 +347,12 @@ private fun AvatarList(team: Team, attendees: List<Attendee>) {
 }
 
 @Composable
-fun Avatar(member: Member) {
+fun Avatar(user: User) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        UserAvatar(member = member)
+        UserPhoto(user = user)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = member.displayName.split(" ").first(),
+            text = user.name.split(" ").first(),
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             lineHeight = 18.sp
@@ -373,9 +368,7 @@ fun WhosInScreenPreview() {
         color = MaterialTheme.colorScheme.background
     ) {
 
-        val calendar = Calendar.getInstance().apply {
-
-        }
+        val calendar = Calendar.getInstance()
 
         val workDays = listOf(
             WorkDay(calendar.time, listOf(Attendee("1"), Attendee("2"))),
@@ -385,22 +378,17 @@ fun WhosInScreenPreview() {
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        val member1 = Member("1", displayName = "Vin Norman", initialsColor = "18434129578667540480")
-        val member2 = Member("2", displayName = "Maria Norman", initialsColor = "18434129578667540480")
-
         val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team"), email = "vin.norman@gmail.com").apply { id = "1" }
-        val team = Team("Some team", members = listOf(member1, member2))
 
         WhosInTheme {
             WhosInContent(
                 days = workDays,
                 userId = user.id,
                 onDayClicked = { },
-                team = team,
+                members = listOf(),
                 onNextWeekClicked = {},
                 onPreviousWeekClicked = {},
                 onTodayClicked = {},
-                navigate = {},
                 onDateSelected = {}
             )
         }

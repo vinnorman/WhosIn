@@ -19,7 +19,8 @@ class TeamViewModel(private val user: User, private val repository: TeamReposito
         viewModelScope.launch {
             uiState = try {
                 val team = repository.getTeam(user.team?.id ?: throw Exception("No user team ID"))
-                UiState.Success(user, team)
+                val members = repository.getTeamMembers(user.team.id)
+                UiState.Success(user, team, members)
             } catch (exception: Exception) {
                 UiState.Error(exception)
             }
@@ -32,7 +33,8 @@ class TeamViewModel(private val user: User, private val repository: TeamReposito
 
         data class Success(
             val user: User,
-            val team: Team
+            val team: Team,
+            val members: List<User>
         ) : UiState()
 
         data class Error(

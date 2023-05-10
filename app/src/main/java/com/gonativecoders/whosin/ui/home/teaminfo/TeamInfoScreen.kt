@@ -20,7 +20,6 @@ import com.gonativecoders.whosin.core.theme.Grey500
 import com.gonativecoders.whosin.core.theme.Grey900
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.team.model.Member
 import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel.UiState
 
@@ -57,10 +56,10 @@ fun TeamInfoContent(uiState: UiState.Success, onBackArrowPressed: () -> Unit) {
         Spacer(modifier = Modifier.padding(20.dp))
         LabelAndValue(label = "Join Code", value = uiState.team.code!!)
         Spacer(modifier = Modifier.padding(20.dp))
-        LabelAndValue(label = "Team Members", value = uiState.team.members.size.toString())
+        LabelAndValue(label = "Team Members", value = uiState.members.size.toString())
         uiState.admin?.let { admin ->
             Spacer(modifier = Modifier.padding(20.dp))
-            LabelAndValue(label = "Created By", value = admin.displayName)
+            LabelAndValue(label = "Created By", value = admin.name)
         } ?: run {
             Log.e("Team Info Screen", "Couldn't find admin for team")
         }
@@ -82,10 +81,10 @@ private fun Preview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val team = Team(name = "Some team", createdBy = "123", code = "123ABC", members = listOf(Member("1")))
+        val team = Team(name = "Some team", createdBy = "123", code = "123ABC")
         val user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" }
-        val admin = Member("123", displayName = "The Admin Name")
-        val uiState = UiState.Success(team, user, admin)
+        val admin = User("Some admin", "", email = "vin.norman@gmail.com").apply { id = "123" }
+        val uiState = UiState.Success(team, listOf(), user, admin)
         WhosInTheme {
             TeamInfoContent(uiState = uiState, onBackArrowPressed = { })
         }

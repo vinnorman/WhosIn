@@ -171,7 +171,7 @@ fun EditProfileContent(
                         ) {
 
                             AsyncImage(
-                                model = uiState.imageUri,
+                                model = uiState.newImageUri ?: uiState.existingImageUri,
                                 error = painterResource(id = R.drawable.profile),
                                 contentDescription = "Profile photo",
                                 modifier = Modifier.fillMaxSize(),
@@ -189,7 +189,7 @@ fun EditProfileContent(
                             imageUri = uri
                             cameraLauncher.launch(uri)
                         }) {
-                        Text(text = if (uiState.imageUri == null) "Take Photo" else "Change Photo")
+                        Text(text = if (uiState.existingImageUri == null && uiState.newImageUri == null) "Take Photo" else "Change Photo")
                     }
                     Spacer(modifier = Modifier.size(48.dp))
 //                    Text(text = "Display Name", style = MaterialTheme.typography.bodySmall)

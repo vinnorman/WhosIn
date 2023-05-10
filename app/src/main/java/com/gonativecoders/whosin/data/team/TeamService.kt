@@ -3,7 +3,6 @@ package com.gonativecoders.whosin.data.team
 import com.gonativecoders.whosin.core.util.getRandomString
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -48,21 +47,20 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
     }
 
     private suspend fun addUserToTeam(user: User, teamId: String) {
-        database.collection("teams").document(teamId)
-            .update(
-                "members", FieldValue.arrayUnion(
-                    mapOf(
-                        "displayName" to user.name,
-                        "initialsColor" to user.initialsColor,
-                        "id" to user.id,
-                        "photoUri" to user.photoUri
-                    )
-                )
-            ).await()
+        database
+            .collection("teams")
+            .document(teamId)
+            .collection("members")
+            .document(user.id).set(user)
+            .await()
     }
 
     suspend fun getTeam(teamId: String): Team {
         return database.collection("teams").document(teamId).get().await().toObject() ?: throw Exception("Team not found")
+    }
+
+    suspend fun getTeamMembers(teamId: String): List<User> {
+        return database.collection("teams").document(teamId).collection("members").get().await().toObjects(User::class.java)
     }
 
 }

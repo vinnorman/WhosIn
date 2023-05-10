@@ -20,12 +20,13 @@ class EditProfileViewModel(
 
     data class UiState(
         val displayName: String = "",
-        val imageUri: String? = null,
+        val existingImageUri: String? = null,
+        val newImageUri: String? = null,
         val changesMade: Boolean = false,
         val error: Exception? = null
     )
 
-    var uiState by mutableStateOf(UiState(displayName = user.name, imageUri = user.photoUri))
+    var uiState by mutableStateOf(UiState(displayName = user.name, existingImageUri = user.photoUri))
         private set
 
     fun onNameChange(newValue: String) {
@@ -33,11 +34,11 @@ class EditProfileViewModel(
     }
 
     fun onImageChange(uri: String) {
-        uiState = uiState.copy(imageUri = uri, changesMade = true)
+        uiState = uiState.copy(newImageUri = uri, changesMade = true)
     }
 
     suspend fun saveChanges(): User {
-        uiState.imageUri?.let {uri ->
+        uiState.newImageUri?.let {uri ->
             val storageRef = storage.reference
             val profilePhotoRef = storageRef.child("profile_photos/${user.id}.jpg")
             profilePhotoRef.putFile(Uri.parse(uri)).await()
