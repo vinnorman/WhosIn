@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.AppLogo
 import com.gonativecoders.whosin.core.components.EmailField
+import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.NameField
 import com.gonativecoders.whosin.core.components.PasswordField
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -48,7 +50,9 @@ fun CreateAccountScreen(
         onPasswordChange = viewModel::onPasswordChanged,
         onCreateAccountClicked = { viewModel.onCreateAccountClicked(onAccountCreated) },
         uiState = uiState,
-        navigateToLoginScreen = navigateToLoginScreen
+        navigateToLoginScreen = navigateToLoginScreen,
+        onErrorDialogDismissed = viewModel::onErrorDialogDismissed
+
     )
 
 }
@@ -60,8 +64,17 @@ fun CreateAccountContent(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onCreateAccountClicked: () -> Unit,
-    navigateToLoginScreen: () -> Unit
+    navigateToLoginScreen: () -> Unit,
+    onErrorDialogDismissed: () -> Unit
 ) {
+    if (uiState.error != null) {
+        ErrorDialog(
+            exception = uiState.error,
+            onDismissed = onErrorDialogDismissed
+        )
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,26 +115,22 @@ fun CreateAccountContent(
                     onClick = onCreateAccountClicked,
                     border = BorderStroke(1.dp, Color.White)
                 ) {
-                    Text(text = "Create Account",  modifier = Modifier.padding(6.dp), color = Color.White)
+                    if (uiState.isCreatingAccount) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Text(text = "Create Account", modifier = Modifier.padding(6.dp), color = Color.White)
+                    }
                 }
                 Spacer(modifier = Modifier.size(24.dp))
                 TextButton(onClick = navigateToLoginScreen) {
                     Text(text = "Already have an account? Click here", color = Color.White)
                 }
-                if (uiState.error != null) {
-                    Text(text = "Whoops! Something went wrong. ${uiState.error}")
-                }
-
             }
-
-
 
         }
 
-
-
-
     }
+
 }
 
 @Preview(showBackground = true)
@@ -138,7 +147,8 @@ private fun Portrait() {
                 onNameChange = {},
                 onPasswordChange = {},
                 onCreateAccountClicked = {},
-                navigateToLoginScreen = {}
+                navigateToLoginScreen = {},
+                onErrorDialogDismissed = {}
             )
         }
     }

@@ -24,12 +24,9 @@ sealed class MainDestinations(val route: String) {
 fun MainNavigator(
     navController: NavHostController = rememberNavController(),
     onLoggedIn: (User) -> Unit,
-    onAccountCreated: (User) -> Unit,
     onLoggedOut: () -> Unit,
-    uiState: MainViewModel.UiState,
-    onUserUpdated: (User) -> Unit
+    uiState: MainViewModel.UiState
 ) {
-
 
     NavHost(navController = navController, startDestination = MainDestinations.Splash.route) {
         composable(MainDestinations.Splash.route) {
@@ -52,7 +49,7 @@ fun MainNavigator(
                         popUpDestination = MainDestinations.Login
                     )
                 },
-                onAccountCreated = onAccountCreated
+                onAccountCreated = onLoggedIn
             )
         }
         composable(MainDestinations.Onboarding.route) {
@@ -60,7 +57,7 @@ fun MainNavigator(
                 onLoggedOut()
                 return@composable
             }
-            OnboardingScreen(user = user, onOnboardingComplete = { onLoggedIn(it) })
+            OnboardingScreen(user = user, onOnboardingComplete = onLoggedIn)
         }
 
         composable(MainDestinations.Home.route) {
@@ -71,7 +68,7 @@ fun MainNavigator(
             HomeScreen(
                 user = user,
                 onLoggedOut = onLoggedOut,
-                onUserUpdated = onUserUpdated
+                onUserUpdated = onLoggedIn
             )
         }
     }

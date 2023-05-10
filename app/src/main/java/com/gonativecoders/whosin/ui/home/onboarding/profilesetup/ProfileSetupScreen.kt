@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,17 +51,28 @@ import coil.request.ImageRequest
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
 import com.gonativecoders.whosin.data.auth.model.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileSetupScreen(
     viewModel: ProfileSetupViewModel,
-    onOnboardingComplete: (User) -> Unit
+    onOnboardingComplete: (User) -> Unit,
+    coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
     ProfileSetupContent(
-        onNextClicked = {
-            viewModel.onNextClicked(it) { user -> onOnboardingComplete(user) }
+        onNextClicked = { uri ->
+            coroutineScope.launch {
+                viewModel.updateUser(uri)
+                onOnboardingComplete(viewModel.user)
+            }
         },
-        onSkipped = {}
+        onSkipped = {
+            coroutineScope.launch {
+                viewModel.markOnboardingComplete()
+                onOnboardingComplete(viewModel.user)
+            }
+        }
     )
 }
 
@@ -198,7 +210,7 @@ fun ProfileSetupContent(
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
-                        onClick = { onNextClicked(imageUri!!) }) {
+                        onClick = { onSkipped() }) {
                         Text(text = "Skip")
                     }
                 }

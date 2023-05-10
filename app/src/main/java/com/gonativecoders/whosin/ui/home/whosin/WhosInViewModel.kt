@@ -23,7 +23,6 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
         private set
 
     init {
-
         viewModelScope.launch {
             loadData()
         }
@@ -34,7 +33,7 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
             val team = repository.getTeam(user.team?.id ?: throw Exception("No teams found!"))
             val flow: Flow<List<WorkDay>> = repository.getWeek(team.id, selectedWeek.time)
             flow.collect {
-                uiState = UiState.Success(user, team, it)
+                if (it.isNotEmpty()) uiState = UiState.Success(user, team, it)
             }
         } catch (exception: Exception) {
             uiState = UiState.Error(exception)

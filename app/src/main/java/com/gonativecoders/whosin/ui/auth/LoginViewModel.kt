@@ -16,7 +16,7 @@ class LoginViewModel(private val repository: AuthRepository, private val dataSto
         val email: String = "",
         val password: String = "",
         val isLoggingIn: Boolean = false,
-        val error: Throwable? = null
+        val error: Exception? = null
     )
 
     var uiState by mutableStateOf(UiState())
@@ -40,6 +40,10 @@ class LoginViewModel(private val repository: AuthRepository, private val dataSto
                 uiState = uiState.copy(error = exception, isLoggingIn = false)
             }
         }
+    }
+
+    fun onErrorDialogDismissed() {
+        uiState = uiState.copy(error = null)
     }
 
 }

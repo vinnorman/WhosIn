@@ -16,7 +16,7 @@ class CreateAccountViewModel(private val repository: AuthRepository) : ViewModel
         val email: String = "",
         val password: String = "",
         val isCreatingAccount: Boolean = false,
-        val error: Throwable? = null
+        val error: Exception? = null
     )
 
     var uiState by mutableStateOf(UiState())
@@ -35,6 +35,7 @@ class CreateAccountViewModel(private val repository: AuthRepository) : ViewModel
     }
 
     fun onCreateAccountClicked(onLoggedIn: (User) -> Unit) {
+        uiState = uiState.copy(isCreatingAccount = true)
         viewModelScope.launch {
             try {
                 val user = repository.createAccount(uiState.email, uiState.password, uiState.displayName)
@@ -43,6 +44,11 @@ class CreateAccountViewModel(private val repository: AuthRepository) : ViewModel
                 uiState = uiState.copy(error = exception)
             }
         }
+    }
+
+    fun onErrorDialogDismissed() {
+        uiState = uiState.copy(error = null)
+
     }
 
 }

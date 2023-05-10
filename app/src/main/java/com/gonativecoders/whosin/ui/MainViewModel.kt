@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainViewModel(private val dataStoreRepository: DataStoreRepository) : ViewModel() {
+class MainViewModel : ViewModel() {
 
     var uiState by mutableStateOf<UiState>(UiState.Splash)
         private set
@@ -23,16 +22,22 @@ class MainViewModel(private val dataStoreRepository: DataStoreRepository) : View
         uiState = UiState.LoggedOut
     }
 
-    fun onUserUpdated(user: User) {
-        uiState = UiState.LoggedIn(user)
-    }
-
     sealed class UiState {
 
         object Splash : UiState()
         object LoggedOut : UiState()
 
-        data class LoggedIn(var user: User) : UiState()
+        data class LoggedIn(var user: User) : UiState() {
+
+            override fun equals(other: Any?): Boolean {
+                return super.equals(other)
+            }
+
+            override fun hashCode(): Int {
+                return user.hashCode()
+            }
+
+        }
 
     }
 

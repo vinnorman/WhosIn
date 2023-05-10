@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.AppLogo
 import com.gonativecoders.whosin.core.components.EmailField
+import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.PasswordField
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
@@ -48,7 +51,8 @@ fun LoginScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChanged,
         onLoginClicked = { viewModel.onLoginClicked(onLoggedIn) },
-        onCreateAccountClicked = navigateToRegisterScreen
+        onCreateAccountClicked = navigateToRegisterScreen,
+        onErrorDialogDismissed = viewModel::onErrorDialogDismissed
     )
 }
 
@@ -58,8 +62,16 @@ fun LoginContent(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onCreateAccountClicked: () -> Unit
+    onCreateAccountClicked: () -> Unit,
+    onErrorDialogDismissed: () -> Unit
 ) {
+
+    if (uiState.error != null) {
+        ErrorDialog(
+            exception = uiState.error,
+            onDismissed = onErrorDialogDismissed
+        )
+    }
 
     when (LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -85,7 +97,6 @@ fun LoginContent(
 }
 
 
-
 @Composable
 private fun Portrait(
     uiState: LoginViewModel.UiState,
@@ -95,11 +106,13 @@ private fun Portrait(
     onCreateAccountClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().imePadding()
     ) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
             AppLogo(
                 Modifier
                     .fillMaxWidth()
@@ -132,15 +145,23 @@ private fun Landscape(
     onLoginClicked: () -> Unit,
     onCreateAccountClicked: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+    Row(modifier = Modifier.fillMaxSize().imePadding()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
             AppLogo(
                 Modifier
                     .fillMaxSize()
                     .align(Alignment.Center)
             )
         }
-        Box(modifier = Modifier.fillMaxSize().weight(1.25f)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1.25f)
+        ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.login_background),
                 contentDescription = null,
@@ -159,7 +180,6 @@ private fun Landscape(
         }
     }
 }
-
 
 
 @Composable
@@ -188,15 +208,12 @@ private fun LoginScreenFields(
             if (uiState.isLoggingIn) {
                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
             } else {
-                Text(text = "Log In", color = Color.White)
+                Text(text = "Log In", modifier = Modifier.padding(6.dp), color = Color.White)
             }
         }
         Spacer(modifier = Modifier.size(12.dp))
         TextButton(onClick = onCreateAccountClicked) {
             Text(text = "Create Account", color = Color.White)
-        }
-        if (uiState.error != null) {
-            Text(text = "Whoops! Something went wrong. ${uiState.error}")
         }
     }
 }
@@ -215,7 +232,8 @@ private fun Portrait() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClicked = {},
-                onCreateAccountClicked = {}
+                onCreateAccountClicked = {},
+                onErrorDialogDismissed = {}
             )
         }
 
@@ -237,7 +255,8 @@ private fun Landscape() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClicked = {},
-                onCreateAccountClicked = {}
+                onCreateAccountClicked = {},
+                onErrorDialogDismissed = {}
             )
         }
 
