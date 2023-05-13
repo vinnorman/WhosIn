@@ -14,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.home.account.EditProfileScreen
-import com.gonativecoders.whosin.ui.home.onboarding.createteam.CreateTeamScreen
+import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoScreen
 import org.koin.androidx.compose.getViewModel

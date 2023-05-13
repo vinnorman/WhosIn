@@ -1,6 +1,5 @@
 package com.gonativecoders.whosin.data.team
 
-import com.gonativecoders.whosin.core.util.getRandomString
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,17 +10,18 @@ import kotlinx.coroutines.tasks.await
 
 class TeamService(private val database: FirebaseFirestore = Firebase.firestore) {
 
-    suspend fun createTeam(userId: String, teamName: String): Team {
+    suspend fun isTeamIdAvailable(userId: String, teamId: String): Boolean {
+        return !database.collection("teams").document(teamId).get().await().exists()
+    }
+
+    suspend fun createTeam(userId: String, teamName: String, teamId: String): Team {
         val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
         val team = Team(
             name = teamName,
-            createdBy = userId,
-            code = getRandomString(6)
+            createdBy = userId
         )
-        val document = database.collection("teams")
-            .add(team)
-            .await()
-        team.id = document.id
+        database.collection("teams").document(teamId).set(team) .await()
+        team.id = teamId
         addTeamToUser(userId = user.id, team = team)
         addUserToTeam(user, team.id)
         return team
@@ -39,7 +39,6 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
         database.collection("users").document(userId)
             .update(
                 "team", mapOf(
-                    "code" to team.code,
                     "id" to team.id,
                     "name" to team.name,
                 )

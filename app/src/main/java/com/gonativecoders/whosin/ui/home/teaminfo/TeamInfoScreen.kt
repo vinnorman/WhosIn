@@ -9,13 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.Loading
-import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
+import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
 import com.gonativecoders.whosin.core.theme.Grey500
 import com.gonativecoders.whosin.core.theme.Grey900
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -40,29 +41,36 @@ fun TeamInfoScreen(
 
 @Composable
 fun TeamInfoContent(uiState: UiState.Success, onBackArrowPressed: () -> Unit) {
-    ScreenWithBackArrow(
+    StandardToolbarLayout(
         onBackArrowPressed = onBackArrowPressed,
         title = "Team Info"
     ) {
-        Image(painter = painterResource(id = R.drawable.team), contentDescription = "Hi")
 
-        Text(text = uiState.team.name!!, style = MaterialTheme.typography.headlineMedium)
-        if (uiState.team.createdBy == uiState.user.id) {
-            IconButton(onClick = { }) {
-                Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Edit Team Name")
+        Column(
+            modifier = Modifier.fillMaxSize().padding(top = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(painter = painterResource(id = R.drawable.team), contentDescription = "Hi")
+
+            Text(text = uiState.team.name!!, style = MaterialTheme.typography.headlineMedium)
+            if (uiState.team.createdBy == uiState.user.id) {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Edit Team Name")
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(20.dp))
+            LabelAndValue(label = "Team Id", value = uiState.team.id)
+            Spacer(modifier = Modifier.padding(20.dp))
+            LabelAndValue(label = "Team Members", value = uiState.members.size.toString())
+            uiState.admin?.let { admin ->
+                Spacer(modifier = Modifier.padding(20.dp))
+                LabelAndValue(label = "Created By", value = admin.name)
+            } ?: run {
+                Log.e("Team Info Screen", "Couldn't find admin for team")
             }
         }
 
-        Spacer(modifier = Modifier.padding(20.dp))
-        LabelAndValue(label = "Join Code", value = uiState.team.code!!)
-        Spacer(modifier = Modifier.padding(20.dp))
-        LabelAndValue(label = "Team Members", value = uiState.members.size.toString())
-        uiState.admin?.let { admin ->
-            Spacer(modifier = Modifier.padding(20.dp))
-            LabelAndValue(label = "Created By", value = admin.name)
-        } ?: run {
-            Log.e("Team Info Screen", "Couldn't find admin for team")
-        }
     }
 }
 
@@ -81,7 +89,7 @@ private fun Preview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val team = Team(name = "Some team", createdBy = "123", code = "123ABC")
+        val team = Team(name = "Some team", createdBy = "123").apply { id = "my-team-id" }
         val user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" }
         val admin = User("Some admin", "", email = "vin.norman@gmail.com").apply { id = "123" }
         val uiState = UiState.Success(team, listOf(), user, admin)

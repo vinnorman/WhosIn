@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.home.onboarding.createteam
+package com.gonativecoders.whosin.ui.home.createteam
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,8 +19,9 @@ class CreateTeamViewModel(
 
     data class UiState(
         val teamName: String = "",
+        val teamId: String = "",
         val loading: Boolean = false,
-        val error: Throwable? = null
+        val error: Exception? = null
     )
 
     var uiState by mutableStateOf(UiState())
@@ -33,7 +34,9 @@ class CreateTeamViewModel(
     fun onCreateTeamClicked(onUserUpdated: (user: User) -> Unit, onCreateTeamSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
-                val team = repository.createTeam(uiState.teamName)
+                val isTeamNameAvailable = repository.isTeamNameAvailable(uiState.teamId)
+                if (!isTeamNameAvailable) throw Exception("Team Id has been taken. Please choose another")
+                val team = repository.createTeam(uiState.teamName, uiState.teamId)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
                 onUserUpdated(authRepository.getCurrentUser())
                 onCreateTeamSuccess()
@@ -41,6 +44,14 @@ class CreateTeamViewModel(
                 uiState = uiState.copy(error = exception)
             }
         }
+    }
+
+    fun onTeamIdChanged(newValue: String) {
+        uiState = uiState.copy(teamId = newValue)
+    }
+
+    fun onErrorDialogDismissed() {
+        uiState = uiState.copy(error = null)
     }
 
 }
