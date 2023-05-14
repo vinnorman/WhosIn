@@ -19,28 +19,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.core.components.ErrorDialog
-import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
 import com.gonativecoders.whosin.core.components.TextFieldWithIcon
+import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun JoinTeamScreen(
-    onJoinTeamSuccess: () -> Unit,
     onUserUpdated: (user: User) -> Unit,
     viewModel: JoinTeamViewModel = getViewModel(),
     onBackArrowPressed: () -> Unit
 ) {
-    ScreenWithBackArrow(onBackArrowPressed = onBackArrowPressed) {
-        JoinTeamContent(uiState = viewModel.uiState,
-            onTeamIdChanged = viewModel::onTeamNameChanged,
-            onJoinTeamClicked = {
-                viewModel.onJoinTeamClicked(onUserUpdated)
-            },
-            onErrorDismissed = viewModel::onErrorDismissed
-        )
-    }
+    JoinTeamContent(
+        uiState = viewModel.uiState,
+        onTeamIdChanged = viewModel::onTeamNameChanged,
+        onJoinTeamClicked = {
+            viewModel.onJoinTeamClicked(onUserUpdated)
+        },
+        onErrorDismissed = viewModel::onErrorDismissed,
+        onBackArrowPressed = onBackArrowPressed
+    )
 }
 
 @Composable
@@ -48,44 +47,39 @@ fun JoinTeamContent(
     uiState: JoinTeamViewModel.UiState,
     onTeamIdChanged: (String) -> Unit,
     onJoinTeamClicked: () -> Unit,
-    onErrorDismissed: () -> Unit
+    onErrorDismissed: () -> Unit,
+    onBackArrowPressed: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+
+    StandardToolbarLayout(
+        onBackArrowPressed = onBackArrowPressed,
+        title = "Join Team"
     ) {
-        TextFieldWithIcon(
-            value = uiState.teamId,
-            onNewValue = onTeamIdChanged,
-            placeholder = "Team Id",
-            icon = Icons.Default.Group,
-            contentDescription = "Team Id"
-        )
-        Spacer(modifier = Modifier.size(48.dp))
-        Button(onClick = onJoinTeamClicked) {
-            Text(text = "Join Team")
-        }
-        if (uiState.error != null) {
-           ErrorDialog(exception = uiState.error, onDismissed = onErrorDismissed)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TextFieldWithIcon(
+                value = uiState.teamId,
+                onNewValue = onTeamIdChanged,
+                placeholder = "Team Id",
+                icon = Icons.Default.Group,
+                contentDescription = "Team Id"
+            )
+            Spacer(modifier = Modifier.size(48.dp))
+            Button(onClick = onJoinTeamClicked) {
+                Text(text = "Join Team")
+            }
+            if (uiState.error != null) {
+                ErrorDialog(exception = uiState.error, onDismissed = onErrorDismissed)
+            }
         }
     }
-}
-
-@Composable
-fun TeamCodeField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
-    TextFieldWithIcon(
-        value = value,
-        onNewValue = onNewValue,
-        placeholder = "6 digit Team Code",
-        icon = Icons.Default.Group,
-        contentDescription = "6 digit Team Code"
-    )
 
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -99,7 +93,8 @@ fun DefaultPreview() {
                 uiState = JoinTeamViewModel.UiState(),
                 onTeamIdChanged = {},
                 onJoinTeamClicked = {},
-                onErrorDismissed = {}
+                onErrorDismissed = {},
+                onBackArrowPressed = {}
             )
         }
 

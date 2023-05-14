@@ -71,7 +71,6 @@ fun HomeNavigator(
         composable(route = HomeDestinations.JoinTeam.route) {
             JoinTeamScreen(
                 onUserUpdated = onUserUpdated,
-                onJoinTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) },
                 onBackArrowPressed = { navController.popBackStack() }
             )
         }

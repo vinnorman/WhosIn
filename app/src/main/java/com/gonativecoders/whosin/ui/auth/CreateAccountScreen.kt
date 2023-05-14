@@ -113,7 +113,8 @@ fun CreateAccountContent(
                 Spacer(modifier = Modifier.size(24.dp))
                 OutlinedButton(
                     onClick = onCreateAccountClicked,
-                    border = BorderStroke(1.dp, Color.White)
+                    border = BorderStroke(1.dp, Color.White),
+                    modifier = Modifier.size(height = 48.dp, width = 200.dp)
                 ) {
                     if (uiState.isCreatingAccount) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))

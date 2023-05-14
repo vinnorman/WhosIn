@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.theme.Blue200
-import com.gonativecoders.whosin.ui.home.jointeam.TeamCodeField
 
 @Composable
 fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -144,7 +143,6 @@ fun DefaultPreview() {
             Spacer(modifier = Modifier.height(12.dp))
             TeamNameField(value = "", onNewValue = {})
             Spacer(modifier = Modifier.height(12.dp))
-            TeamCodeField(value = "", onNewValue = {})
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.auth.CreateAccountScreen
 import com.gonativecoders.whosin.ui.auth.LoginScreen
-import com.gonativecoders.whosin.ui.home.HomeDestinations
 import com.gonativecoders.whosin.ui.home.HomeScreen
 import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamScreen
@@ -98,7 +97,6 @@ fun MainNavigator(
         composable(route = MainDestinations.JoinTeam.route) {
             JoinTeamScreen(
                 onUserUpdated = onUserUpdated,
-                onJoinTeamSuccess = { navController.navigate(HomeDestinations.HomeScaffold.route) },
                 onBackArrowPressed = { navController.popBackStack() }
             )
         }
