@@ -22,21 +22,17 @@ import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.team.model.Team
 
 @Composable
 fun TeamScreen(
-    viewModel: TeamViewModel,
-    navigate: (String) -> Unit
+    viewModel: TeamViewModel
 ) {
     when (val uiState = viewModel.uiState) {
         is TeamViewModel.UiState.Error -> ErrorView(uiState.error.message)
         TeamViewModel.UiState.Loading -> Loading()
         is TeamViewModel.UiState.Success -> TeamContent(
             user = uiState.user,
-            team = uiState.team,
             members = uiState.members,
-            navigate = navigate
         )
     }
 }
@@ -44,9 +40,7 @@ fun TeamScreen(
 @Composable
 fun TeamContent(
     user: User,
-    team: Team,
-    members: List<User>,
-    navigate: (String) -> Unit
+    members: List<User>
 ) {
 
     Scaffold(
@@ -70,7 +64,7 @@ fun TeamContent(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        TeamView(user = user, team = team, members = members)
+        TeamView(user = user, members = members)
     }
 
 }
@@ -78,12 +72,11 @@ fun TeamContent(
 @Composable
 fun TeamView(
     user: User,
-    team: Team,
     members: List<User>
 ) {
     LazyColumn {
-        items(members) { user ->
-            TeamMemberView(user = user, user.id == user.id)
+        items(members) { member ->
+            TeamMemberView(user = member, member.id == user.id)
             Divider(color = Grey100, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
         }
     }
@@ -118,15 +111,12 @@ fun TeamScreenPreview() {
         WhosInTheme {
             TeamContent(
                 user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" },
-                team = Team(
-                    "Some team"
-                ),
                 members = listOf(
                     User("Vin", "", email = "vin.norman@gmail.com"),
                     User("Dave", "", email = "vin.norman@gmail.com"),
                     User("Graham", "", email = "vin.norman@gmail.com")
                 ),
-                navigate = {}
+
             )
         }
     }

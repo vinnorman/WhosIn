@@ -34,7 +34,7 @@ import com.gonativecoders.whosin.core.theme.WhosInTheme
 @Composable
 fun StandardToolbarLayout(
     modifier: Modifier = Modifier,
-    onBackArrowPressed: () -> Unit,
+    onBackArrowPressed: (() -> Unit)? = null,
     title: String? = null,
     actions: @Composable (RowScope.() -> Unit) = { },
     content: @Composable () -> Unit
@@ -66,12 +66,14 @@ fun StandardToolbarLayout(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = onBackArrowPressed) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowBack,
-                                contentDescription = "Previous Screen",
-                                tint = Color.White
-                            )
+                        if (onBackArrowPressed != null) {
+                            IconButton(onClick = onBackArrowPressed) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowBack,
+                                    contentDescription = "Previous Screen",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     },
                     actions = actions

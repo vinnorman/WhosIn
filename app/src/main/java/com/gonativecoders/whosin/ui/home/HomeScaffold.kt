@@ -110,8 +110,7 @@ fun HomeScaffold(
                         }
                         composable(route = HomeDestinations.BottomNavDestination.TeamMembers.route) {
                             TeamScreen(
-                                viewModel = getViewModel(parameters = { parametersOf(user) }),
-                                navigate = navigate
+                                viewModel = getViewModel(parameters = { parametersOf(user) })
                             )
                         }
                         composable(route = HomeDestinations.BottomNavDestination.Account.route) {

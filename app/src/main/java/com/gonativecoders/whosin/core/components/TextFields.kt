@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.theme.Blue200
-import com.gonativecoders.whosin.ui.home.onboarding.jointeam.TeamCodeField
+import com.gonativecoders.whosin.ui.home.jointeam.TeamCodeField
 
 @Composable
 fun EmailField(value: String, onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {

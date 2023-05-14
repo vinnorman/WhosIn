@@ -7,7 +7,7 @@ data class User(
     val initialsColor: String = "",
     val team: UserTeam? = null,
     val email: String = "",
-    var hasCompletedOnboarding: Boolean = false,
+    var hasSetupProfile: Boolean = false,
     var photoUri: String? = null
 ) {
 
@@ -17,7 +17,6 @@ data class User(
 }
 
 data class UserTeam(
-    val code: String? = "",
     val id: String? = "",
     val name: String? = ""
 )

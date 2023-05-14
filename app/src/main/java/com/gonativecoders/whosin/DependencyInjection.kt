@@ -13,7 +13,7 @@ import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
 import com.gonativecoders.whosin.ui.auth.LoginViewModel
 import com.gonativecoders.whosin.ui.home.account.EditProfileViewModel
 import com.gonativecoders.whosin.ui.home.createteam.CreateTeamViewModel
-import com.gonativecoders.whosin.ui.home.onboarding.jointeam.JoinTeamViewModel
+import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamViewModel
 import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupViewModel
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel
 import com.gonativecoders.whosin.ui.home.teammembers.TeamViewModel

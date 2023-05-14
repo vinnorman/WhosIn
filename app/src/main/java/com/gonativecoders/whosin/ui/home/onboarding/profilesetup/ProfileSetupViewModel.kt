@@ -20,11 +20,11 @@ class ProfileSetupViewModel(
         val profilePhotoRef = storageRef.child("profile_photos/${user.id}.jpg")
         profilePhotoRef.putFile(imageUri).await()
         user.photoUri = profilePhotoRef.downloadUrl.await().toString()
-        authRepository.updateUser(user.apply { hasCompletedOnboarding = true })
+        authRepository.updateUser(user.apply { hasSetupProfile = true })
     }
 
     suspend fun markOnboardingComplete() {
-        authRepository.updateUser(user.apply { hasCompletedOnboarding = true })
+        authRepository.updateUser(user.apply { hasSetupProfile = true })
     }
 
 }

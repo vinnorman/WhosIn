@@ -378,7 +378,7 @@ fun WhosInScreenPreview() {
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1", "My team"), email = "vin.norman@gmail.com").apply { id = "1" }
+        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1"), email = "vin.norman@gmail.com").apply { id = "1" }
 
         WhosInTheme {
             WhosInContent(

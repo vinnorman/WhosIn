@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
 
                 MainNavigator(
                     onLoggedIn = viewModel::setLoggedIn,
+                    onUserUpdated = viewModel::setLoggedIn,
                     onLoggedOut = viewModel::setLoggedOut,
                     uiState = uiState
                 )

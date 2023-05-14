@@ -56,20 +56,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileSetupScreen(
     viewModel: ProfileSetupViewModel,
-    onOnboardingComplete: (User) -> Unit,
+    onProfileSetupComplete: (User) -> Unit,
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
     ProfileSetupContent(
         onNextClicked = { uri ->
             coroutineScope.launch {
                 viewModel.updateUser(uri)
-                onOnboardingComplete(viewModel.user)
+                onProfileSetupComplete(viewModel.user)
             }
         },
         onSkipped = {
             coroutineScope.launch {
                 viewModel.markOnboardingComplete()
-                onOnboardingComplete(viewModel.user)
+                onProfileSetupComplete(viewModel.user)
             }
         }
     )

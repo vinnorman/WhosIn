@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.home.onboarding.jointeam
+package com.gonativecoders.whosin.ui.home.jointeam
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,29 +18,32 @@ class JoinTeamViewModel(
 ) : ViewModel() {
 
     data class UiState(
-        val teamCode: String = "",
+        val teamId: String = "",
         val loading: Boolean = false,
-        val error: Throwable? = null
+        val error: Exception? = null
     )
 
     var uiState by mutableStateOf(UiState())
         private set
 
     fun onTeamNameChanged(newValue: String) {
-        uiState = uiState.copy(teamCode = newValue)
+        uiState = uiState.copy(teamId = newValue)
     }
 
-    fun onJoinTeamClicked(onUserUpdated: (user: User) -> Unit, onJoinTeamSuccess: () -> Unit) {
+    fun onJoinTeamClicked(onUserUpdated: (user: User) -> Unit) {
         viewModelScope.launch {
             try {
-                val team = repository.joinTeam(uiState.teamCode)
+                val team = repository.joinTeam(uiState.teamId)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
                 onUserUpdated(authRepository.getCurrentUser())
-                onJoinTeamSuccess
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)
             }
         }
+    }
+
+    fun onErrorDismissed() {
+        uiState = uiState.copy(error = null)
     }
 
 }

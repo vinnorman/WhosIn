@@ -27,9 +27,9 @@ class TeamService(private val database: FirebaseFirestore = Firebase.firestore) 
         return team
     }
 
-    suspend fun joinTeam(userId: String, code: String): Team {
+    suspend fun joinTeam(userId: String, teamId: String): Team {
         val user: User = database.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
-        val team: Team = database.collection("teams").whereEqualTo("code", code).get().await().first().toObject()
+        val team: Team = database.collection("teams").document(teamId).get().await().toObject() ?: throw Exception("Team not found")
         addTeamToUser(userId, team)
         addUserToTeam(user, team.id)
         return team

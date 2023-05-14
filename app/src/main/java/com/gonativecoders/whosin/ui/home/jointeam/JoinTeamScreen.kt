@@ -1,6 +1,10 @@
-package com.gonativecoders.whosin.ui.home.onboarding.jointeam
+package com.gonativecoders.whosin.ui.home.jointeam
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.ScreenWithBackArrow
 import com.gonativecoders.whosin.core.components.TextFieldWithIcon
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -29,10 +34,11 @@ fun JoinTeamScreen(
 ) {
     ScreenWithBackArrow(onBackArrowPressed = onBackArrowPressed) {
         JoinTeamContent(uiState = viewModel.uiState,
-            onTeamNameChanged = viewModel::onTeamNameChanged,
+            onTeamIdChanged = viewModel::onTeamNameChanged,
             onJoinTeamClicked = {
-                viewModel.onJoinTeamClicked(onUserUpdated, onJoinTeamSuccess)
-            }
+                viewModel.onJoinTeamClicked(onUserUpdated)
+            },
+            onErrorDismissed = viewModel::onErrorDismissed
         )
     }
 }
@@ -40,8 +46,9 @@ fun JoinTeamScreen(
 @Composable
 fun JoinTeamContent(
     uiState: JoinTeamViewModel.UiState,
-    onTeamNameChanged: (String) -> Unit,
-    onJoinTeamClicked: () -> Unit
+    onTeamIdChanged: (String) -> Unit,
+    onJoinTeamClicked: () -> Unit,
+    onErrorDismissed: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -50,15 +57,20 @@ fun JoinTeamContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TeamCodeField(value = uiState.teamCode, onNewValue = onTeamNameChanged)
+        TextFieldWithIcon(
+            value = uiState.teamId,
+            onNewValue = onTeamIdChanged,
+            placeholder = "Team Id",
+            icon = Icons.Default.Group,
+            contentDescription = "Team Id"
+        )
         Spacer(modifier = Modifier.size(48.dp))
         Button(onClick = onJoinTeamClicked) {
             Text(text = "Join Team")
         }
         if (uiState.error != null) {
-            Text(text = "Whoops! Something went wrong. ${uiState.error}")
+           ErrorDialog(exception = uiState.error, onDismissed = onErrorDismissed)
         }
-
     }
 }
 
@@ -85,8 +97,9 @@ fun DefaultPreview() {
         WhosInTheme {
             JoinTeamContent(
                 uiState = JoinTeamViewModel.UiState(),
-                onTeamNameChanged = {},
-                onJoinTeamClicked = {}
+                onTeamIdChanged = {},
+                onJoinTeamClicked = {},
+                onErrorDismissed = {}
             )
         }
 

@@ -153,7 +153,7 @@ fun DefaultPreview() {
     ) {
         WhosInTheme {
             AccountScreen(
-                user = User("Vin", "", UserTeam("", "", ""), "vin.norman@gmail.com"),
+                user = User("Vin", "", UserTeam("", ""), "vin.norman@gmail.com"),
                 onLogOut = {},
                 onCreateNewTeam = {},
                 onJoinNewTeam = {},
