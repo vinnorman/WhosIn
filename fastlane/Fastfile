@@ -19,7 +19,7 @@ platform :android do
     )
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc "Deploy a new version to Google Play"
   lane :deploy do
     gradle(
         task: "bundle",
