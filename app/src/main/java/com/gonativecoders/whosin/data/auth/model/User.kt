@@ -6,6 +6,9 @@ data class User(
     val name: String = "",
     val initialsColor: String = "",
     val team: UserTeam? = null,
+    val email: String = "",
+    var hasSetupProfile: Boolean = false,
+    var photoUri: String? = null
 ) {
 
     @DocumentId
@@ -14,7 +17,6 @@ data class User(
 }
 
 data class UserTeam(
-    val code: String? = "",
     val id: String? = "",
     val name: String? = ""
 )

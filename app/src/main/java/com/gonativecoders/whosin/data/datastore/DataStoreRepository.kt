@@ -42,6 +42,7 @@ class DataStoreRepository(private val context: Context) {
 
         const val TEAM_ID = "teamId"
         const val HAS_SEEN_ONBOARDING = "has_seen_onboarding"
+        const val HAS_COMPLETED_ONBOARDING = "has_completed_onboarding"
     }
 
 }

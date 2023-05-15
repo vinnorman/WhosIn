@@ -17,3 +17,4 @@ local.properties
 
 *.jks
 keystore.properties
+google-service-account.json

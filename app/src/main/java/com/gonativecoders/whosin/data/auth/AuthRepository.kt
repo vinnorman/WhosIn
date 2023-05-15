@@ -24,5 +24,9 @@ class AuthRepository(private val service: AuthService) {
         return service.getUser(user.uid)
     }
 
+    suspend fun updateUser(user: User) {
+        return service.updateUser(user)
+    }
+
 
 }

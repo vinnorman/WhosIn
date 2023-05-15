@@ -1,7 +1,7 @@
 package com.gonativecoders.whosin.data.auth
 
+import com.gonativecoders.whosin.core.util.getRandomHexColor
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.util.getRandomHexColor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -29,9 +29,11 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
             .document(user.uid)
             .set(mapOf(
                 "name" to displayName,
-                "initialsColor" to randomColor
+                "initialsColor" to randomColor,
+                "email" to user.email,
+                "hasCompletedOnboarding" to false
             )).await()
-        return User(name = displayName).apply { id = user.uid }
+        return User(name = displayName, initialsColor = randomColor, email = user.email ?: "" ).apply { id = user.uid }
     }
 
     suspend fun login(email: String, password: String): User {
@@ -41,6 +43,16 @@ class AuthService(private val database: FirebaseFirestore = Firebase.firestore, 
 
     suspend fun getUser(userId: String): User  {
         return database.collection("users").document(userId).get().await().toObject() ?: throw Exception("No user found")
+    }
+
+    suspend fun updateUser(user: User) {
+        database.collection("users")
+            .document(user.id)
+            .set(user).await()
+
+        val teamId = user.team?.id ?: return
+
+        database.collection("teams").document(teamId).collection("members").document(user.id).set(user)
     }
 
 }

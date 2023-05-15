@@ -1,23 +1,33 @@
 package com.gonativecoders.whosin.data.team
 
+import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.team.model.Team
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class TeamRepository(private val service: TeamService) {
 
-    suspend fun createTeam(name: String): Team {
+    suspend fun isTeamNameAvailable(teamId: String): Boolean {
         val firebaseUser = Firebase.auth.currentUser ?: throw Exception("No logged in user!")
-        return service.createTeam(firebaseUser.uid, name)
+        return service.isTeamIdAvailable(firebaseUser.uid, teamId)
     }
 
-    suspend fun joinTeam(code: String): Team {
+    suspend fun createTeam(name: String, teamId: String): Team {
         val firebaseUser = Firebase.auth.currentUser ?: throw Exception("No logged in user!")
-        return service.joinTeam(firebaseUser.uid, code)
+        return service.createTeam(firebaseUser.uid, name, teamId)
+    }
+
+    suspend fun joinTeam(teamId: String): Team {
+        val firebaseUser = Firebase.auth.currentUser ?: throw Exception("No logged in user!")
+        return service.joinTeam(firebaseUser.uid, teamId)
     }
 
     suspend fun getTeam(teamId: String): Team {
         return service.getTeam(teamId)
+    }
+
+    suspend fun getTeamMembers(teamId: String): List<User> {
+        return service.getTeamMembers(teamId)
     }
 
 }

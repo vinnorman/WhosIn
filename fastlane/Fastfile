@@ -1,0 +1,35 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Upload to Firebase App Distribution"
+  lane :firebase do
+    gradle(
+            task: "bundle",
+            build_type: "release"
+    )
+    firebase_app_distribution(
+        app: ENV["FIREBASE_APP_ID"],
+        android_artifact_type: "AAB",
+        groups: "internal-testers"
+    )
+  end
+
+  desc "Deploy a new version to Google Play"
+  lane :deploy do
+    gradle(
+        task: "bundle",
+        build_type: "release"
+    )
+    upload_to_play_store(
+        track: "internal",
+        release_status: "draft",
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+    )
+  end
+end
