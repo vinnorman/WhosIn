@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.data.team.TeamRepository
 import kotlinx.coroutines.launch
 
 class JoinTeamViewModel(
@@ -33,7 +33,8 @@ class JoinTeamViewModel(
     fun onJoinTeamClicked(onUserUpdated: (user: User) -> Unit) {
         viewModelScope.launch {
             try {
-                val team = repository.joinTeam(uiState.teamId)
+                val userId = authRepository.getCurrentUser().id
+                val team = repository.joinTeam(userId, uiState.teamId)
                 dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
                 onUserUpdated(authRepository.getCurrentUser())
             } catch (exception: Exception) {

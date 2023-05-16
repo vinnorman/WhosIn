@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.UserPhoto
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
@@ -42,7 +43,7 @@ fun TeamScreen(
 @Composable
 fun TeamContent(
     user: User,
-    members: List<User>
+    members: List<TeamMember>
 ) {
 
     val context = LocalContext.current
@@ -86,28 +87,28 @@ fun TeamContent(
 @Composable
 fun TeamView(
     user: User,
-    members: List<User>
+    members: List<TeamMember>
 ) {
     LazyColumn {
         items(members) { member ->
-            TeamMemberView(user = member, member.id == user.id)
+            TeamMemberView(teamMember = member, member.id == user.id)
             Divider(color = Grey100, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
         }
     }
 }
 
 @Composable
-fun TeamMemberView(user: User, isUser: Boolean) {
+fun TeamMemberView(teamMember: TeamMember, isUser: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        UserPhoto(user = user)
+        UserPhoto(photoUri = teamMember.photoUri)
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
-            text = if (isUser) user.name + " (You)" else user.name,
+            text = if (isUser) teamMember.name + " (You)" else teamMember.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             color = Grey928
@@ -126,10 +127,25 @@ fun TeamScreenPreview() {
             TeamContent(
                 user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" },
                 members = listOf(
-                    User("Vin", "", email = "vin.norman@gmail.com"),
-                    User("Dave", "", email = "vin.norman@gmail.com"),
-                    User("Graham", "", email = "vin.norman@gmail.com")
-                ),
+                    TeamMember(
+                        id = "123",
+                        "Vin",
+                        email = "vin.norman@gmail.com",
+                        photoUri = null
+                    ),
+                    TeamMember(
+                        id = "123",
+                        "Vin",
+                        email = "vin.norman@gmail.com",
+                        photoUri = null
+                    ),
+                    TeamMember(
+                        id = "123",
+                        "Vin",
+                        email = "vin.norman@gmail.com",
+                        photoUri = null
+                    ),
+              ),
 
             )
         }

@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
 import com.gonativecoders.whosin.core.components.UserPhoto
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
@@ -79,6 +80,7 @@ fun WhosInScreen(
         is WhosInViewModel.UiState.Error -> {
             Log.e("vin", uiState.error.message!!, uiState.error)
         }
+
         WhosInViewModel.UiState.Loading -> Loading()
         is WhosInViewModel.UiState.Success -> WhosInContent(
             days = uiState.workDays,
@@ -87,9 +89,8 @@ fun WhosInScreen(
             members = uiState.members,
             onNextWeekClicked = { viewModel.goToNextWeek() },
             onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
-            onTodayClicked = { viewModel.goToToday() },
-            onDateSelected = { date -> viewModel.goToDate(date)}
-        )
+            onTodayClicked = { viewModel.goToToday() }
+        ) { date -> viewModel.goToDate(date) }
     }
 }
 
@@ -98,7 +99,7 @@ fun WhosInScreen(
 fun WhosInContent(
     days: List<WorkDay>,
     userId: String,
-    members: List<User>,
+    members: List<TeamMember>,
     onDayClicked: (WorkDay) -> Unit,
     onNextWeekClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
@@ -228,7 +229,7 @@ private fun WeekNavigation(
 fun WeekView(
     days: List<WorkDay>,
     userId: String,
-    members: List<User>,
+    members: List<TeamMember>,
     onDayClicked: (WorkDay) -> Unit
 ) {
     Row(
@@ -260,7 +261,7 @@ fun DayColumn(
     userId: String,
     day: WorkDay,
     onDayClicked: (WorkDay) -> Unit,
-    members: List<User>
+    members: List<TeamMember>
 ) {
     Column(
         modifier = modifier,
@@ -282,7 +283,8 @@ fun DayHeader(
     onCardClicked: (WorkDay) -> Unit,
     isAttending: Boolean
 ) {
-    val cardColor = if (getCalendarFromDate(day.date).get(Calendar.DAY_OF_YEAR) == getCalendarFromDate(today).get(Calendar.DAY_OF_YEAR)) Blue50 else Grey50
+    val cardColor =
+        if (getCalendarFromDate(day.date).get(Calendar.DAY_OF_YEAR) == getCalendarFromDate(today).get(Calendar.DAY_OF_YEAR)) Blue50 else Grey50
     Box {
         Card(modifier = modifier,
             colors = CardDefaults.cardColors(containerColor = cardColor),
@@ -294,7 +296,7 @@ fun DayHeader(
                     .fillMaxWidth()
                     .padding(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+            ) {
                 Text(
                     text = day.date.dayOfWeek().uppercase(),
                     textAlign = TextAlign.Center,
@@ -330,7 +332,7 @@ fun DayHeader(
 }
 
 @Composable
-private fun AvatarList(members: List<User>, attendees: List<Attendee>) {
+private fun AvatarList(members: List<TeamMember>, attendees: List<Attendee>) {
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -347,12 +349,12 @@ private fun AvatarList(members: List<User>, attendees: List<Attendee>) {
 }
 
 @Composable
-fun Avatar(user: User) {
+fun Avatar(member: TeamMember) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        UserPhoto(user = user)
+        UserPhoto(photoUri = member.photoUri)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = user.name.split(" ").first(),
+            text = member.name.split(" ").first(),
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             lineHeight = 18.sp
@@ -378,7 +380,12 @@ fun WhosInScreenPreview() {
             WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        val user = User(name = "Vin Norman", initialsColor = "18434129578667540480", team = UserTeam("", "1"), email = "vin.norman@gmail.com").apply { id = "1" }
+        val user = User(
+            name = "Vin Norman",
+            initialsColor = "18434129578667540480",
+            team = UserTeam("", "1"),
+            email = "vin.norman@gmail.com"
+        ).apply { id = "1" }
 
         WhosInTheme {
             WhosInContent(
@@ -388,9 +395,8 @@ fun WhosInScreenPreview() {
                 members = listOf(),
                 onNextWeekClicked = {},
                 onPreviousWeekClicked = {},
-                onTodayClicked = {},
-                onDateSelected = {}
-            )
+                onTodayClicked = {}
+            ) {}
         }
 
     }

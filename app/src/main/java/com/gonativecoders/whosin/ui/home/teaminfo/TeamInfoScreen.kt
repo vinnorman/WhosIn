@@ -2,7 +2,6 @@
 
 package com.gonativecoders.whosin.ui.home.teaminfo
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -17,12 +16,13 @@ import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Grey500
 import com.gonativecoders.whosin.core.theme.Grey900
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel.UiState
+import java.util.Date
 
 @Composable
 fun TeamInfoScreen(
@@ -47,13 +47,15 @@ fun TeamInfoContent(uiState: UiState.Success, onBackArrowPressed: () -> Unit) {
     ) {
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(top = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(painter = painterResource(id = R.drawable.team), contentDescription = "Hi")
 
-            Text(text = uiState.team.name!!, style = MaterialTheme.typography.headlineMedium)
-            if (uiState.team.createdBy == uiState.user.id) {
+            Text(text = uiState.team.name, style = MaterialTheme.typography.headlineMedium)
+            if (uiState.user.id in uiState.team.admins) {
                 IconButton(onClick = { }) {
                     Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Edit Team Name")
                 }
@@ -63,12 +65,8 @@ fun TeamInfoContent(uiState: UiState.Success, onBackArrowPressed: () -> Unit) {
             LabelAndValue(label = "Team Id", value = uiState.team.id)
             Spacer(modifier = Modifier.padding(20.dp))
             LabelAndValue(label = "Team Members", value = uiState.members.size.toString())
-            uiState.admin?.let { admin ->
-                Spacer(modifier = Modifier.padding(20.dp))
-                LabelAndValue(label = "Created By", value = admin.name)
-            } ?: run {
-                Log.e("Team Info Screen", "Couldn't find admin for team")
-            }
+            LabelAndValue(label = "Admins", value = uiState.admins.joinToString(separator = ", ") { it.name })
+
         }
 
     }
@@ -89,10 +87,28 @@ private fun Preview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val team = Team(name = "Some team", createdBy = "123").apply { id = "my-team-id" }
+        val team = com.gonativecoders.whosin.core.data.team.model.Team(
+            name = "Some team",
+            createdAt = Date(),
+            admins = listOf("123", "234"),
+            id = "my-team-id"
+        )
         val user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" }
-        val admin = User("Some admin", "", email = "vin.norman@gmail.com").apply { id = "123" }
-        val uiState = UiState.Success(team, listOf(), user, admin)
+        val admins = listOf(
+            TeamMember(
+                id = "123",
+                name = "Some admin",
+                email = "vin.norman@gmail.com",
+                photoUri = null
+            ),
+            TeamMember(
+                id = "234",
+                name = "Another admin",
+                email = "vin.norman@gmail.com",
+                photoUri = null
+            )
+        )
+        val uiState = UiState.Success(team = team, admins, user, admins)
         WhosInTheme {
             TeamInfoContent(uiState = uiState, onBackArrowPressed = { })
         }

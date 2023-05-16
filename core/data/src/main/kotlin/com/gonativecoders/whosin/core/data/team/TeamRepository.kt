@@ -1,10 +1,10 @@
-package com.gonativecoders.whosin.core.data.repository
+package com.gonativecoders.whosin.core.data.team
 
-import com.gonativecoders.whosin.core.data.repository.model.Team
-import com.gonativecoders.whosin.core.data.repository.model.User
-import com.gonativecoders.whosin.core.data.service.TeamService
-import com.gonativecoders.whosin.core.data.service.model.toTeam
-import com.gonativecoders.whosin.core.data.service.model.toUsers
+import com.gonativecoders.whosin.core.data.team.model.Team
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
+import com.gonativecoders.whosin.core.data.team.service.TeamService
+import com.gonativecoders.whosin.core.data.team.service.model.toTeam
+import com.gonativecoders.whosin.core.data.team.service.model.toTeamMembers
 
 class TeamRepository internal constructor(private val service: TeamService) {
 
@@ -24,8 +24,8 @@ class TeamRepository internal constructor(private val service: TeamService) {
         return service.getTeam(teamId).toTeam()
     }
 
-    suspend fun getTeamMembers(teamId: String): List<User> {
-        return service.getTeamMembers(teamId).toUsers()
+    suspend fun getTeamMembers(teamId: String): List<TeamMember> {
+        return service.getTeamMembers(teamId).toTeamMembers()
     }
 
     suspend fun editTeam(teamId: String, name: String) {

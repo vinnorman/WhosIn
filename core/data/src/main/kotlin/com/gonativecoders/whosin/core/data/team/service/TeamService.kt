@@ -1,7 +1,7 @@
-package com.gonativecoders.whosin.core.data.service
+package com.gonativecoders.whosin.core.data.team.service
 
-import com.gonativecoders.whosin.core.data.service.model.FirebaseTeam
-import com.gonativecoders.whosin.core.data.service.model.FirebaseUser
+import com.gonativecoders.whosin.core.data.team.service.model.FirebaseTeam
+import com.gonativecoders.whosin.core.data.team.service.model.FirebaseTeamMember
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -15,7 +15,7 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
     }
 
     suspend fun createTeam(userId: String, name: String, teamId: String): FirebaseTeam {
-        val user: FirebaseUser = firestore.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
+        val user: FirebaseTeamMember = firestore.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
         val team = FirebaseTeam(
             name = name,
             createdBy = userId
@@ -37,7 +37,7 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
             ).await()
     }
 
-    private suspend fun addUserToTeam(user: FirebaseUser, teamId: String) {
+    private suspend fun addUserToTeam(user: FirebaseTeamMember, teamId: String) {
         firestore
             .collection("teams")
             .document(teamId)
@@ -47,7 +47,7 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
     }
 
     suspend fun joinTeam(userId: String, teamId: String): FirebaseTeam {
-        val user: FirebaseUser = firestore.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
+        val user: FirebaseTeamMember = firestore.collection("users").document(userId).get().await().toObject() ?: throw Exception("User not found")
         val team: FirebaseTeam = firestore.collection("teams").document(teamId).get().await().toObject() ?: throw Exception("Team not found")
         addTeamToUser(userId, team)
         addUserToTeam(user, team.id)
@@ -59,8 +59,8 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
 
     }
 
-    suspend fun getTeamMembers(teamId: String): List<FirebaseUser> {
-        return firestore.collection("teams").document(teamId).collection("members").get().await().toObjects(FirebaseUser::class.java)
+    suspend fun getTeamMembers(teamId: String): List<FirebaseTeamMember> {
+        return firestore.collection("teams").document(teamId).collection("members").get().await().toObjects(FirebaseTeamMember::class.java)
     }
 
 }

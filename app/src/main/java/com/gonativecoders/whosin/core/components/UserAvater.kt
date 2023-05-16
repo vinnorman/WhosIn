@@ -11,13 +11,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.data.auth.model.User
 
 @Composable
-fun UserPhoto(user: User) {
+fun UserPhoto(photoUri: String?) {
         AsyncImage(
-            model = user.photoUri,
+            model = photoUri,
             contentDescription = "User Profile Photo",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -31,7 +32,7 @@ fun UserPhoto(user: User) {
 private fun Preview() {
     WhosInTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            UserPhoto(user = User(name = "Vin"))
+            UserPhoto(photoUri = null)
         }
     }
 }

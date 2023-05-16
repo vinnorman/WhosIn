@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.core.data.repository.model
+package com.gonativecoders.whosin.core.data.team.model
 
 import java.util.Date
 

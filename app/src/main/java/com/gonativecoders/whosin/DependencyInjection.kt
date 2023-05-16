@@ -4,8 +4,6 @@ import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.data.team.TeamRepository
-import com.gonativecoders.whosin.data.team.TeamService
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.WhosInService
 import com.gonativecoders.whosin.ui.MainViewModel
@@ -33,19 +31,17 @@ val koinModules = module {
     viewModel { CreateTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
     viewModel { JoinTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
     viewModel { (user: User) -> TeamViewModel(user = user, repository = get()) }
-    viewModel { (user: User) -> WhosInViewModel(user = user, repository = get()) }
+    viewModel { (user: User) -> WhosInViewModel(user = user, whosInRepository = get(), teamRepository = get()) }
 
     viewModel { (user: User) -> TeamInfoViewModel(user = user, repository = get()) }
     viewModel { (user: User) -> EditProfileViewModel(user = user, authRepository = get()) }
 
     factory { AuthRepository(service = get()) }
-    factory { WhosInRepository(service = get(), teamService = get() ) }
-    factory { TeamRepository(service = get()) }
+    factory { WhosInRepository(service = get()) }
 
     single { WhosInService() }
 
     single { AuthService() }
-    single { TeamService() }
 
     single { DataStoreRepository(androidContext()) }
 }

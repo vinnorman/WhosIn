@@ -31,4 +31,5 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
+    implementation("io.insert-koin:koin-android:3.2.2")
 }

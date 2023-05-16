@@ -1,11 +1,11 @@
-package com.gonativecoders.whosin.core.data.service.model
+package com.gonativecoders.whosin.core.data.team.service.model
 
-import com.gonativecoders.whosin.core.data.repository.model.Team
+import com.gonativecoders.whosin.core.data.team.model.Team
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
-data class FirebaseTeam(
+internal data class FirebaseTeam(
     val name: String? = null,
     val createdBy: String? = null,
     @ServerTimestamp
@@ -17,7 +17,7 @@ data class FirebaseTeam(
 
 }
 
-fun FirebaseTeam.toTeam(): Team {
+internal fun FirebaseTeam.toTeam(): Team {
    return  Team(
         id = id,
         name = name!!,

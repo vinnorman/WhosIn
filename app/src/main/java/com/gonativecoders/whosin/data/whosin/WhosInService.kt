@@ -3,7 +3,6 @@ package com.gonativecoders.whosin.data.whosin
 import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
 import com.gonativecoders.whosin.core.util.calendar.weekString
 import com.gonativecoders.whosin.core.util.calendar.yearString
-import com.gonativecoders.whosin.data.team.model.Team
 import com.gonativecoders.whosin.data.whosin.model.Attendee
 import com.gonativecoders.whosin.data.whosin.model.Week
 import com.gonativecoders.whosin.data.whosin.model.WorkDay
@@ -11,7 +10,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
@@ -63,10 +61,6 @@ class WhosInService(private val database: FirebaseFirestore = Firebase.firestore
             weekDocument.collection("days").document(dayOfWeek.toString()).set(day)
             day.id = dayOfWeek.toString()
         }
-    }
-
-    suspend fun getTeam(teamId: String): Team {
-        return database.collection("teams").document(teamId).get().await().toObject<Team>() ?: throw Exception("Team not found")
     }
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, attendee: Attendee, isAttending: Boolean) {

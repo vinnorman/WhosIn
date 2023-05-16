@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.core.data.team.TeamRepository
+import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.data.whosin.model.Attendee
@@ -14,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class WhosInViewModel(private val user: User, private val repository: WhosInRepository) : ViewModel() {
+class WhosInViewModel(private val user: User, private val whosInRepository: WhosInRepository, private val teamRepository: TeamRepository) : ViewModel() {
 
     private var selectedWeek = Calendar.getInstance()
 
@@ -31,8 +33,8 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
 
     private suspend fun loadData() {
         try {
-            val members = repository.getTeamMembers(teamId ?: throw Exception("No teams found!"))
-            val flow: Flow<List<WorkDay>> = repository.getWeek(teamId, selectedWeek.time)
+            val members = teamRepository.getTeamMembers(teamId ?: throw Exception("No teams found!"))
+            val flow: Flow<List<WorkDay>> = whosInRepository.getWeek(teamId, selectedWeek.time)
             flow.collect { workDays ->
                 if (workDays.isNotEmpty()) {
                     uiState = UiState.Success(
@@ -65,7 +67,7 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
         teamId ?: return
         (uiState as? UiState.Success)?.let {
             viewModelScope.launch {
-                repository.updateAttendance(user.id, teamId, day)
+                whosInRepository.updateAttendance(user.id, teamId, day)
                 loadData()
             }
             toggleAttendance(it, day)
@@ -111,7 +113,7 @@ class WhosInViewModel(private val user: User, private val repository: WhosInRepo
 
         data class Success(
             val user: User,
-            val members: List<User>,
+            val members: List<TeamMember>,
             val workDays: List<WorkDay>,
         ) : UiState()
 
