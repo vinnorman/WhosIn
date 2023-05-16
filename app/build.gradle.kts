@@ -1,8 +1,11 @@
+@file:Suppress("DSL_SCOPE_VIOLATION")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
+
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
 }
@@ -94,7 +97,9 @@ dependencies {
 
     implementation(project(":core:data"))
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation(libs.androidx.ktx)
+
+
     implementation("androidx.compose.ui:ui:1.5.0-alpha02")
     implementation("androidx.compose.material3:material3:1.1.0-beta02")
     implementation("androidx.compose.ui:ui-tooling:1.5.0-alpha03")
@@ -119,13 +124,12 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
-    implementation(platform("com.google.firebase:firebase-bom:30.4.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-dynamic-links-ktx")
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.dynamic.links.ktx)
 
 
     testImplementation("junit:junit:4.13.2")

@@ -1,5 +1,8 @@
+@file:Suppress("DSL_SCOPE_VIOLATION")
+
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.application)
+
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
 }
@@ -13,5 +16,9 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
 }
