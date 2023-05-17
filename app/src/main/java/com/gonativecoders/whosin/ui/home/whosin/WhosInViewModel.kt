@@ -7,16 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
+import com.gonativecoders.whosin.core.data.whosin.WhosInRepository
+import com.gonativecoders.whosin.core.data.whosin.model.Attendee
+import com.gonativecoders.whosin.core.data.whosin.model.WorkDay
 import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.whosin.WhosInRepository
-import com.gonativecoders.whosin.data.whosin.model.Attendee
-import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
-class WhosInViewModel(private val user: User, private val whosInRepository: WhosInRepository, private val teamRepository: TeamRepository) : ViewModel() {
+class WhosInViewModel(
+    private val user: User,
+    private val whosInRepository: WhosInRepository,
+    private val teamRepository: TeamRepository
+) : ViewModel() {
 
     private var selectedWeek = Calendar.getInstance()
 
@@ -80,13 +84,12 @@ class WhosInViewModel(private val user: User, private val whosInRepository: Whos
     ) {
         uiState = it.copy(workDays = it.workDays.map { workDay ->
             if (day == workDay) {
-
-                workDay.copy(attendance = workDay.attendance.toMutableList().apply {
-                    val wasRemoved = removeIf { attendee -> attendee.userId == user.id }
-                    if (!wasRemoved) add(Attendee(user.id))
-                }).apply {
-                    id = workDay.id
-                }
+                workDay.copy(
+                    attendance = workDay.attendance.toMutableList().apply {
+                        val wasRemoved = removeIf { attendee -> attendee.userId == user.id }
+                        if (!wasRemoved) add(Attendee(user.id))
+                    }
+                )
             } else {
                 workDay
             }

@@ -1,8 +1,8 @@
-package com.gonativecoders.whosin.core.util.calendar
+package com.gonativecoders.whosin.core.data.calendar
 
-import java.util.*
-
-
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
 
 fun getWorkingWeekCalendar(date: Date): Calendar {
     return GregorianCalendar.getInstance().apply {

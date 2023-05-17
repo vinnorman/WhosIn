@@ -1,7 +1,9 @@
 package com.gonativecoders.whosin.data.auth.model
 
+import androidx.annotation.Keep
 import com.google.firebase.firestore.DocumentId
 
+@Keep
 data class User(
     val name: String = "",
     val initialsColor: String = "",
@@ -16,6 +18,7 @@ data class User(
 
 }
 
+@Keep
 data class UserTeam(
     val id: String? = "",
     val name: String? = ""

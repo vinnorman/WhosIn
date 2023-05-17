@@ -14,7 +14,6 @@ import kotlinx.coroutines.tasks.await
 
 class AuthService(private val database: FirebaseFirestore = Firebase.firestore, private val auth: FirebaseAuth = Firebase.auth) {
 
-
     suspend fun createAccount(email: String, password: String, displayName: String): User {
         val user = auth.createUserWithEmailAndPassword(email, password).await().user ?: throw Exception("Couldn't create account")
         user.updateProfile(userProfileChangeRequest {

@@ -4,8 +4,6 @@ import com.gonativecoders.whosin.data.auth.AuthRepository
 import com.gonativecoders.whosin.data.auth.AuthService
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.gonativecoders.whosin.data.whosin.WhosInRepository
-import com.gonativecoders.whosin.data.whosin.WhosInService
 import com.gonativecoders.whosin.ui.MainViewModel
 import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
 import com.gonativecoders.whosin.ui.auth.LoginViewModel
@@ -37,9 +35,7 @@ val koinModules = module {
     viewModel { (user: User) -> EditProfileViewModel(user = user, authRepository = get()) }
 
     factory { AuthRepository(service = get()) }
-    factory { WhosInRepository(service = get()) }
 
-    single { WhosInService() }
 
     single { AuthService() }
 

@@ -52,7 +52,11 @@ import androidx.compose.ui.unit.sp
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
 import com.gonativecoders.whosin.core.components.UserPhoto
+import com.gonativecoders.whosin.core.data.calendar.getCalendarFromDate
+import com.gonativecoders.whosin.core.data.calendar.getWorkingWeekCalendar
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
+import com.gonativecoders.whosin.core.data.whosin.model.Attendee
+import com.gonativecoders.whosin.core.data.whosin.model.WorkDay
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
@@ -60,13 +64,9 @@ import com.gonativecoders.whosin.core.theme.Grey800
 import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.core.util.calendar.dayOfMonth
 import com.gonativecoders.whosin.core.util.calendar.dayOfWeek
-import com.gonativecoders.whosin.core.util.calendar.getCalendarFromDate
-import com.gonativecoders.whosin.core.util.calendar.getWorkingWeekCalendar
 import com.gonativecoders.whosin.core.util.calendar.shortDate
 import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.data.auth.model.UserTeam
-import com.gonativecoders.whosin.data.whosin.model.Attendee
-import com.gonativecoders.whosin.data.whosin.model.WorkDay
 import java.util.Calendar
 import java.util.Date
 
@@ -373,11 +373,11 @@ fun WhosInScreenPreview() {
         val calendar = Calendar.getInstance()
 
         val workDays = listOf(
-            WorkDay(calendar.time, listOf(Attendee("1"), Attendee("2"))),
-            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
-            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
-            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
-            WorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
+            WorkDay(id = "1", calendar.time, listOf(Attendee("1"), Attendee("2"))),
+            WorkDay(id = "2", date = calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time, attendance = listOf()),
+            WorkDay(id = "3", calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time, attendance = listOf()),
+            WorkDay(id = "4", calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time, attendance = listOf()),
+            WorkDay(id = "5", calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time, attendance = listOf()),
         )
 
         val user = User(

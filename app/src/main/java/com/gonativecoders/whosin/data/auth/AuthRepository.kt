@@ -6,7 +6,6 @@ import com.google.firebase.ktx.Firebase
 
 class AuthRepository(private val service: AuthService) {
 
-
     suspend fun login(email: String, password: String): User {
         return service.login(email, password)
     }

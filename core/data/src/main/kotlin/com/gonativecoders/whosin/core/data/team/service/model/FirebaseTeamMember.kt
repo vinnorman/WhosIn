@@ -1,8 +1,10 @@
 package com.gonativecoders.whosin.core.data.team.service.model
 
+import androidx.annotation.Keep
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.google.firebase.firestore.DocumentId
 
+@Keep
 internal data class FirebaseTeamMember(
     val name: String = "",
     val initialsColor: String = "",
