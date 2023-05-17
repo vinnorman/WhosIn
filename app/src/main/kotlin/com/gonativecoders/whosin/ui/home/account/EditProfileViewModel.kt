@@ -38,17 +38,19 @@ class EditProfileViewModel(
     }
 
     suspend fun saveChanges(): User {
-        val photoUri = uiState.newImageUri?.let { uri ->
+        val updatedUser = if (uiState.newImageUri != null) {
             val storageRef = storage.reference
             val profilePhotoRef = storageRef.child("profile_photos/${user.id}.jpg")
-            profilePhotoRef.putFile(Uri.parse(uri)).await()
-            profilePhotoRef
+            profilePhotoRef.putFile(Uri.parse(uiState.newImageUri)).await()
+            user.copy(
+                name = uiState.displayName,
+                photoUri = profilePhotoRef.downloadUrl.await().toString()
+            )
+        } else {
+            user.copy(
+                name = uiState.displayName
+            )
         }
-
-        val updatedUser = user.copy(
-            name = uiState.displayName,
-            photoUri = photoUri?.downloadUrl?.await()?.toString()
-        )
         authManager.updateUser(updatedUser)
         return updatedUser
     }

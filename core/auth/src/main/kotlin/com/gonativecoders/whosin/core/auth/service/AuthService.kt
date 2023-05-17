@@ -36,14 +36,19 @@ internal class AuthService(private val firebaseAuth: FirebaseAuth = Firebase.aut
     }
 
     suspend fun updateUser(user: User) {
+        val firebaseUser = FirebaseUser.parse(user)
         firestore.runTransaction {
             firestore.collection("users")
-                .document(user.id)
-                .set(user)
+                .document(firebaseUser.id)
+                .set(firebaseUser)
 
-            val teamId = user.currentTeam?.id ?: return@runTransaction
+            val teamId = firebaseUser.team?.id ?: return@runTransaction
 
-            firestore.collection("teams").document(teamId).collection("members").document(user.id).set(user)
+            firestore.collection("teams").document(teamId).collection("members").document(firebaseUser.id).set(firebaseUser)
         }.await()
+    }
+
+    fun logOut() {
+        Firebase.auth.signOut()
     }
 }

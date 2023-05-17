@@ -22,6 +22,19 @@ internal data class FirebaseUser(
         val name: String = ""
     )
 
+    companion object {
+
+        fun parse(user: User): FirebaseUser {
+            return FirebaseUser(
+                name = user.name,
+                team = user.currentTeam?.let { FirebaseUserTeam(id = it.id, name = it.name) },
+                email = user.email,
+                hasSetupProfile = user.hasSetupProfile,
+                photoUri = user.photoUri
+            ).apply { id = user.id }
+        }
+    }
+
 }
 
 internal fun FirebaseUser.toUser(): User {

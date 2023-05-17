@@ -18,7 +18,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val koinModules = module {
-    viewModel { MainViewModel()}
+    viewModel { MainViewModel(authManager = get())}
 
     viewModel { SplashViewModel(authManager = get()) }
     viewModel { (user: User) -> ProfileSetupViewModel(user = user, authManager = get()) }

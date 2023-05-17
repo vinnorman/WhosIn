@@ -12,8 +12,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.gonativecoders.whosin.core.auth.exceptions.AuthException
 
 @Composable
 fun ErrorDialog(
@@ -22,7 +21,7 @@ fun ErrorDialog(
 ) {
 
     val text = when (exception) {
-        is FirebaseAuthInvalidUserException, is FirebaseAuthInvalidCredentialsException -> "Those credentials don't seem right. Please try again."
+        is AuthException -> "Those credentials don't seem right. Please try again."
         is IllegalArgumentException -> "Please provide all the required details"
         else -> exception.message ?: "Something went wrong there. Please try again"
     }
@@ -53,7 +52,7 @@ private fun Preview() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             ErrorDialog(
-                exception = FirebaseAuthInvalidUserException("some code", "No good mate"),
+                exception = AuthException("some code", Exception("A firebase auth exception")),
                 onDismissed = {}
             )
         }

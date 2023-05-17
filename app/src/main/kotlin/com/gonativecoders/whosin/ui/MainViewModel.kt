@@ -4,11 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.gonativecoders.whosin.core.auth.AuthManager
 import com.gonativecoders.whosin.core.auth.model.User
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val authManager: AuthManager) : ViewModel() {
 
     var uiState by mutableStateOf<UiState>(UiState.Splash)
         private set
@@ -18,7 +17,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun setLoggedOut() {
-        Firebase.auth.signOut()
+        authManager.logOut()
         uiState = UiState.LoggedOut
     }
 
