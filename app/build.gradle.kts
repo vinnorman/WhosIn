@@ -60,7 +60,6 @@ android {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
-            isDebuggable = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -75,9 +74,9 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
@@ -92,11 +91,9 @@ android {
 
 dependencies {
 
-
     implementation(project(":core:data"))
 
     implementation(libs.androidx.ktx)
-
 
     implementation("androidx.compose.ui:ui:1.5.0-alpha02")
     implementation("androidx.compose.material3:material3:1.1.0-beta02")
@@ -125,8 +122,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.dynamic.links.ktx)
 
 
