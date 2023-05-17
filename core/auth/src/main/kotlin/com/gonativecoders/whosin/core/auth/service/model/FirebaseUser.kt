@@ -37,14 +37,12 @@ internal data class FirebaseUser(
 
 }
 
-internal fun FirebaseUser.toUser(): User {
-    return User(
-        id = id,
-        name = name,
-        currentTeam = team?.let { User.UserTeam(id = team.id, name = team.name) },
-        email = email,
-        hasSetupProfile = hasSetupProfile,
-        photoUri = photoUri
-    )
-}
+internal fun FirebaseUser.toUser() = User(
+    id = id,
+    name = name,
+    currentTeam = team?.let { User.UserTeam(id = team.id, name = team.name) },
+    email = email,
+    hasSetupProfile = hasSetupProfile,
+    photoUri = photoUri
+)
 

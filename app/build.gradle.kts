@@ -96,6 +96,8 @@ dependencies {
 
     implementation(libs.androidx.ktx)
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     implementation("androidx.compose.ui:ui:1.5.0-alpha02")
     implementation("androidx.compose.material3:material3:1.1.0-beta02")
     implementation("androidx.compose.ui:ui-tooling:1.5.0-alpha03")
@@ -123,7 +125,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.dynamic.links.ktx)
 
 

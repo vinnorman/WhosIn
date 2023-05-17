@@ -8,18 +8,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: MainViewModel by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        splashScreen.setKeepOnScreenCondition { viewModel.uiState is MainViewModel.UiState.Splash }
+
         setContent { MainScreen() }
     }
 
     @Composable
-    fun MainScreen(viewModel: MainViewModel = getViewModel()) {
+    fun MainScreen() {
         val uiState = viewModel.uiState
 
         WhosInTheme {

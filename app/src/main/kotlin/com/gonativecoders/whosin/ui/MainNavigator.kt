@@ -13,7 +13,6 @@ import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupScreen
 import com.gonativecoders.whosin.ui.home.onboarding.welcome.WelcomeScreen
-import com.gonativecoders.whosin.ui.splash.SplashScreen
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -36,13 +35,9 @@ fun MainNavigator(
     onLoggedOut: () -> Unit,
     uiState: MainViewModel.UiState
 ) {
-
     NavHost(navController = navController, startDestination = MainDestinations.Splash.route) {
         composable(MainDestinations.Splash.route) {
-            SplashScreen(
-                onLoggedOut = onLoggedOut,
-                onLoggedIn = onLoggedIn
-            )
+
         }
         composable(MainDestinations.Login.route) {
             LoginScreen(

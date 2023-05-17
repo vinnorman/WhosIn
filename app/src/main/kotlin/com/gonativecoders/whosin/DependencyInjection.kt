@@ -1,7 +1,6 @@
 package com.gonativecoders.whosin
 
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.MainViewModel
 import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
 import com.gonativecoders.whosin.ui.auth.LoginViewModel
@@ -12,15 +11,12 @@ import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupVie
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel
 import com.gonativecoders.whosin.ui.home.teammembers.TeamViewModel
 import com.gonativecoders.whosin.ui.home.whosin.WhosInViewModel
-import com.gonativecoders.whosin.ui.splash.SplashViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val koinModules = module {
     viewModel { MainViewModel(authManager = get())}
 
-    viewModel { SplashViewModel(authManager = get()) }
     viewModel { (user: User) -> ProfileSetupViewModel(user = user, authManager = get()) }
     viewModel { LoginViewModel(authManager = get()) }
     viewModel { CreateAccountViewModel(authManager = get()) }
@@ -31,6 +27,4 @@ val koinModules = module {
 
     viewModel { (user: User) -> TeamInfoViewModel(user = user, repository = get()) }
     viewModel { (user: User) -> EditProfileViewModel(user = user, authManager = get()) }
-
-    single { DataStoreRepository(androidContext()) }
 }
