@@ -1,17 +1,13 @@
 package com.gonativecoders.whosin.ui.splash
 
 import androidx.lifecycle.ViewModel
-import com.gonativecoders.whosin.data.auth.AuthRepository
-import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.datastore.DataStoreRepository
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.gonativecoders.whosin.core.auth.AuthManager
+import com.gonativecoders.whosin.core.auth.model.User
 
-class SplashViewModel(private val repository: AuthRepository, private val dataStoreRepository: DataStoreRepository) : ViewModel() {
+class SplashViewModel(private val authManager: AuthManager) : ViewModel() {
 
     suspend fun getLoginStatus(): LoginStatus {
-        val firebaseUser = Firebase.auth.currentUser ?: return LoginStatus.LoggedOut
-        val user = repository.getUserDetails(firebaseUser.uid)
+        val user = authManager.getCurrentUser() ?: return LoginStatus.LoggedOut
         return LoginStatus.LoggedIn(user)
     }
 

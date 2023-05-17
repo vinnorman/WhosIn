@@ -92,6 +92,7 @@ android {
 dependencies {
 
     implementation(project(":core:data"))
+    implementation(project(":core:auth"))
 
     implementation(libs.androidx.ktx)
 

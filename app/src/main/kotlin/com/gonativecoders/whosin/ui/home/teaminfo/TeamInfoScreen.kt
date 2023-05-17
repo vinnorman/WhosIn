@@ -14,13 +14,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Grey500
 import com.gonativecoders.whosin.core.theme.Grey900
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.data.auth.model.User
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoViewModel.UiState
 import java.util.Date
 
@@ -93,7 +93,7 @@ private fun Preview() {
             admins = listOf("123", "234"),
             id = "my-team-id"
         )
-        val user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" }
+        val user = User(id = "123", name = "Vin",  currentTeam = null, email = "vin.norman@gmail.com", hasSetupProfile = false)
         val admins = listOf(
             TeamMember(
                 id = "123",

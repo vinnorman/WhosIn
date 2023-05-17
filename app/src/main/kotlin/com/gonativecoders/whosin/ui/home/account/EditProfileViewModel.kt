@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.gonativecoders.whosin.data.auth.AuthRepository
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.AuthManager
+import com.gonativecoders.whosin.core.auth.model.User
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -14,9 +14,9 @@ import kotlinx.coroutines.tasks.await
 
 class EditProfileViewModel(
     val user: User,
-    private val authRepository: AuthRepository,
+    private val authManager: AuthManager,
     private val storage: FirebaseStorage = Firebase.storage
-    ) : ViewModel() {
+) : ViewModel() {
 
     data class UiState(
         val displayName: String = "",
@@ -38,18 +38,19 @@ class EditProfileViewModel(
     }
 
     suspend fun saveChanges(): User {
-        uiState.newImageUri?.let {uri ->
+        val photoUri = uiState.newImageUri?.let { uri ->
             val storageRef = storage.reference
             val profilePhotoRef = storageRef.child("profile_photos/${user.id}.jpg")
             profilePhotoRef.putFile(Uri.parse(uri)).await()
-            user.photoUri = profilePhotoRef.downloadUrl.await().toString()
+            profilePhotoRef
         }
-        val updatedUser = user.copy(name = uiState.displayName).apply { id = user.id }
-        authRepository.updateUser(updatedUser)
+
+        val updatedUser = user.copy(
+            name = uiState.displayName,
+            photoUri = photoUri?.downloadUrl?.await()?.toString()
+        )
+        authManager.updateUser(updatedUser)
         return updatedUser
     }
-
-
-
 
 }

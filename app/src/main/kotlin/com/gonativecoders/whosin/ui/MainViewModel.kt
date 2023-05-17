@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 

@@ -1,6 +1,7 @@
 package com.gonativecoders.whosin
 
 import android.app.Application
+import com.gonativecoders.whosin.core.auth.authModule
 import com.gonativecoders.whosin.core.data.dataModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -17,7 +18,7 @@ class WhosInApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@WhosInApplication)
-            modules(koinModules, dataModule)
+            modules(koinModules, dataModule, authModule)
         }
     }
 

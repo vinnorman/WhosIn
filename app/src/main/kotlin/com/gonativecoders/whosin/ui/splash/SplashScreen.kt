@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.getViewModel
 

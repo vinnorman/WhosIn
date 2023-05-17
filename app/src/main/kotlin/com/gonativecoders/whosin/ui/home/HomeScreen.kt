@@ -1,7 +1,7 @@
 package com.gonativecoders.whosin.ui.home
 
 import androidx.compose.runtime.Composable
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 
 @Composable
 fun HomeScreen(

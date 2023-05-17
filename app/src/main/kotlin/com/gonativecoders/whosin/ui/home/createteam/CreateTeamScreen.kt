@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import org.koin.androidx.compose.getViewModel
 
 @Composable

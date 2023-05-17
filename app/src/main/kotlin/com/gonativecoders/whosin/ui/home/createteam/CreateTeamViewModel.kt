@@ -5,16 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.core.auth.AuthManager
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.data.team.TeamRepository
-import com.gonativecoders.whosin.data.auth.AuthRepository
-import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import kotlinx.coroutines.launch
 
 class CreateTeamViewModel(
     private val repository: TeamRepository,
-    private val authRepository: AuthRepository,
-    private val dataStore: DataStoreRepository
+    private val authManager: AuthManager
 ) : ViewModel() {
 
     data class UiState(
@@ -35,11 +33,10 @@ class CreateTeamViewModel(
         viewModelScope.launch {
             try {
                 val isTeamNameAvailable = repository.isTeamNameAvailable(uiState.teamId)
-                val userId = authRepository.getCurrentUser().id
+                val userId = authManager.getCurrentUser()?.id ?: throw Exception("Not currently logged in")
                 if (!isTeamNameAvailable) throw Exception("Team Id has been taken. Please choose another")
-                val team = repository.createTeam(userId, uiState.teamName, uiState.teamId)
-                dataStore.putString(DataStoreRepository.TEAM_ID, team.id)
-                onUserUpdated(authRepository.getCurrentUser())
+                repository.createTeam(userId, uiState.teamName, uiState.teamId)
+                onUserUpdated(authManager.getCurrentUser() ?: throw Exception("Not currently logged in"))
                 onCreateTeamSuccess()
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception)

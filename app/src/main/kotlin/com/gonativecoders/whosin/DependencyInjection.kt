@@ -1,8 +1,6 @@
 package com.gonativecoders.whosin
 
-import com.gonativecoders.whosin.data.auth.AuthRepository
-import com.gonativecoders.whosin.data.auth.AuthService
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.data.datastore.DataStoreRepository
 import com.gonativecoders.whosin.ui.MainViewModel
 import com.gonativecoders.whosin.ui.auth.CreateAccountViewModel
@@ -22,22 +20,17 @@ import org.koin.dsl.module
 val koinModules = module {
     viewModel { MainViewModel()}
 
-    viewModel { SplashViewModel(repository = get(), dataStoreRepository = get()) }
-    viewModel { (user: User) -> ProfileSetupViewModel(user = user, authRepository = get()) }
-    viewModel { LoginViewModel(repository = get(), dataStore = get()) }
-    viewModel { CreateAccountViewModel(repository = get()) }
-    viewModel { CreateTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
-    viewModel { JoinTeamViewModel(repository = get(), dataStore = get(), authRepository = get()) }
+    viewModel { SplashViewModel(authManager = get()) }
+    viewModel { (user: User) -> ProfileSetupViewModel(user = user, authManager = get()) }
+    viewModel { LoginViewModel(authManager = get()) }
+    viewModel { CreateAccountViewModel(authManager = get()) }
+    viewModel { CreateTeamViewModel(repository = get(), authManager = get()) }
+    viewModel { JoinTeamViewModel(repository = get(), authManager = get()) }
     viewModel { (user: User) -> TeamViewModel(user = user, repository = get()) }
     viewModel { (user: User) -> WhosInViewModel(user = user, whosInRepository = get(), teamRepository = get()) }
 
     viewModel { (user: User) -> TeamInfoViewModel(user = user, repository = get()) }
-    viewModel { (user: User) -> EditProfileViewModel(user = user, authRepository = get()) }
-
-    factory { AuthRepository(service = get()) }
-
-
-    single { AuthService() }
+    viewModel { (user: User) -> EditProfileViewModel(user = user, authManager = get()) }
 
     single { DataStoreRepository(androidContext()) }
 }

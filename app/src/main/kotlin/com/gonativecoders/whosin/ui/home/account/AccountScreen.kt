@@ -36,12 +36,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.theme.Blue200
 import com.gonativecoders.whosin.core.theme.Blue50
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.auth.model.UserTeam
+
 
 @Composable
 fun AccountScreen(
@@ -153,7 +153,7 @@ fun DefaultPreview() {
     ) {
         WhosInTheme {
             AccountScreen(
-                user = User("Vin", "", UserTeam("", ""), "vin.norman@gmail.com"),
+                user = User("Vin", "", User.UserTeam("", ""), "vin.norman@gmail.com", hasSetupProfile = false),
                 onLogOut = {},
                 onCreateNewTeam = {},
                 onJoinNewTeam = {},

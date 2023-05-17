@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.ui.home.account.EditProfileScreen
 import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamScreen

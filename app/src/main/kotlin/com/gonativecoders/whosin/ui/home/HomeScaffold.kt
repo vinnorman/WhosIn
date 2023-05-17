@@ -40,8 +40,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.auth.model.UserTeam
+import com.gonativecoders.whosin.core.auth.model.User
+
 import com.gonativecoders.whosin.ui.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.home.teammembers.TeamScreen
 import com.gonativecoders.whosin.ui.home.whosin.WhosInScreen
@@ -148,7 +148,7 @@ private fun HomeTopBar(
         modifier = Modifier,
         title = {
             Text(
-                text = user.team?.name ?: "Who's In",
+                text = user.currentTeam?.name ?: "Who's In",
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
@@ -188,7 +188,7 @@ private fun TopBarPreview() {
                 containerColor = Color.Transparent,
                 topBar = {
                     HomeTopBar(
-                        user = User("Vin", "", UserTeam(name = "Sky Bet"), "vin.norman@gmail.com"), navigate = {})
+                        user = User("Vin", "", User.UserTeam(name = "Sky Bet", id = "123"), "vin.norman@gmail.com", hasSetupProfile = false), navigate = {})
                 },
                 content = { innerPadding ->
                     Card(

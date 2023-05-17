@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.ui.auth.CreateAccountScreen
 import com.gonativecoders.whosin.ui.auth.LoginScreen
 import com.gonativecoders.whosin.ui.home.HomeScreen
@@ -116,7 +116,7 @@ fun MainNavigator(
     when (uiState) {
         is MainViewModel.UiState.LoggedIn -> {
             if (!uiState.user.hasSetupProfile) return navController.navigate(MainDestinations.ProfileSetup, clear = true)
-            if (uiState.user.team == null) return navController.navigate(MainDestinations.Welcome, clear = true)
+            if (uiState.user.currentTeam == null) return navController.navigate(MainDestinations.Welcome, clear = true)
             navController.navigate(destination = MainDestinations.Home, clear = true)
         }
 

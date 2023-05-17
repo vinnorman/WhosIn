@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.UserPhoto
@@ -24,7 +25,6 @@ import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.data.auth.model.User
 
 @Composable
 fun TeamScreen(
@@ -125,7 +125,7 @@ fun TeamScreenPreview() {
     ) {
         WhosInTheme {
             TeamContent(
-                user = User("Vin", "", email = "vin.norman@gmail.com").apply { id = "123" },
+                User(id = "123", name = "Vin", currentTeam = null, email = "vin.norman@gmail.com", hasSetupProfile = false),
                 members = listOf(
                     TeamMember(
                         id = "123",
@@ -145,9 +145,9 @@ fun TeamScreenPreview() {
                         email = "vin.norman@gmail.com",
                         photoUri = null
                     ),
-              ),
+                ),
 
-            )
+                )
         }
     }
 }

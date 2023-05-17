@@ -7,6 +7,8 @@ plugins {
 
 android {
 
+    namespace = "com.gonativecoders.whosin.core.data"
+
     compileSdk = 33
 
     defaultConfig {
@@ -21,7 +23,6 @@ android {
         jvmTarget = "17"
     }
 
-    namespace = "com.gonativecoders.whosin.core.data"
 
 }
 

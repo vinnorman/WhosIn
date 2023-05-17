@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.core.data.team.model.Team
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
-import com.gonativecoders.whosin.data.auth.model.User
 import kotlinx.coroutines.launch
 
 class TeamInfoViewModel(private val user: User, private val repository: TeamRepository) : ViewModel() {
@@ -18,7 +18,7 @@ class TeamInfoViewModel(private val user: User, private val repository: TeamRepo
 
     init {
         viewModelScope.launch {
-            val team = repository.getTeam(user.team?.id ?: throw Exception("No team ID found for user"))
+            val team = repository.getTeam(user.currentTeam?.id ?: throw Exception("No team ID found for user"))
             val teamMembers = repository.getTeamMembers(team.id)
 
             val admins = teamMembers.filter { it.id in team.admins }

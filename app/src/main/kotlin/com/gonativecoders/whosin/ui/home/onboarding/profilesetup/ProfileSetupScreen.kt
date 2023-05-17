@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
-import com.gonativecoders.whosin.data.auth.model.User
+import com.gonativecoders.whosin.core.auth.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

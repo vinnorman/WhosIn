@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.data.whosin.WhosInRepository
 import com.gonativecoders.whosin.core.data.whosin.model.Attendee
 import com.gonativecoders.whosin.core.data.whosin.model.WorkDay
-import com.gonativecoders.whosin.data.auth.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -24,7 +24,7 @@ class WhosInViewModel(
 
     private var selectedWeek = Calendar.getInstance()
 
-    private val teamId: String? = user.team?.id
+    private val teamId: String? = user.currentTeam?.id
 
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set

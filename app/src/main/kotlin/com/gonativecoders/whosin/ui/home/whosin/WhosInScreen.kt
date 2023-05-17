@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.OutlinedIconButton
 import com.gonativecoders.whosin.core.components.UserPhoto
@@ -65,8 +66,6 @@ import com.gonativecoders.whosin.core.theme.WhosInTheme
 import com.gonativecoders.whosin.core.util.calendar.dayOfMonth
 import com.gonativecoders.whosin.core.util.calendar.dayOfWeek
 import com.gonativecoders.whosin.core.util.calendar.shortDate
-import com.gonativecoders.whosin.data.auth.model.User
-import com.gonativecoders.whosin.data.auth.model.UserTeam
 import java.util.Calendar
 import java.util.Date
 
@@ -381,11 +380,12 @@ fun WhosInScreenPreview() {
         )
 
         val user = User(
+            id = "1",
             name = "Vin Norman",
-            initialsColor = "18434129578667540480",
-            team = UserTeam("", "1"),
-            email = "vin.norman@gmail.com"
-        ).apply { id = "1" }
+            currentTeam = User.UserTeam("", "1"),
+            email = "vin.norman@gmail.com",
+            hasSetupProfile = true
+        )
 
         WhosInTheme {
             WhosInContent(
