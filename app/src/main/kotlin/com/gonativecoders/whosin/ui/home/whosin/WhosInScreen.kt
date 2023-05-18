@@ -380,11 +380,12 @@ fun WhosInScreenPreview() {
         )
 
         val user = User(
-            id = "1",
-            name = "Vin Norman",
-            currentTeam = User.UserTeam("", "1"),
-            email = "vin.norman@gmail.com",
-            hasSetupProfile = true
+            id = "123",
+            name = "Vin",
+            currentTeamId = "123",
+            teams = listOf(),
+            email ="vin.norman@gmail.com",
+            hasSetupProfile = false
         )
 
         WhosInTheme {

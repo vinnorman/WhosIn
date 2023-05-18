@@ -24,7 +24,8 @@ class WhosInViewModel(
 
     private var selectedWeek = Calendar.getInstance()
 
-    private val teamId: String? = user.currentTeam?.id
+    private val teamId = user.currentTeamId ?: throw Exception("No team for user")
+
 
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
@@ -37,7 +38,7 @@ class WhosInViewModel(
 
     private suspend fun loadData() {
         try {
-            val members = teamRepository.getTeamMembers(teamId ?: throw Exception("No teams found!"))
+            val members = teamRepository.getTeamMembers(teamId)
             val flow: Flow<List<WorkDay>> = whosInRepository.getWeek(teamId, selectedWeek.time)
             flow.collect { workDays ->
                 if (workDays.isNotEmpty()) {
@@ -68,7 +69,6 @@ class WhosInViewModel(
     }
 
     fun updateAttendance(day: WorkDay) {
-        teamId ?: return
         (uiState as? UiState.Success)?.let {
             viewModelScope.launch {
                 whosInRepository.updateAttendance(user.id, teamId, day)

@@ -125,7 +125,14 @@ fun TeamScreenPreview() {
     ) {
         WhosInTheme {
             TeamContent(
-                User(id = "123", name = "Vin", currentTeam = null, email = "vin.norman@gmail.com", hasSetupProfile = false),
+                User(
+                    id = "123",
+                    name = "Vin",
+                    currentTeamId = "123",
+                    teams = listOf(),
+                    email ="vin.norman@gmail.com",
+                    hasSetupProfile = false
+                ),
                 members = listOf(
                     TeamMember(
                         id = "123",

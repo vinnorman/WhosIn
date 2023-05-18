@@ -41,7 +41,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-
+import com.gonativecoders.whosin.core.data.team.model.Team
 import com.gonativecoders.whosin.ui.home.account.AccountScreen
 import com.gonativecoders.whosin.ui.home.teammembers.TeamScreen
 import com.gonativecoders.whosin.ui.home.whosin.WhosInScreen
@@ -52,6 +52,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun HomeScaffold(
     user: User,
+    team: Team,
     navigate: (String) -> Unit,
     onLoggedOut: () -> Unit,
     navController: NavHostController = rememberNavController()
@@ -69,7 +70,10 @@ fun HomeScaffold(
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
-                HomeTopBar(user = user, navigate = navigate)
+                HomeTopBar(
+                    navigate = navigate,
+                    team = team
+                )
             },
             bottomBar = {
                 NavigationBar {
@@ -137,7 +141,7 @@ fun HomeScaffold(
 
 @Composable
 private fun HomeTopBar(
-    user: User,
+    team: Team,
     navigate: (String) -> Unit
 ) {
 
@@ -148,7 +152,7 @@ private fun HomeTopBar(
         modifier = Modifier,
         title = {
             Text(
-                text = user.currentTeam?.name ?: "Who's In",
+                text = team.name,
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.White
             )
@@ -188,7 +192,13 @@ private fun TopBarPreview() {
                 containerColor = Color.Transparent,
                 topBar = {
                     HomeTopBar(
-                        user = User("Vin", "", User.UserTeam(name = "Sky Bet", id = "123"), "vin.norman@gmail.com", hasSetupProfile = false), navigate = {})
+
+                        team = Team(
+                            id = "123",
+                            admins = listOf(),
+                            name = "Go native"
+                        ),
+                        navigate = {})
                 },
                 content = { innerPadding ->
                     Card(

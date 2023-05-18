@@ -7,7 +7,8 @@ import com.google.firebase.firestore.DocumentId
 @Keep
 internal data class FirebaseUser(
     val name: String = "",
-    val team: FirebaseUserTeam? = null,
+    val currentTeamId: String? = null,
+    val teams: List<String> = listOf(),
     val email: String = "",
     var hasSetupProfile: Boolean = false,
     var photoUri: String? = null
@@ -16,18 +17,13 @@ internal data class FirebaseUser(
     @DocumentId
     lateinit var id: String
 
-    @Keep
-    data class FirebaseUserTeam(
-        val id: String = "",
-        val name: String = ""
-    )
-
     companion object {
 
         fun parse(user: User): FirebaseUser {
             return FirebaseUser(
                 name = user.name,
-                team = user.currentTeam?.let { FirebaseUserTeam(id = it.id, name = it.name) },
+                currentTeamId  = user.currentTeamId,
+                teams = user.teams,
                 email = user.email,
                 hasSetupProfile = user.hasSetupProfile,
                 photoUri = user.photoUri
@@ -40,7 +36,8 @@ internal data class FirebaseUser(
 internal fun FirebaseUser.toUser() = User(
     id = id,
     name = name,
-    currentTeam = team?.let { User.UserTeam(id = team.id, name = team.name) },
+    currentTeamId = currentTeamId,
+    teams = teams,
     email = email,
     hasSetupProfile = hasSetupProfile,
     photoUri = photoUri

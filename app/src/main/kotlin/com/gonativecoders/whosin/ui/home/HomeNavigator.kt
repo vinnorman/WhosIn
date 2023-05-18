@@ -13,16 +13,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
+import com.gonativecoders.whosin.core.data.team.model.Team
 import com.gonativecoders.whosin.ui.home.account.EditProfileScreen
 import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamScreen
 import com.gonativecoders.whosin.ui.home.teaminfo.TeamInfoScreen
+import com.gonativecoders.whosin.ui.home.teaminfo.editteam.EditTeamScreen
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
 sealed class HomeDestinations(val route: String) {
 
     object TeamInfo : HomeDestinations("Team Info")
+    object EditTeam : HomeDestinations("Edit Team")
     object EditProfile : HomeDestinations("Edit Profile")
     object CreateTeam : HomeDestinations("Create Team")
     object JoinTeam : HomeDestinations("Join Team")
@@ -46,6 +49,7 @@ val bottomDestinations = listOf(
 fun HomeNavigator(
     navController: NavHostController = rememberNavController(),
     user: User,
+    team: Team,
     onUserUpdated: (User) -> Unit,
     onLoggedOut: () -> Unit
 ) {
@@ -57,6 +61,7 @@ fun HomeNavigator(
         composable(route = HomeDestinations.HomeScaffold.route) {
             HomeScaffold(
                 user = user,
+                team = team,
                 navigate = { route -> navController.navigate(route) },
                 onLoggedOut = onLoggedOut
             )
@@ -75,8 +80,17 @@ fun HomeNavigator(
             )
         }
         composable(route = HomeDestinations.TeamInfo.route) {
-            TeamInfoScreen(viewModel = getViewModel(parameters = { parametersOf(user) }),
-                onBackArrowPressed = { navController.popBackStack() }
+            TeamInfoScreen(
+                viewModel = getViewModel(parameters = { parametersOf(user) }),
+                onBackArrowPressed = { navController.popBackStack() },
+                onEditTeamClicked = { navController.navigate(HomeDestinations.EditTeam.route) }
+            )
+        }
+        composable(route = HomeDestinations.EditTeam.route) {
+            EditTeamScreen(
+                viewModel = getViewModel(parameters = { parametersOf(user.currentTeamId) }),
+                onBackArrowPressed = { navController.popBackStack() },
+                onTeamUpdated = { navController.popBackStack() }
             )
         }
         composable(route = HomeDestinations.EditProfile.route) {

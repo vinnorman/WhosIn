@@ -6,6 +6,7 @@ import com.gonativecoders.whosin.core.data.team.service.model.FirebaseTeam
 import com.gonativecoders.whosin.core.data.team.service.model.FirebaseTeamMember
 import com.gonativecoders.whosin.core.data.team.service.model.toTeam
 import com.gonativecoders.whosin.core.data.team.service.model.toTeamMembers
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -34,10 +35,8 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
     private suspend fun addTeamToUser(userId: String, team: FirebaseTeam) {
         firestore.collection("users").document(userId)
             .update(
-                "team", mapOf(
-                    "id" to team.id,
-                    "name" to team.name,
-                )
+                "teams", FieldValue.arrayUnion(team.id),
+                "currentTeamId", team.id
             ).await()
     }
 
@@ -59,12 +58,19 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
     }
 
     suspend fun getTeam(teamId: String): Team {
-        return firestore.collection("teams").document(teamId).get().await().toObject<FirebaseTeam>()?.toTeam() ?: throw Exception("Team not found")
-
+        return firestore.collection("teams").document(teamId).get().await().toObject<FirebaseTeam>()?.toTeam()
+            ?: throw Exception("Team not found")
     }
 
     suspend fun getTeamMembers(teamId: String): List<TeamMember> {
-        return firestore.collection("teams").document(teamId).collection("members").get().await().toObjects(FirebaseTeamMember::class.java).toTeamMembers()
+        return firestore.collection("teams").document(teamId).collection("members").get().await().toObjects(FirebaseTeamMember::class.java)
+            .toTeamMembers()
+    }
+
+    suspend fun updateTeam(teamId: String, name: String) {
+        firestore.collection("teams")
+            .document(teamId)
+            .update("name", name).await()
     }
 
 }

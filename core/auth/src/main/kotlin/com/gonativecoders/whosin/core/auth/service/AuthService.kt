@@ -41,10 +41,9 @@ internal class AuthService(private val firebaseAuth: FirebaseAuth = Firebase.aut
             firestore.collection("users")
                 .document(firebaseUser.id)
                 .set(firebaseUser)
-
-            val teamId = firebaseUser.team?.id ?: return@runTransaction
-
-            firestore.collection("teams").document(teamId).collection("members").document(firebaseUser.id).set(firebaseUser)
+            firebaseUser.teams.forEach { teamId ->
+                firestore.collection("teams").document(teamId).collection("members").document(firebaseUser.id).set(firebaseUser)
+            }
         }.await()
     }
 

@@ -153,7 +153,14 @@ fun DefaultPreview() {
     ) {
         WhosInTheme {
             AccountScreen(
-                user = User("Vin", "", User.UserTeam("", ""), "vin.norman@gmail.com", hasSetupProfile = false),
+                user = User(
+                    id = "123",
+                    name = "Vin",
+                    currentTeamId = "123",
+                    teams = listOf(),
+                    email ="vin.norman@gmail.com",
+                    hasSetupProfile = false
+                ),
                 onLogOut = {},
                 onCreateNewTeam = {},
                 onJoinNewTeam = {},

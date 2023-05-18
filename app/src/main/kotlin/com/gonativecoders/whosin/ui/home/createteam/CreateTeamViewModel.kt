@@ -33,8 +33,8 @@ class CreateTeamViewModel(
         viewModelScope.launch {
             try {
                 val isTeamNameAvailable = repository.isTeamNameAvailable(uiState.teamId)
-                val userId = authManager.getCurrentUser()?.id ?: throw Exception("Not currently logged in")
                 if (!isTeamNameAvailable) throw Exception("Team Id has been taken. Please choose another")
+                val userId = authManager.getCurrentUser()?.id ?: throw Exception("Not currently logged in")
                 repository.createTeam(userId, uiState.teamName, uiState.teamId)
                 onUserUpdated(authManager.getCurrentUser() ?: throw Exception("Not currently logged in"))
                 onCreateTeamSuccess()

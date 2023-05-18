@@ -27,7 +27,7 @@ class TeamRepository internal constructor(private val service: TeamService) {
     }
 
     suspend fun editTeam(teamId: String, name: String) {
-
+        return service.updateTeam(teamId, name)
     }
 
 

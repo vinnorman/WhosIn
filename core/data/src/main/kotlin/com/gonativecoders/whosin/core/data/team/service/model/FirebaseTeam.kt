@@ -20,10 +20,9 @@ internal data class FirebaseTeam(
 }
 
 internal fun FirebaseTeam.toTeam(): Team {
-   return  Team(
+    return Team(
         id = id,
         name = name!!,
-        admins = listOf(createdBy!!),
-        createdAt = createdAt!!,
+        admins = listOf(createdBy!!)
     )
 }

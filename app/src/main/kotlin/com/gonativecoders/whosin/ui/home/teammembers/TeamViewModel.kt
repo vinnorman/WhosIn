@@ -18,7 +18,7 @@ class TeamViewModel(private val user: User, private val repository: TeamReposito
     init {
         viewModelScope.launch {
             uiState = try {
-                val teamId = user.currentTeam?.id ?: throw Exception("No user team ID")
+                val teamId = user.currentTeamId ?: throw Exception("No user team ID")
                 val members = repository.getTeamMembers(teamId)
                 UiState.Success(user,  members)
             } catch (exception: Exception) {

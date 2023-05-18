@@ -18,7 +18,7 @@ class TeamInfoViewModel(private val user: User, private val repository: TeamRepo
 
     init {
         viewModelScope.launch {
-            val team = repository.getTeam(user.currentTeam?.id ?: throw Exception("No team ID found for user"))
+            val team = repository.getTeam(user.currentTeamId?: throw Exception("No team ID found for user"))
             val teamMembers = repository.getTeamMembers(team.id)
 
             val admins = teamMembers.filter { it.id in team.admins }

@@ -96,12 +96,7 @@ fun MainNavigator(
             )
         }
         composable(MainDestinations.Home.route) {
-            val user = (uiState as? MainViewModel.UiState.LoggedIn)?.user ?: kotlin.run {
-                onLoggedOut()
-                return@composable
-            }
             HomeScreen(
-                user = user,
                 onLoggedOut = onLoggedOut,
                 onUserUpdated = onLoggedIn
             )
@@ -111,7 +106,7 @@ fun MainNavigator(
     when (uiState) {
         is MainViewModel.UiState.LoggedIn -> {
             if (!uiState.user.hasSetupProfile) return navController.navigate(MainDestinations.ProfileSetup, clear = true)
-            if (uiState.user.currentTeam == null) return navController.navigate(MainDestinations.Welcome, clear = true)
+            if (uiState.user.currentTeamId == null) return navController.navigate(MainDestinations.Welcome, clear = true)
             navController.navigate(destination = MainDestinations.Home, clear = true)
         }
 
