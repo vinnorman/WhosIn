@@ -9,6 +9,7 @@ import com.gonativecoders.whosin.core.auth.AuthManager
 import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.core.data.team.model.Team
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -19,13 +20,15 @@ class HomeViewModel(
     var uiState: UiState by mutableStateOf(UiState.Loading)
         private set
 
-    init { viewModelScope.launch {
+    init {
+        viewModelScope.launch {
             val user: User? = authManager.getCurrentUser()
-            uiState = if (user == null) {
-                UiState.LoggedOut
+            if (user == null) {
+                uiState = UiState.LoggedOut
             } else {
-                val team: Team = teamRepository.getTeam(user.currentTeamId ?: throw Exception("No team for user"))
-                UiState.Success(user, team)
+                teamRepository.getTeamFlow(user.currentTeamId ?: throw Exception("No team for user")).collectLatest { team ->
+                    uiState = UiState.Success(user, team)
+                }
             }
         }
     }

@@ -15,9 +15,7 @@ class MainViewModel(private val authManager: AuthManager) : ViewModel() {
         private set
 
     init {
-        viewModelScope.launch {
-            uiState = authManager.getCurrentUser()?.let { UiState.LoggedIn(it) } ?: UiState.LoggedOut
-        }
+        fetchUser()
     }
 
     fun setLoggedIn(user: User) {
@@ -27,6 +25,12 @@ class MainViewModel(private val authManager: AuthManager) : ViewModel() {
     fun setLoggedOut() {
         authManager.logOut()
         uiState = UiState.LoggedOut
+    }
+
+    fun fetchUser() {
+        viewModelScope.launch {
+            uiState = authManager.getCurrentUser()?.let { UiState.LoggedIn(it) } ?: UiState.LoggedOut
+        }
     }
 
     sealed class UiState {

@@ -26,7 +26,6 @@ class WhosInViewModel(
 
     private val teamId = user.currentTeamId ?: throw Exception("No team for user")
 
-
     var uiState by mutableStateOf<UiState>(UiState.Loading)
         private set
 

@@ -1,14 +1,22 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.gonativecoders.whosin.ui.home.teammembers
 
-import android.content.Intent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GroupAdd
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +29,7 @@ import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.ErrorView
 import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.components.UserPhoto
+import com.gonativecoders.whosin.core.data.team.model.Team
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.theme.Grey100
 import com.gonativecoders.whosin.core.theme.Grey928
@@ -35,6 +44,7 @@ fun TeamScreen(
         TeamViewModel.UiState.Loading -> Loading()
         is TeamViewModel.UiState.Success -> TeamContent(
             user = uiState.user,
+            team = uiState.team,
             members = uiState.members,
         )
     }
@@ -43,6 +53,7 @@ fun TeamScreen(
 @Composable
 fun TeamContent(
     user: User,
+    team: Team,
     members: List<TeamMember>
 ) {
 
@@ -51,16 +62,7 @@ fun TeamContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
-                    val link = generateInviteLink()
-
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(Intent.EXTRA_TEXT, link.toString())
-
-
-                    context.startActivity(Intent.createChooser(intent, "Share Link"))
-
+                    context.invite(team.name)
                 },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
@@ -125,7 +127,7 @@ fun TeamScreenPreview() {
     ) {
         WhosInTheme {
             TeamContent(
-                User(
+                user = User(
                     id = "123",
                     name = "Vin",
                     currentTeamId = "123",
@@ -133,6 +135,7 @@ fun TeamScreenPreview() {
                     email ="vin.norman@gmail.com",
                     hasSetupProfile = false
                 ),
+                team = Team("123", listOf(), "Team Name"),
                 members = listOf(
                     TeamMember(
                         id = "123",

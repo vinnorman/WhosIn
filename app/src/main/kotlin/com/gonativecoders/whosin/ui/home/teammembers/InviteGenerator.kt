@@ -1,20 +1,13 @@
 package com.gonativecoders.whosin.ui.home.teammembers
 
-import android.net.Uri
-import com.google.firebase.dynamiclinks.ktx.androidParameters
-import com.google.firebase.dynamiclinks.ktx.dynamicLink
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
+import android.content.Context
+import android.content.Intent
 
-fun generateInviteLink(): Uri {
-    val link = Firebase.dynamicLinks.dynamicLink {
-        link = Uri.parse("https://gonativecoders.com/invite")
-        domainUriPrefix = "https://gonativecoders.com"
-        // Open links with this app on Android
-        androidParameters("com.gonativecoders.whosin") {
-
-        }
-    }
-
-    return link.uri
+fun Context.invite(teamName: String) {
+    val share = Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, "https://gonativecoders.com/whosin")
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TITLE, "Invite to join $teamName on Who's In")
+    }, "Join $teamName on Who's In")
+    startActivity(share)
 }

@@ -23,7 +23,8 @@ class EditProfileViewModel(
         val existingImageUri: String? = null,
         val newImageUri: String? = null,
         val changesMade: Boolean = false,
-        val error: Exception? = null
+        val error: Exception? = null,
+        val saving: Boolean = false
     )
 
     var uiState by mutableStateOf(UiState(displayName = user.name, existingImageUri = user.photoUri))
@@ -51,6 +52,7 @@ class EditProfileViewModel(
                 name = uiState.displayName
             )
         }
+        uiState = uiState.copy(saving = true)
         authManager.updateUser(updatedUser)
         return updatedUser
     }

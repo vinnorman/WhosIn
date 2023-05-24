@@ -51,7 +51,8 @@ fun HomeNavigator(
     user: User,
     team: Team,
     onUserUpdated: (User) -> Unit,
-    onLoggedOut: () -> Unit
+    onLoggedOut: () -> Unit,
+    onUserLeftTeam: () -> Unit
 ) {
 
     NavHost(
@@ -83,7 +84,8 @@ fun HomeNavigator(
             TeamInfoScreen(
                 viewModel = getViewModel(parameters = { parametersOf(user) }),
                 onBackArrowPressed = { navController.popBackStack() },
-                onEditTeamClicked = { navController.navigate(HomeDestinations.EditTeam.route) }
+                onEditTeamClicked = { navController.navigate(HomeDestinations.EditTeam.route) },
+                onUserLeftTeam = onUserLeftTeam
             )
         }
         composable(route = HomeDestinations.EditTeam.route) {

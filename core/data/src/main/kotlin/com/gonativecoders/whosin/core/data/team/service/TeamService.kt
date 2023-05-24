@@ -9,8 +9,11 @@ import com.gonativecoders.whosin.core.data.team.service.model.toTeamMembers
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 internal class TeamService(private val firestore: FirebaseFirestore = Firebase.firestore) {
@@ -62,6 +65,10 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
             ?: throw Exception("Team not found")
     }
 
+    fun getTeamFlow(teamId: String): Flow<Team> {
+        return firestore.collection("teams").document(teamId).snapshots().map { it.toObject<FirebaseTeam>()?.toTeam() ?: throw Exception("Team not found") }
+    }
+
     suspend fun getTeamMembers(teamId: String): List<TeamMember> {
         return firestore.collection("teams").document(teamId).collection("members").get().await().toObjects(FirebaseTeamMember::class.java)
             .toTeamMembers()
@@ -71,6 +78,23 @@ internal class TeamService(private val firestore: FirebaseFirestore = Firebase.f
         firestore.collection("teams")
             .document(teamId)
             .update("name", name).await()
+    }
+
+    suspend fun leaveTeam(userId: String, teamId: String) {
+        firestore.runTransaction {
+            firestore.collection("teams")
+                .document(teamId)
+                .collection("members")
+                .document(userId)
+                .delete()
+
+            firestore.collection("users")
+                .document(userId)
+                .update(
+                    "currentTeamId", null,
+                    "teams", FieldValue.arrayRemove(userId)
+                )
+        }.await()
     }
 
 }

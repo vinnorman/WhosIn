@@ -38,7 +38,8 @@ class MainActivity : ComponentActivity() {
                     onLoggedIn = viewModel::setLoggedIn,
                     onUserUpdated = viewModel::setLoggedIn,
                     onLoggedOut = viewModel::setLoggedOut,
-                    uiState = uiState
+                    uiState = uiState,
+                    onUserLeftTeam = viewModel::fetchUser
                 )
 
             }

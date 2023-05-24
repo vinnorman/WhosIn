@@ -125,7 +125,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.dynamic.links.ktx)
 
 
     testImplementation("junit:junit:4.13.2")

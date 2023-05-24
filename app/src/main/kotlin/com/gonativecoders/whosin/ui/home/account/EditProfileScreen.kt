@@ -26,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -56,8 +57,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
 import com.gonativecoders.whosin.core.auth.model.User
+import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -192,7 +193,6 @@ fun EditProfileContent(
                         Text(text = if (uiState.existingImageUri == null && uiState.newImageUri == null) "Take Photo" else "Change Photo")
                     }
                     Spacer(modifier = Modifier.size(48.dp))
-//                    Text(text = "Display Name", style = MaterialTheme.typography.bodySmall)
 
                     OutlinedTextField(
                         singleLine = true,
@@ -205,43 +205,43 @@ fun EditProfileContent(
                         leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Full Name") }
                     )
 
-//                    NameField(value = "Some name", onNewValueewValue = {}, placeholder = "Display Name")
-
                 }
 
                 Column(modifier = Modifier.padding(bottom = 48.dp)) {
                     Spacer(modifier = Modifier.size(48.dp))
+                    if (uiState.saving) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                    } else {
+                        Button(
+                            enabled = uiState.changesMade,
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ),
+                            onClick = onSaveClicked) {
+                            Text(text = "Save")
+                        }
 
-                    Button(
-                        enabled = uiState.changesMade,
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        onClick = onSaveClicked) {
-                        Text(text = "Save")
+                        Spacer(modifier = Modifier.size(12.dp))
+
+                        TextButton(
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .fillMaxWidth(),
+                            onClick = onCancel
+                        ) {
+                            Text(text = "Cancel")
+                        }
                     }
 
-                    Spacer(modifier = Modifier.size(12.dp))
-
-                    TextButton(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
-                        onClick = onCancel
-                    ) {
-                        Text(text = "Cancel")
-                    }
                 }
-
 
             }
 
         }
     }
-
 
 }
 
@@ -250,7 +250,7 @@ fun EditProfileContent(
 @Composable
 private fun EditProfileScreenPreview() {
     EditProfileContent(
-        uiState = EditProfileViewModel.UiState("Vin Norman"),
+        uiState = EditProfileViewModel.UiState("Vin Norman", saving = true),
         onCancel = {},
         onImageUpdated = {},
         onNameChanged = {},

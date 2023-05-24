@@ -33,7 +33,8 @@ fun MainNavigator(
     onLoggedIn: (User) -> Unit,
     onUserUpdated: (User) -> Unit,
     onLoggedOut: () -> Unit,
-    uiState: MainViewModel.UiState
+    onUserLeftTeam: () -> Unit,
+    uiState: MainViewModel.UiState,
 ) {
     NavHost(navController = navController, startDestination = MainDestinations.Splash.route) {
         composable(MainDestinations.Splash.route) {
@@ -98,7 +99,8 @@ fun MainNavigator(
         composable(MainDestinations.Home.route) {
             HomeScreen(
                 onLoggedOut = onLoggedOut,
-                onUserUpdated = onLoggedIn
+                onUserUpdated = onLoggedIn,
+                onUserLeftTeam = onUserLeftTeam
             )
         }
     }

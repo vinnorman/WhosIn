@@ -9,7 +9,8 @@ import org.koin.androidx.compose.getViewModel
 fun HomeScreen(
     viewModel: HomeViewModel = getViewModel(),
     onLoggedOut: () -> Unit,
-    onUserUpdated: (User) -> Unit
+    onUserUpdated: (User) -> Unit,
+    onUserLeftTeam: () -> Unit
 ) {
 
     when (val uiState = viewModel.uiState) {
@@ -19,7 +20,8 @@ fun HomeScreen(
                 user = uiState.user,
                 team = uiState.team,
                 onUserUpdated = onUserUpdated,
-                onLoggedOut = onLoggedOut
+                onLoggedOut = onLoggedOut,
+                onUserLeftTeam = onUserLeftTeam
             )
         }
         HomeViewModel.UiState.LoggedOut -> onLoggedOut()
