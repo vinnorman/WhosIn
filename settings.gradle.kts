@@ -2,7 +2,7 @@
 
 rootProject.name = "Who's In"
 
-include (":app")
+include (":app", ":core:data", ":core:auth")
 
 pluginManagement {
     repositories {
