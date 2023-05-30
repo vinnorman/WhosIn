@@ -11,8 +11,8 @@ import com.gonativecoders.whosin.ui.auth.LoginScreen
 import com.gonativecoders.whosin.ui.home.HomeScreen
 import com.gonativecoders.whosin.ui.home.createteam.CreateTeamScreen
 import com.gonativecoders.whosin.ui.home.jointeam.JoinTeamScreen
-import com.gonativecoders.whosin.ui.home.onboarding.profilesetup.ProfileSetupScreen
-import com.gonativecoders.whosin.ui.home.onboarding.welcome.WelcomeScreen
+import com.gonativecoders.whosin.ui.onboarding.profilesetup.ProfileSetupScreen
+import com.gonativecoders.whosin.ui.onboarding.welcome.WelcomeScreen
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -28,7 +28,7 @@ sealed class MainDestinations(val route: String) {
 }
 
 @Composable
-fun MainNavigator(
+fun MainNavHost(
     navController: NavHostController = rememberNavController(),
     onLoggedIn: (User) -> Unit,
     onUserUpdated: (User) -> Unit,
@@ -105,16 +105,7 @@ fun MainNavigator(
         }
     }
 
-    when (uiState) {
-        is MainViewModel.UiState.LoggedIn -> {
-            if (!uiState.user.hasSetupProfile) return navController.navigate(MainDestinations.ProfileSetup, clear = true)
-            if (uiState.user.currentTeamId == null) return navController.navigate(MainDestinations.Welcome, clear = true)
-            navController.navigate(destination = MainDestinations.Home, clear = true)
-        }
 
-        MainViewModel.UiState.LoggedOut -> navController.navigate(destination = MainDestinations.Login, clear = true)
-        MainViewModel.UiState.Splash -> navController.navigate(MainDestinations.Splash)
-    }
 
 }
 

@@ -58,7 +58,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
+import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
+import com.gonativecoders.whosin.core.util.image.compress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -70,6 +71,7 @@ fun EditProfileScreen(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onUserUpdated: (user: User) -> Unit,
 ) {
+    val context = LocalContext.current
     EditProfileContent(
         uiState = viewModel.uiState,
         onCancel = onCancel,
@@ -77,7 +79,7 @@ fun EditProfileScreen(
         onNameChanged = viewModel::onNameChange,
         onSaveClicked = {
             coroutineScope.launch {
-                val updatedUser = viewModel.saveChanges()
+                val updatedUser = viewModel.saveChanges(viewModel.uiState.newImageUri?.let { context.compress(it) })
                 onUserUpdated(updatedUser)
             }
         }
@@ -220,7 +222,8 @@ fun EditProfileContent(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
                             ),
-                            onClick = onSaveClicked) {
+                            onClick = onSaveClicked
+                        ) {
                             Text(text = "Save")
                         }
 

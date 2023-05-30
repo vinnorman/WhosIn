@@ -23,13 +23,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Runs all the tests
 
-### android beta
+### android firebase
 
 ```sh
-[bundle exec] fastlane android beta
+[bundle exec] fastlane android firebase
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+Upload to Firebase App Distribution
 
 ### android deploy
 
@@ -37,7 +37,7 @@ Submit a new Beta Build to Crashlytics Beta
 [bundle exec] fastlane android deploy
 ```
 
-Deploy a new version to the Google Play
+Deploy a new version to Google Play
 
 ----
 

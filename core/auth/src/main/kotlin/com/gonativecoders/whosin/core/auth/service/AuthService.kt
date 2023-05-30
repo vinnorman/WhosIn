@@ -35,19 +35,8 @@ internal class AuthService(private val firebaseAuth: FirebaseAuth = Firebase.aut
         return firestore.collection("users").document(userId).get().await().toObject<FirebaseUser>()?.toUser()
     }
 
-    suspend fun updateUser(user: User) {
-        val firebaseUser = FirebaseUser.parse(user)
-        firestore.runTransaction {
-            firestore.collection("users")
-                .document(firebaseUser.id)
-                .set(firebaseUser)
-            firebaseUser.teams.forEach { teamId ->
-                firestore.collection("teams").document(teamId).collection("members").document(firebaseUser.id).set(firebaseUser)
-            }
-        }.await()
-    }
-
     fun logOut() {
         Firebase.auth.signOut()
     }
+
 }

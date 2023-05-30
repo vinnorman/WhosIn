@@ -59,7 +59,6 @@ fun HomeScaffold(
 ) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxWidth(),

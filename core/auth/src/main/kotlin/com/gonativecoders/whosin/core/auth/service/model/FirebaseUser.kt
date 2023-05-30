@@ -5,7 +5,7 @@ import com.gonativecoders.whosin.core.auth.model.User
 import com.google.firebase.firestore.DocumentId
 
 @Keep
-internal data class FirebaseUser(
+data class FirebaseUser(
     val name: String = "",
     val currentTeamId: String? = null,
     val teams: List<String> = listOf(),

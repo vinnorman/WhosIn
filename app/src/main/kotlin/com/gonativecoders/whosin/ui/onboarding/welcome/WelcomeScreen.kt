@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.ui.home.onboarding.welcome
+package com.gonativecoders.whosin.ui.onboarding.welcome
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

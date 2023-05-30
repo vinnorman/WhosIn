@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.gonativecoders.whosin.ui.home.onboarding.profilesetup
+package com.gonativecoders.whosin.ui.onboarding.profilesetup
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -48,8 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
-import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
 import com.gonativecoders.whosin.core.auth.model.User
+import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
+import com.gonativecoders.whosin.core.util.image.compress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -59,17 +60,19 @@ fun ProfileSetupScreen(
     onProfileSetupComplete: (User) -> Unit,
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
+    val context = LocalContext.current
     ProfileSetupContent(
         onNextClicked = { uri ->
             coroutineScope.launch {
-                viewModel.updateUser(uri)
-                onProfileSetupComplete(viewModel.user)
+                val image = context.compress(uri)
+                val updatedUser = viewModel.updateUser(uri.toString(), image)
+                onProfileSetupComplete(updatedUser)
             }
         },
         onSkipped = {
             coroutineScope.launch {
-                viewModel.markOnboardingComplete()
-                onProfileSetupComplete(viewModel.user)
+                val updatedUser = viewModel.markOnboardingComplete()
+                onProfileSetupComplete(updatedUser)
             }
         }
     )
