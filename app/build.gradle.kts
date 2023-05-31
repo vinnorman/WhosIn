@@ -121,10 +121,10 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
 
 
     testImplementation("junit:junit:4.13.2")

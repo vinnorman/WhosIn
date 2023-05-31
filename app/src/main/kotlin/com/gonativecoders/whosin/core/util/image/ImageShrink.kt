@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import java.io.ByteArrayOutputStream
 
-const val compressionQuality = 50
+const val compressionQuality = 25
 
 fun Context.compress(uri: String): ByteArray {
     return compress(Uri.parse(uri))
