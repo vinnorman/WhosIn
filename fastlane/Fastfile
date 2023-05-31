@@ -13,7 +13,7 @@ platform :android do
             build_type: "debug"
     )
     firebase_app_distribution(
-        service_credentials_file: "./firebase-app-distribution.json"
+        service_credentials_file: "./firebase-app-distribution.json",
         app: ENV["FIREBASE_APP_ID"],
         android_artifact_type: "AAB",
         groups: "internal-testers"
