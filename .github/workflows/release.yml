@@ -37,7 +37,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-      run: chmod +x gradlew
 
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
