@@ -127,6 +127,9 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.crashlytics.ktx)
 
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
+
+
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.insert-koin:koin-test:3.2.2")

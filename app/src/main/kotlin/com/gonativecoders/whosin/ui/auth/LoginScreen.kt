@@ -32,12 +32,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.AppLogo
 import com.gonativecoders.whosin.core.components.EmailField
 import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.PasswordField
+import com.gonativecoders.whosin.core.components.buttons.GoogleSignInButton
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.core.auth.model.User
+import com.google.android.gms.auth.api.identity.SignInCredential
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -52,7 +54,8 @@ fun LoginScreen(
         onPasswordChange = viewModel::onPasswordChanged,
         onLoginClicked = { viewModel.onLoginClicked(onLoggedIn) },
         onCreateAccountClicked = navigateToRegisterScreen,
-        onErrorDialogDismissed = viewModel::onErrorDialogDismissed
+        onErrorDialogDismissed = viewModel::onErrorDialogDismissed,
+        onGoogleSignInCredential = { credential -> viewModel.onGoogleSign(credential, onLoggedIn) }
     )
 }
 
@@ -63,7 +66,8 @@ fun LoginContent(
     onPasswordChange: (String) -> Unit,
     onLoginClicked: () -> Unit,
     onCreateAccountClicked: () -> Unit,
-    onErrorDialogDismissed: () -> Unit
+    onErrorDialogDismissed: () -> Unit,
+    onGoogleSignInCredential: (SignInCredential) -> Unit
 ) {
 
     if (uiState.error != null) {
@@ -80,7 +84,8 @@ fun LoginContent(
                 onEmailChange = onEmailChange,
                 onPasswordChange = onPasswordChange,
                 onLoginClicked = onLoginClicked,
-                onCreateAccountClicked = onCreateAccountClicked
+                onCreateAccountClicked = onCreateAccountClicked,
+                onGoogleSignInCredential = onGoogleSignInCredential
             )
         }
 
@@ -90,7 +95,8 @@ fun LoginContent(
                 onEmailChange = onEmailChange,
                 onPasswordChange = onPasswordChange,
                 onLoginClicked = onLoginClicked,
-                onCreateAccountClicked = onCreateAccountClicked
+                onCreateAccountClicked = onCreateAccountClicked,
+                onGoogleSignInCredential = onGoogleSignInCredential
             )
         }
     }
@@ -103,10 +109,13 @@ private fun Portrait(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onCreateAccountClicked: () -> Unit
+    onCreateAccountClicked: () -> Unit,
+    onGoogleSignInCredential: (SignInCredential) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().imePadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
     ) {
         Box(
             modifier = Modifier
@@ -130,7 +139,12 @@ private fun Portrait(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
-                uiState, onEmailChange, onPasswordChange, onLoginClicked, onCreateAccountClicked
+                uiState,
+                onEmailChange,
+                onPasswordChange,
+                onLoginClicked,
+                onCreateAccountClicked,
+                onGoogleSignInCredential = onGoogleSignInCredential
             )
         }
     }
@@ -143,9 +157,14 @@ private fun Landscape(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onCreateAccountClicked: () -> Unit
+    onCreateAccountClicked: () -> Unit,
+    onGoogleSignInCredential: (SignInCredential) -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxSize().imePadding()) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -175,7 +194,12 @@ private fun Landscape(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
-                uiState, onEmailChange, onPasswordChange, onLoginClicked, onCreateAccountClicked
+                uiState,
+                onEmailChange,
+                onPasswordChange,
+                onLoginClicked,
+                onCreateAccountClicked,
+                onGoogleSignInCredential = onGoogleSignInCredential
             )
         }
     }
@@ -189,7 +213,8 @@ private fun LoginScreenFields(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onCreateAccountClicked: () -> Unit
+    onCreateAccountClicked: () -> Unit,
+    onGoogleSignInCredential: (SignInCredential) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -203,7 +228,7 @@ private fun LoginScreenFields(
         OutlinedButton(
             onClick = onLoginClicked,
             border = BorderStroke(1.dp, Color.White),
-            modifier = Modifier.size(height = 48.dp, width = 200.dp)
+            modifier = Modifier.size(height = 48.dp, width = 240.dp)
         ) {
             if (uiState.isLoggingIn) {
                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
@@ -211,7 +236,13 @@ private fun LoginScreenFields(
                 Text(text = "Log In", modifier = Modifier.padding(6.dp), color = Color.White)
             }
         }
-        Spacer(modifier = Modifier.size(12.dp))
+        Spacer(modifier = Modifier.size(24.dp))
+        GoogleSignInButton(
+            modifier = Modifier.size(height = 48.dp, width = 240.dp),
+            onSignInSuccessful = onGoogleSignInCredential,
+            onSignInError = {}
+        )
+        Spacer(modifier = Modifier.size(24.dp))
         TextButton(onClick = onCreateAccountClicked) {
             Text(text = "Create Account", color = Color.White)
         }
@@ -233,7 +264,8 @@ private fun Portrait() {
                 onPasswordChange = {},
                 onLoginClicked = {},
                 onCreateAccountClicked = {},
-                onErrorDialogDismissed = {}
+                onErrorDialogDismissed = {},
+                onGoogleSignInCredential = {}
             )
         }
 
@@ -256,7 +288,8 @@ private fun Landscape() {
                 onPasswordChange = {},
                 onLoginClicked = {},
                 onCreateAccountClicked = {},
-                onErrorDialogDismissed = {}
+                onErrorDialogDismissed = {},
+                onGoogleSignInCredential = {}
             )
         }
 
