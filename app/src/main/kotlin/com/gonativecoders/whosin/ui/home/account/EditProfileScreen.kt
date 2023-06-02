@@ -137,9 +137,7 @@ fun EditProfileContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .imePadding(),
-                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
-
                 ) {
 
                 var imageUri by remember {
@@ -209,35 +207,37 @@ fun EditProfileContent(
 
                 }
 
-                Column(modifier = Modifier.padding(bottom = 48.dp)) {
-                    Spacer(modifier = Modifier.size(48.dp))
-                    if (uiState.saving) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
-                    } else {
-                        Button(
-                            enabled = uiState.changesMade,
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ),
-                            onClick = onSaveClicked
-                        ) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Button(
+                        enabled = uiState.changesMade && !uiState.saving,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 60.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        onClick = onSaveClicked
+                    ) {
+                        if (uiState.saving) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        } else {
                             Text(text = "Save")
                         }
-
-                        Spacer(modifier = Modifier.size(12.dp))
-
-                        TextButton(
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .fillMaxWidth(),
-                            onClick = onCancel
-                        ) {
-                            Text(text = "Cancel")
-                        }
                     }
+
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    TextButton(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        onClick = onCancel
+                    ) {
+                        Text(text = "Cancel")
+                    }
+
 
                 }
 
