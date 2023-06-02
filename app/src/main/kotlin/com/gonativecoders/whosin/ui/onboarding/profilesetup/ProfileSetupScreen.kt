@@ -164,8 +164,8 @@ fun ProfileSetupContent(
 
                             AsyncImage(
                                 model = if (hasImage) imageUri else null,
-                                placeholder = painterResource(id = R.drawable.profile),
-                                error = painterResource(id = R.drawable.profile),
+                                placeholder = painterResource(id = R.drawable.default_avatar),
+                                error = painterResource(id = R.drawable.default_avatar),
                                 contentDescription = "Profile photo",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop

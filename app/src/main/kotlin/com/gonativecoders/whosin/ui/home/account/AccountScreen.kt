@@ -83,7 +83,7 @@ private fun AccountContent(
         ) {
             AsyncImage(
                 model = user.photoUri,
-                error = painterResource(id = R.drawable.profile),
+                error = painterResource(id = R.drawable.default_avatar),
                 contentDescription = "User Profile Photo",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

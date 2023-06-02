@@ -173,7 +173,7 @@ fun EditProfileContent(
 
                             AsyncImage(
                                 model = uiState.newImageUri ?: uiState.existingImageUri,
-                                error = painterResource(id = R.drawable.profile),
+                                error = painterResource(id = R.drawable.default_avatar),
                                 contentDescription = "Profile photo",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
