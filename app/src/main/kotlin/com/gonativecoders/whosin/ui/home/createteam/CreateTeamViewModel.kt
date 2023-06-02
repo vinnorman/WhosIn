@@ -45,7 +45,7 @@ class CreateTeamViewModel(
     }
 
     fun onTeamIdChanged(newValue: String) {
-        uiState = uiState.copy(teamId = newValue)
+        uiState = uiState.copy(teamId = newValue.lowercase())
     }
 
     fun onErrorDialogDismissed() {
