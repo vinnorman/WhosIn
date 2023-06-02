@@ -30,7 +30,7 @@ jobs:
     - name: Decode Secrets
       run: |
         echo $KEYSTORE_FILE | base64 -di > keystore.jks
-        echo $GOOGLE_SERVICES_FILE | base64 -di > app/google-services.json
+        echo $GOOGLE_SERVICES_FILE > app/google-services.json
         echo $GOOGLE_APPLICATION_CREDENTIALS > firebase-app-distribution.json
 
     - name: Setup JDK 17
