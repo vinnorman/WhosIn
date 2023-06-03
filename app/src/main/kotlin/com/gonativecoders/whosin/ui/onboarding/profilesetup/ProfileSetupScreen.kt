@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +28,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -62,6 +67,8 @@ fun ProfileSetupScreen(
 ) {
     val context = LocalContext.current
     ProfileSetupContent(
+        uiState = viewModel.uiState,
+        onNameChanged = viewModel::onNameUpdated,
         onNextClicked = { uri ->
             coroutineScope.launch {
                 val image = context.compress(uri)
@@ -80,6 +87,8 @@ fun ProfileSetupScreen(
 
 @Composable
 fun ProfileSetupContent(
+    uiState: ProfileSetupViewModel.UiState,
+    onNameChanged: (String) -> Unit,
     onNextClicked: (Uri) -> Unit,
     onSkipped: () -> Unit,
 ) {
@@ -185,6 +194,18 @@ fun ProfileSetupContent(
                         }) {
                         Text(text = "Take Photo")
                     }
+                    Spacer(modifier = Modifier.size(48.dp))
+
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier,
+                        value = uiState.displayName,
+                        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
+                        onValueChange = onNameChanged,
+                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
+                        label = { Text("Display Name") },
+                        leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Full Name") }
+                    )
                 }
 
                 Column {
@@ -224,6 +245,12 @@ fun ProfileSetupContent(
 @Preview(showBackground = true)
 fun Preview() {
     ProfileSetupContent(
+        uiState = ProfileSetupViewModel.UiState(
+            displayName = "Vin",
+            imageUri = null,
+            saving = true
+        ),
+        onNameChanged = {},
         onNextClicked = {},
         onSkipped = {}
     )
