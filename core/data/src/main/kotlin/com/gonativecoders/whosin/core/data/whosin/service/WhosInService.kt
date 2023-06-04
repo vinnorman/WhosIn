@@ -34,11 +34,12 @@ internal class WhosInService(private val firestore: FirebaseFirestore = Firebase
             .snapshots()
             .map {
                 if (it.isEmpty) addWeek(weekDocument, calendar)
-                it.toObjects<FirebaseWorkDay>().map { firebaseWorkDay -> firebaseWorkDay.toWorkDay() }
+                if (it.size() < 5) listOf()
+                else it.toObjects<FirebaseWorkDay>().map { firebaseWorkDay -> firebaseWorkDay.toWorkDay() }
             }
     }
 
-    private fun addWeek(weekDocument: DocumentReference, calendar: Calendar) {
+    private suspend fun addWeek(weekDocument: DocumentReference, calendar: Calendar) {
         val workDays = listOf(
             FirebaseWorkDay(calendar.time),
             FirebaseWorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
@@ -47,13 +48,13 @@ internal class WhosInService(private val firestore: FirebaseFirestore = Firebase
             FirebaseWorkDay(calendar.apply { add(Calendar.DAY_OF_WEEK, 1) }.time),
         )
 
-        firestore.runTransaction {
+        firestore.runBatch {
             weekDocument.set(mapOf("startDate" to calendar.time))
             workDays.forEach { day ->
                 val dayOfWeek = Calendar.getInstance().apply { time = day.date }.get(Calendar.DAY_OF_WEEK)
                 weekDocument.collection("days").document(dayOfWeek.toString()).set(day)
             }
-        }
+        }.await()
     }
 
     suspend fun updateAttendance(teamId: String, day: WorkDay, userId: String, isAttending: Boolean) {
