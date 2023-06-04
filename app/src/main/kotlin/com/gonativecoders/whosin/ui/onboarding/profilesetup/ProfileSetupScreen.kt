@@ -32,7 +32,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,17 +70,11 @@ fun ProfileSetupScreen(
         onNameChanged = viewModel::onNameUpdated,
         onNextClicked = { uri ->
             coroutineScope.launch {
-                val image = context.compress(uri)
-                val updatedUser = viewModel.updateUser(uri.toString(), image)
+                val image = uri?.let { context.compress(it) }
+                val updatedUser = viewModel.updateUser(image)
                 onProfileSetupComplete(updatedUser)
             }
         },
-        onSkipped = {
-            coroutineScope.launch {
-                val updatedUser = viewModel.markOnboardingComplete()
-                onProfileSetupComplete(updatedUser)
-            }
-        }
     )
 }
 
@@ -89,8 +82,7 @@ fun ProfileSetupScreen(
 fun ProfileSetupContent(
     uiState: ProfileSetupViewModel.UiState,
     onNameChanged: (String) -> Unit,
-    onNextClicked: (Uri) -> Unit,
-    onSkipped: () -> Unit,
+    onNextClicked: (Uri?) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -180,7 +172,6 @@ fun ProfileSetupContent(
                                 contentScale = ContentScale.Crop
                             )
 
-
                         }
                     }
                     Spacer(modifier = Modifier.size(48.dp))
@@ -210,34 +201,21 @@ fun ProfileSetupContent(
 
                 Column {
                     Button(
-                        enabled = hasImage,
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),
-                        onClick = { onNextClicked(imageUri!!) }) {
+                        onClick = { onNextClicked(imageUri) }) {
                         Text(text = "Next")
                     }
-
-                    Spacer(modifier = Modifier.size(12.dp))
-
-                    TextButton(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
-                        onClick = { onSkipped() }) {
-                        Text(text = "Skip")
-                    }
                 }
-
 
             }
 
         }
     }
-
 
 }
 
@@ -251,7 +229,6 @@ fun Preview() {
             saving = true
         ),
         onNameChanged = {},
-        onNextClicked = {},
-        onSkipped = {}
+        onNextClicked = {}
     )
 }

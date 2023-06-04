@@ -9,39 +9,15 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 
-class UserService(
+internal class UserService(
     private val storage: FirebaseStorage = Firebase.storage,
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
-    suspend fun uploadProfilePhoto(user: User, image: ByteArray) {
+    suspend fun uploadProfilePhoto(user: User, image: ByteArray): String {
         val profilePhotoRef = storage.reference.child("profile_photos/${user.id}.jpg")
         profilePhotoRef.putBytes(image).await()
-        val photoUrl = profilePhotoRef.downloadUrl.await().toString()
-
-        firestore.runTransaction {
-            firestore.collection("users")
-                .document(user.id)
-                .set(
-                    mapOf(
-                        "photoUri" to photoUrl,
-                        "hasSetupProfile" to true
-                    )
-                )
-            user.teams.forEach { teamId ->
-                firestore.collection("teams")
-                    .document(teamId)
-                    .collection("members")
-                    .document(user.id).set(
-                        mapOf(
-                            "photoUri" to photoUrl,
-                            "hasSetupProfile" to true
-                        )
-                    )
-
-            }
-        }.await()
-
+        return profilePhotoRef.downloadUrl.await().toString()
     }
 
     suspend fun updateUser(user: User) {

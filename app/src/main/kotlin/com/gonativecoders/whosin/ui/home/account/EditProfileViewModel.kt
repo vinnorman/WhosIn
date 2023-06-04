@@ -35,9 +35,9 @@ class EditProfileViewModel(
     suspend fun saveChanges(image: ByteArray?): User {
         uiState = uiState.copy(saving = true)
         val updatedUser = if (image != null) {
-            userRepository.uploadProfilePhoto(user, image)
+            val photoUri = userRepository.uploadProfilePhoto(user, image)
             user.copy(
-                photoUri = uiState.newImageUri,
+                photoUri = photoUri,
                 name = uiState.displayName
             )
         } else {

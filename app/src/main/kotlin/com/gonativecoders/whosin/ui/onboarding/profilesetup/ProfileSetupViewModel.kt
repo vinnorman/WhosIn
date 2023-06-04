@@ -21,25 +21,19 @@ class ProfileSetupViewModel(
     )
         private set
 
-    suspend fun updateUser(imageUri: String, image: ByteArray): User {
+    suspend fun updateUser(image: ByteArray?): User {
         uiState = uiState.copy(saving = true)
-        userRepository.uploadProfilePhoto(user, image)
-        return user.copy(
+        val photoUri = image?.let { userRepository.uploadProfilePhoto(user, image) }
+        val updatedUser = user.copy(
             hasSetupProfile = true,
-            photoUri = imageUri
+            photoUri = photoUri
         )
+        userRepository.updateUser(updatedUser)
+        return updatedUser
     }
 
     fun onNameUpdated(name: String) {
         uiState = uiState.copy(displayName = name)
-    }
-
-    suspend fun markOnboardingComplete(): User {
-        uiState = uiState.copy(saving = true)
-        userRepository.setOnboardingComplete(user)
-        return user.copy(
-            hasSetupProfile = true
-        )
     }
 
     data class UiState(
