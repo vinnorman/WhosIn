@@ -8,6 +8,7 @@ plugins {
 
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 @Suppress("UnstableApiUsage")
@@ -121,10 +122,13 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
+
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
+
 
 
     testImplementation("junit:junit:4.13.2")

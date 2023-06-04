@@ -1,4 +1,4 @@
-package com.gonativecoders.whosin.core.util.photo
+package com.gonativecoders.whosin.core.util.image
 
 import android.content.Context
 import android.net.Uri
@@ -25,3 +25,4 @@ class ComposeFileProvider : FileProvider(R.xml.file_paths) {
         }
     }
 }
+

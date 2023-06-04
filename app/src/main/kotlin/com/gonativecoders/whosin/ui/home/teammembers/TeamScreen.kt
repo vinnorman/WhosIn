@@ -62,7 +62,7 @@ fun TeamContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    context.invite(team.name)
+                    context.invite(team.name, team.id)
                 },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {

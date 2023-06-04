@@ -21,8 +21,13 @@ class AuthManager internal constructor(private val service: AuthService) {
 
     suspend fun getCurrentUser(): User? = service.getCurrentUser()
 
-    suspend fun updateUser(user: User) = service.updateUser(user)
-
     fun logOut() = service.logOut()
+
+    suspend fun signInWithGoogle(idToken: String, email: String, displayName: String) = try {
+        service.signInWithGoogle(idToken, email, displayName)
+    } catch (exception: Exception) {
+        throw AuthException(exception.message, exception)
+    }
+
 
 }

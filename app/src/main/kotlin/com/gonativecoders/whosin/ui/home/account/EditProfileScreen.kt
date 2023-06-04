@@ -58,7 +58,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.util.photo.ComposeFileProvider
+import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
+import com.gonativecoders.whosin.core.util.image.compress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -70,6 +71,7 @@ fun EditProfileScreen(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onUserUpdated: (user: User) -> Unit,
 ) {
+    val context = LocalContext.current
     EditProfileContent(
         uiState = viewModel.uiState,
         onCancel = onCancel,
@@ -77,7 +79,7 @@ fun EditProfileScreen(
         onNameChanged = viewModel::onNameChange,
         onSaveClicked = {
             coroutineScope.launch {
-                val updatedUser = viewModel.saveChanges()
+                val updatedUser = viewModel.saveChanges(viewModel.uiState.newImageUri?.let { context.compress(it) })
                 onUserUpdated(updatedUser)
             }
         }
@@ -135,9 +137,7 @@ fun EditProfileContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .imePadding(),
-                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
-
                 ) {
 
                 var imageUri by remember {
@@ -173,7 +173,7 @@ fun EditProfileContent(
 
                             AsyncImage(
                                 model = uiState.newImageUri ?: uiState.existingImageUri,
-                                error = painterResource(id = R.drawable.profile),
+                                error = painterResource(id = R.drawable.default_avatar),
                                 contentDescription = "Profile photo",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
@@ -207,34 +207,37 @@ fun EditProfileContent(
 
                 }
 
-                Column(modifier = Modifier.padding(bottom = 48.dp)) {
-                    Spacer(modifier = Modifier.size(48.dp))
-                    if (uiState.saving) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
-                    } else {
-                        Button(
-                            enabled = uiState.changesMade,
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ),
-                            onClick = onSaveClicked) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Button(
+                        enabled = uiState.changesMade && !uiState.saving,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 60.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        onClick = onSaveClicked
+                    ) {
+                        if (uiState.saving) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        } else {
                             Text(text = "Save")
                         }
-
-                        Spacer(modifier = Modifier.size(12.dp))
-
-                        TextButton(
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .fillMaxWidth(),
-                            onClick = onCancel
-                        ) {
-                            Text(text = "Cancel")
-                        }
                     }
+
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    TextButton(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        onClick = onCancel
+                    ) {
+                        Text(text = "Cancel")
+                    }
+
 
                 }
 

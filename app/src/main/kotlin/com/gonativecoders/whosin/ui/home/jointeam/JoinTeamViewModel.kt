@@ -23,8 +23,8 @@ class JoinTeamViewModel(
     var uiState by mutableStateOf(UiState())
         private set
 
-    fun onTeamNameChanged(newValue: String) {
-        uiState = uiState.copy(teamId = newValue)
+    fun onTeamIdChanged(newValue: String) {
+        uiState = uiState.copy(teamId = newValue.lowercase())
     }
 
     fun onJoinTeamClicked(onUserUpdated: (user: com.gonativecoders.whosin.core.auth.model.User) -> Unit) {

@@ -26,13 +26,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gonativecoders.whosin.R
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.AppLogo
 import com.gonativecoders.whosin.core.components.EmailField
 import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.NameField
 import com.gonativecoders.whosin.core.components.PasswordField
+import com.gonativecoders.whosin.core.components.buttons.GoogleSignInButton
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.core.auth.model.User
+import com.google.android.gms.auth.api.identity.SignInCredential
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -51,8 +53,8 @@ fun CreateAccountScreen(
         onCreateAccountClicked = { viewModel.onCreateAccountClicked(onAccountCreated) },
         uiState = uiState,
         navigateToLoginScreen = navigateToLoginScreen,
-        onErrorDialogDismissed = viewModel::onErrorDialogDismissed
-
+        onErrorDialogDismissed = viewModel::onErrorDialogDismissed,
+        onGoogleSignUp = { credential -> viewModel.onGoogleSign(credential, onAccountCreated) }
     )
 
 }
@@ -65,7 +67,8 @@ fun CreateAccountContent(
     onPasswordChange: (String) -> Unit,
     onCreateAccountClicked: () -> Unit,
     navigateToLoginScreen: () -> Unit,
-    onErrorDialogDismissed: () -> Unit
+    onErrorDialogDismissed: () -> Unit,
+    onGoogleSignUp: (SignInCredential) -> Unit
 ) {
     if (uiState.error != null) {
         ErrorDialog(
@@ -79,18 +82,22 @@ fun CreateAccountContent(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
             AppLogo(
                 Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
             )
         }
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .weight(3f)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(3f)
+        ) {
             Image(
                 modifier = Modifier.fillMaxSize(),
                 imageVector = ImageVector.vectorResource(id = R.drawable.login_background),
@@ -123,6 +130,8 @@ fun CreateAccountContent(
                     }
                 }
                 Spacer(modifier = Modifier.size(24.dp))
+                GoogleSignInButton(text = "Sign up with Google", onSignInSuccessful = onGoogleSignUp, onSignInError = {})
+                Spacer(modifier = Modifier.size(12.dp))
                 TextButton(onClick = navigateToLoginScreen) {
                     Text(text = "Already have an account? Click here", color = Color.White)
                 }
@@ -149,7 +158,8 @@ private fun Portrait() {
                 onPasswordChange = {},
                 onCreateAccountClicked = {},
                 navigateToLoginScreen = {},
-                onErrorDialogDismissed = {}
+                onErrorDialogDismissed = {},
+                onGoogleSignUp = {}
             )
         }
     }

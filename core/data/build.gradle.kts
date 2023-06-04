@@ -27,6 +27,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:auth"))
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)

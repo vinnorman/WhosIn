@@ -1,21 +1,15 @@
 package com.gonativecoders.whosin.ui.home.account
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.gonativecoders.whosin.core.auth.AuthManager
 import com.gonativecoders.whosin.core.auth.model.User
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.tasks.await
+import com.gonativecoders.whosin.core.data.user.UserRepository
 
 class EditProfileViewModel(
     val user: User,
-    private val authManager: AuthManager,
-    private val storage: FirebaseStorage = Firebase.storage
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     data class UiState(
@@ -38,22 +32,20 @@ class EditProfileViewModel(
         uiState = uiState.copy(newImageUri = uri, changesMade = true)
     }
 
-    suspend fun saveChanges(): User {
-        val updatedUser = if (uiState.newImageUri != null) {
-            val storageRef = storage.reference
-            val profilePhotoRef = storageRef.child("profile_photos/${user.id}.jpg")
-            profilePhotoRef.putFile(Uri.parse(uiState.newImageUri)).await()
+    suspend fun saveChanges(image: ByteArray?): User {
+        uiState = uiState.copy(saving = true)
+        val updatedUser = if (image != null) {
+            val photoUri = userRepository.uploadProfilePhoto(user, image)
             user.copy(
-                name = uiState.displayName,
-                photoUri = profilePhotoRef.downloadUrl.await().toString()
+                photoUri = photoUri,
+                name = uiState.displayName
             )
         } else {
             user.copy(
                 name = uiState.displayName
             )
         }
-        uiState = uiState.copy(saving = true)
-        authManager.updateUser(updatedUser)
+        userRepository.updateUser(updatedUser)
         return updatedUser
     }
 

@@ -25,10 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.components.ErrorDialog
 import com.gonativecoders.whosin.core.components.layouts.StandardToolbarLayout
 import com.gonativecoders.whosin.core.theme.WhosInTheme
-import com.gonativecoders.whosin.core.auth.model.User
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -89,7 +89,7 @@ fun CreateTeamContent(
                     value = uiState.teamId,
                     onValueChange = onTeamIdChanged,
                     label = { Text("Team Id") },
-                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
+                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.None),
                     leadingIcon = { Icon(imageVector = Icons.Filled.Group, contentDescription = null) }
                 )
                 Spacer(modifier = Modifier.size(48.dp))

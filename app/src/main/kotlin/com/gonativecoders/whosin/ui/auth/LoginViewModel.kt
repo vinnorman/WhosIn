@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.core.auth.AuthManager
+import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
@@ -42,6 +43,17 @@ class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
 
     fun onErrorDialogDismissed() {
         uiState = uiState.copy(error = null)
+    }
+
+    fun onGoogleSign(credential: SignInCredential, onLoggedIn: (user: com.gonativecoders.whosin.core.auth.model.User) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val user = authManager.signInWithGoogle(credential.googleIdToken!!, credential.id, credential.displayName!!)
+                onLoggedIn(user)
+            } catch (exception: Exception) {
+                uiState = uiState.copy(error = exception, isLoggingIn = false)
+            }
+        }
     }
 
 }
