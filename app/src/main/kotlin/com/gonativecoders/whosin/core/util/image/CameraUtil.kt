@@ -28,7 +28,7 @@ fun CameraController.takePhoto(
     onError: (ImageCaptureException) -> Unit
 ) {
     val file = context.getTempImageFile()
-    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
+    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).    build()
 
     takePicture(outputOptions, ContextCompat.getMainExecutor(context), object : ImageCapture.OnImageSavedCallback {
         @SuppressLint("RestrictedApi")

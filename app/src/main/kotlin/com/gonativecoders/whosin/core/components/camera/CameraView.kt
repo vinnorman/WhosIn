@@ -2,6 +2,7 @@ package com.gonativecoders.whosin.core.components.camera
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -59,7 +60,7 @@ fun CameraView(
 
     val cameraController = LifecycleCameraController(context)
     cameraController.bindToLifecycle(lifecycleOwner)
-
+    cameraController.imageCaptureTargetSize = CameraController.OutputSize(Size(320,320))
     cameraController.cameraSelector = CameraSelector.Builder()
         .requireLensFacing(lensFacing)
         .build()
