@@ -66,10 +66,12 @@ fun ProfileSetupScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     if (isTakingPhoto) {
-        SelfieCaptureScreen(onImageSelected = {
-            imageUri = it
-            isTakingPhoto = false
-        })
+        SelfieCaptureScreen(
+            onImageSelected = {
+                imageUri = it
+                isTakingPhoto = false
+            },
+            onBackPressed = { isTakingPhoto = false })
     } else {
         ProfileSetupContent(
             uiState = viewModel.uiState,

@@ -2,7 +2,6 @@
 
 package com.gonativecoders.whosin.ui.home.account
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,10 +70,13 @@ fun EditProfileScreen(
     var isTakingPhoto by remember { mutableStateOf(false) }
 
     if (isTakingPhoto) {
-        SelfieCaptureScreen(onImageSelected = {
-            viewModel.onImageChange(it)
-            isTakingPhoto = false
-        })
+        SelfieCaptureScreen(
+            onImageSelected = {
+                viewModel.onImageChange(it)
+                isTakingPhoto = false
+            },
+            onBackPressed = { isTakingPhoto = false }
+        )
     } else {
         EditProfileContent(
             uiState = viewModel.uiState,
