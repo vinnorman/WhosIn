@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.core.data.user.service
 
+import android.net.Uri
 import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.auth.service.model.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,9 +15,9 @@ internal class UserService(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
 
-    suspend fun uploadProfilePhoto(user: User, image: ByteArray): String {
+    suspend fun uploadProfilePhoto(user: User, image: Uri): String {
         val profilePhotoRef = storage.reference.child("profile_photos/${user.id}.jpg")
-        profilePhotoRef.putBytes(image).await()
+        profilePhotoRef.putFile(image).await()
         return profilePhotoRef.downloadUrl.await().toString()
     }
 

@@ -64,7 +64,8 @@ fun MainNavHost(
             }
             ProfileSetupScreen(
                 viewModel = getViewModel(parameters = { parametersOf(user) }),
-                onProfileSetupComplete = onUserUpdated
+                onBackPressed = { onLoggedOut() },
+                onProfileSetupComplete = onUserUpdated,
             )
         }
         composable(MainDestinations.Welcome.route) {

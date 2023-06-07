@@ -2,9 +2,6 @@
 
 package com.gonativecoders.whosin.ui.home.account
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -58,8 +54,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
-import com.gonativecoders.whosin.core.util.image.compress
+import com.gonativecoders.whosin.core.screens.SelfieCaptureScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -71,19 +66,33 @@ fun EditProfileScreen(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onUserUpdated: (user: User) -> Unit,
 ) {
-    val context = LocalContext.current
-    EditProfileContent(
-        uiState = viewModel.uiState,
-        onCancel = onCancel,
-        onImageUpdated = viewModel::onImageChange,
-        onNameChanged = viewModel::onNameChange,
-        onSaveClicked = {
-            coroutineScope.launch {
-                val updatedUser = viewModel.saveChanges(viewModel.uiState.newImageUri?.let { context.compress(it) })
-                onUserUpdated(updatedUser)
+
+    var isTakingPhoto by remember { mutableStateOf(false) }
+
+    if (isTakingPhoto) {
+        SelfieCaptureScreen(
+            onImageSelected = {
+                viewModel.onImageChange(it)
+                isTakingPhoto = false
+            },
+            onBackPressed = { isTakingPhoto = false }
+        )
+    } else {
+        EditProfileContent(
+            uiState = viewModel.uiState,
+            onCancel = onCancel,
+            onTakePhotoClicked = { isTakingPhoto = true },
+            onNameChanged = viewModel::onNameChange,
+            onSaveClicked = {
+                coroutineScope.launch {
+                    val updatedUser = viewModel.saveChanges()
+                    onUserUpdated(updatedUser)
+                }
             }
-        }
-    )
+        )
+    }
+
+
 }
 
 
@@ -91,7 +100,7 @@ fun EditProfileScreen(
 fun EditProfileContent(
     uiState: EditProfileViewModel.UiState,
     onCancel: () -> Unit,
-    onImageUpdated: (String) -> Unit,
+    onTakePhotoClicked: () -> Unit,
     onNameChanged: (String) -> Unit,
     onSaveClicked: () -> Unit
 ) {
@@ -138,16 +147,8 @@ fun EditProfileContent(
                     .padding(innerPadding)
                     .imePadding(),
                 verticalArrangement = Arrangement.SpaceBetween,
-                ) {
+            ) {
 
-                var imageUri by remember {
-                    mutableStateOf<Uri?>(null)
-                }
-                val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-                    onImageUpdated(imageUri?.toString()!!)
-                }
-
-                val context = LocalContext.current
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -185,11 +186,8 @@ fun EditProfileContent(
                     Button(
                         modifier = Modifier
                             .padding(horizontal = 24.dp),
-                        onClick = {
-                            val uri = ComposeFileProvider.getImageUri(context)
-                            imageUri = uri
-                            cameraLauncher.launch(uri)
-                        }) {
+                        onClick = onTakePhotoClicked
+                    ) {
                         Text(text = if (uiState.existingImageUri == null && uiState.newImageUri == null) "Take Photo" else "Change Photo")
                     }
                     Spacer(modifier = Modifier.size(48.dp))
@@ -207,9 +205,11 @@ fun EditProfileContent(
 
                 }
 
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 48.dp), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Button(
                         enabled = uiState.changesMade && !uiState.saving,
                         modifier = Modifier
@@ -255,7 +255,7 @@ private fun EditProfileScreenPreview() {
     EditProfileContent(
         uiState = EditProfileViewModel.UiState("Vin Norman", saving = true),
         onCancel = {},
-        onImageUpdated = {},
+        onTakePhotoClicked = {},
         onNameChanged = {},
         onSaveClicked = {}
     )

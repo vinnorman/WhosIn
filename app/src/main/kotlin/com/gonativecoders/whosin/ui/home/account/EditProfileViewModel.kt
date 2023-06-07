@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.ui.home.account
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,7 +16,7 @@ class EditProfileViewModel(
     data class UiState(
         val displayName: String = "",
         val existingImageUri: String? = null,
-        val newImageUri: String? = null,
+        val newImageUri: Uri? = null,
         val changesMade: Boolean = false,
         val error: Exception? = null,
         val saving: Boolean = false
@@ -28,14 +29,15 @@ class EditProfileViewModel(
         uiState = uiState.copy(displayName = newValue, changesMade = true)
     }
 
-    fun onImageChange(uri: String) {
+    fun onImageChange(uri: Uri) {
         uiState = uiState.copy(newImageUri = uri, changesMade = true)
     }
 
-    suspend fun saveChanges(image: ByteArray?): User {
+    suspend fun saveChanges(): User {
         uiState = uiState.copy(saving = true)
-        val updatedUser = if (image != null) {
-            val photoUri = userRepository.uploadProfilePhoto(user, image)
+        val newImageUri = uiState.newImageUri
+        val updatedUser = if (newImageUri != null) {
+            val photoUri = userRepository.uploadProfilePhoto(user, newImageUri)
             user.copy(
                 photoUri = photoUri,
                 name = uiState.displayName

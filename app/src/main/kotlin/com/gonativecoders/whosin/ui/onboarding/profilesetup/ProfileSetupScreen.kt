@@ -3,8 +3,6 @@
 package com.gonativecoders.whosin.ui.onboarding.profilesetup
 
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -53,8 +50,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
-import com.gonativecoders.whosin.core.util.image.compress
+import com.gonativecoders.whosin.core.screens.SelfieCaptureScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -62,28 +58,47 @@ import kotlinx.coroutines.launch
 fun ProfileSetupScreen(
     viewModel: ProfileSetupViewModel,
     onProfileSetupComplete: (User) -> Unit,
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    onBackPressed: () -> Unit,
 ) {
-    val context = LocalContext.current
-    ProfileSetupContent(
-        uiState = viewModel.uiState,
-        onNameChanged = viewModel::onNameUpdated,
-        onNextClicked = { uri ->
-            coroutineScope.launch {
-                val image = uri?.let { context.compress(it) }
-                val updatedUser = viewModel.updateUser(image)
-                onProfileSetupComplete(updatedUser)
-            }
-        },
-    )
+
+    var isTakingPhoto by remember { mutableStateOf(false) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    if (isTakingPhoto) {
+        SelfieCaptureScreen(
+            onImageSelected = {
+                imageUri = it
+                isTakingPhoto = false
+            },
+            onBackPressed = { isTakingPhoto = false })
+    } else {
+        ProfileSetupContent(
+            uiState = viewModel.uiState,
+            imageUri = imageUri,
+            onNameChanged = viewModel::onNameUpdated,
+            onNextClicked = {
+                coroutineScope.launch {
+                    val updatedUser = viewModel.updateUser(imageUri)
+                    onProfileSetupComplete(updatedUser)
+                }
+            },
+            onBackPressed = onBackPressed,
+            onTakePhotoClicked = { isTakingPhoto = true }
+        )
+    }
 }
 
 @Composable
 fun ProfileSetupContent(
     uiState: ProfileSetupViewModel.UiState,
+    imageUri: Uri?,
     onNameChanged: (String) -> Unit,
-    onNextClicked: (Uri?) -> Unit
+    onNextClicked: () -> Unit,
+    onBackPressed: () -> Unit,
+    onTakePhotoClicked: () -> Unit,
 ) {
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -109,9 +124,7 @@ fun ProfileSetupContent(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {
-
-                        }) {
+                        IconButton(onClick = onBackPressed) {
                             Icon(
                                 imageVector = Icons.Outlined.ArrowBack,
                                 contentDescription = "Account Button",
@@ -131,17 +144,6 @@ fun ProfileSetupContent(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                var hasImage by remember {
-                    mutableStateOf(false)
-                }
-                var imageUri by remember {
-                    mutableStateOf<Uri?>(null)
-                }
-                val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-                    hasImage = success
-                }
-
-                val context = LocalContext.current
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -164,7 +166,7 @@ fun ProfileSetupContent(
                         ) {
 
                             AsyncImage(
-                                model = if (hasImage) imageUri else null,
+                                model = imageUri,
                                 placeholder = painterResource(id = R.drawable.default_avatar),
                                 error = painterResource(id = R.drawable.default_avatar),
                                 contentDescription = "Profile photo",
@@ -178,11 +180,8 @@ fun ProfileSetupContent(
                     Button(
                         modifier = Modifier
                             .padding(horizontal = 24.dp),
-                        onClick = {
-                            val uri = ComposeFileProvider.getImageUri(context)
-                            imageUri = uri
-                            cameraLauncher.launch(uri)
-                        }) {
+                        onClick = onTakePhotoClicked
+                    ) {
                         Text(text = "Take Photo")
                     }
                     Spacer(modifier = Modifier.size(48.dp))
@@ -207,7 +206,8 @@ fun ProfileSetupContent(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),
-                        onClick = { onNextClicked(imageUri) }) {
+                        onClick = onNextClicked
+                    ) {
                         Text(text = "Next")
                     }
                 }
@@ -228,7 +228,10 @@ fun Preview() {
             imageUri = null,
             saving = true
         ),
+        imageUri = null,
         onNameChanged = {},
-        onNextClicked = {}
+        onBackPressed = {},
+        onNextClicked = {},
+        onTakePhotoClicked = {}
     )
 }
