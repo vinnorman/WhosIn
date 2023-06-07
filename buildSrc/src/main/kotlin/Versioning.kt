@@ -31,7 +31,7 @@ fun Project.generateVersionCode(): Int {
 private fun Project.gitDescribe(): Pair<String, String?> {
     val byte = ByteArrayOutputStream()
     project.exec {
-        commandLine = listOf("git", "describe")
+        commandLine = listOf("git", "describe", " --tags")
         standardOutput = byte
     }
     val result = String(byte.toByteArray()).trim().split("-")
