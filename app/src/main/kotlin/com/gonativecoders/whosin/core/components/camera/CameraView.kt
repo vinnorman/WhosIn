@@ -5,9 +5,10 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.components.camera.CameraAction.*
-import com.gonativecoders.whosin.core.util.image.getCameraProvider
 import com.gonativecoders.whosin.core.util.image.takePhoto
+
 
 @Composable
 fun CameraView(
@@ -49,18 +50,25 @@ fun CameraView(
 ) {
 
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var lensFacing by remember { mutableStateOf(CameraSelector.LENS_FACING_FRONT) }
-    val imageCapture: ImageCapture = remember { ImageCapture.Builder().build() }
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) onImageCaptured(uri)
     }
 
+    val cameraController = LifecycleCameraController(context)
+    cameraController.bindToLifecycle(lifecycleOwner)
+
+    cameraController.cameraSelector = CameraSelector.Builder()
+        .requireLensFacing(lensFacing)
+        .build()
+
     CameraPreviewView(
-        imageCapture,
-        lensFacing
+        cameraController = cameraController
     ) { cameraUIAction ->
         when (cameraUIAction) {
-            OnCameraClick -> imageCapture.takePhoto(context, onImageCaptured, onError)
+            OnCameraClick -> cameraController.takePhoto(context, onImageCaptured = onImageCaptured, onError = onError)
             OnGalleryViewClick -> galleryLauncher.launch("image/*")
             OnSwitchCameraClick -> lensFacing =
                 if (lensFacing == CameraSelector.LENS_FACING_FRONT) CameraSelector.LENS_FACING_BACK else CameraSelector.LENS_FACING_FRONT
@@ -71,29 +79,20 @@ fun CameraView(
 @SuppressLint("RestrictedApi")
 @Composable
 private fun CameraPreviewView(
-    imageCapture: ImageCapture,
-    lensFacing: Int = CameraSelector.LENS_FACING_BACK,
+    cameraController: CameraController,
     onControlClicked: (CameraAction) -> Unit
 ) {
 
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     val preview = Preview.Builder().build()
-    val cameraSelector = CameraSelector.Builder()
-        .requireLensFacing(lensFacing)
-        .build()
-
     val previewView = remember { PreviewView(context) }
-    LaunchedEffect(lensFacing) {
-        val cameraProvider = context.getCameraProvider()
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            imageCapture
-        )
+
+
+
+    previewView.controller = cameraController
+
+    LaunchedEffect(Unit) {
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
@@ -120,8 +119,10 @@ fun CameraControls(onControlClicked: (CameraAction) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .padding(vertical = 16.dp,
-            horizontal = 24.dp),
+            .padding(
+                vertical = 16.dp,
+                horizontal = 24.dp
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

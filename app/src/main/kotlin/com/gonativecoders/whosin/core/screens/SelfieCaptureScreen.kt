@@ -37,12 +37,15 @@ fun SelfieCaptureScreen(
 
     }
 
-    Box(contentAlignment = Alignment.Center, modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black)) {
+    Box(
+        contentAlignment = Alignment.Center, modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
         val uri = imageUri
         when {
-            uri != null -> CapturedImagePreview(uri = uri, onConfirmClicked = {}, onRetakeClicked = { imageUri = null })
+            uri != null -> CapturedImagePreview(uri = uri, onConfirmClicked = { onImageSelected(uri) }, onRetakeClicked = { imageUri = null })
+
             permissionState.status.isGranted -> CameraView(onImageCaptured = { imageUri = it }, onError = {})
             else -> {
                 Column {

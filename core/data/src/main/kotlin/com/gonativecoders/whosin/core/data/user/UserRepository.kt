@@ -1,11 +1,12 @@
 package com.gonativecoders.whosin.core.data.user
 
+import android.net.Uri
 import com.gonativecoders.whosin.core.auth.model.User
 import com.gonativecoders.whosin.core.data.user.service.UserService
 
 class UserRepository internal constructor(private val service: UserService) {
 
-    suspend fun uploadProfilePhoto(user: User, image: ByteArray): String {
+    suspend fun uploadProfilePhoto(user: User, image: Uri): String {
         return service.uploadProfilePhoto(user, image)
     }
 

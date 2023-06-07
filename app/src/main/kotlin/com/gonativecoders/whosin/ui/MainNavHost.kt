@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.screens.SelfieCaptureScreen
 import com.gonativecoders.whosin.ui.auth.CreateAccountScreen
 import com.gonativecoders.whosin.ui.auth.LoginScreen
 import com.gonativecoders.whosin.ui.home.HomeScreen
@@ -23,7 +22,6 @@ sealed class MainDestinations(val route: String) {
     object CreateAccount : MainDestinations("create_account")
     object Home : MainDestinations("home")
     object ProfileSetup : MainDestinations("profile_setup")
-    object SelfieCapture : MainDestinations("selfie_capture")
     object Welcome : MainDestinations("welcome")
     object CreateTeam : MainDestinations("create_team")
     object JoinTeam : MainDestinations("join_team")
@@ -66,13 +64,8 @@ fun MainNavHost(
             }
             ProfileSetupScreen(
                 viewModel = getViewModel(parameters = { parametersOf(user) }),
+                onBackPressed = { onLoggedOut() },
                 onProfileSetupComplete = onUserUpdated,
-                navigateToSelfieCapture = { navController.navigate(MainDestinations.SelfieCapture)}
-            )
-        }
-        composable(MainDestinations.SelfieCapture.route) {
-            SelfieCaptureScreen(
-                onImageSelected = {}
             )
         }
         composable(MainDestinations.Welcome.route) {

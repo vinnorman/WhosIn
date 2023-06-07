@@ -1,5 +1,6 @@
 package com.gonativecoders.whosin.ui.onboarding.profilesetup
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,7 +22,7 @@ class ProfileSetupViewModel(
     )
         private set
 
-    suspend fun updateUser(image: ByteArray?): User {
+    suspend fun updateUser(image: Uri?): User {
         uiState = uiState.copy(saving = true)
         val photoUri = image?.let { userRepository.uploadProfilePhoto(user, image) }
         val updatedUser = user.copy(

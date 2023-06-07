@@ -1,10 +1,13 @@
 package com.gonativecoders.whosin.core.util.image
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.impl.utils.Exif
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraController
 import androidx.core.content.ContextCompat
 import java.io.File
 import kotlin.coroutines.resume
@@ -19,16 +22,22 @@ suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutin
     }
 }
 
-fun ImageCapture.takePhoto(
+fun CameraController.takePhoto(
     context: Context,
     onImageCaptured: (Uri) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
-    val outputOptions = ImageCapture.OutputFileOptions.Builder(context.getTempImageFile()).build()
+    val file = context.getTempImageFile()
+    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
     takePicture(outputOptions, ContextCompat.getMainExecutor(context), object : ImageCapture.OnImageSavedCallback {
+        @SuppressLint("RestrictedApi")
         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-            val uri = outputFileResults.savedUri ?: return
+            val uri: Uri = outputFileResults.savedUri ?: return
+
+            val exif = Exif.createFromFile(file)
+            val rotation = exif.rotation
+
             onImageCaptured(uri)
         }
 
