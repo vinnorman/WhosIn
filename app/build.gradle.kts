@@ -115,7 +115,12 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.2.3")
     implementation("androidx.fragment:fragment-ktx:1.3.3")
 
-    implementation("androidx.camera:camera-camera2:1.3.0-alpha06")
+    implementation("androidx.camera:camera-camera2:1.3.0-alpha07")
+    implementation("androidx.camera:camera-lifecycle:1.3.0-alpha07")
+    implementation("androidx.camera:camera-view:1.3.0-alpha07")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.2")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.25.0")
 
     implementation("io.insert-koin:koin-android:3.2.2")
     implementation("io.insert-koin:koin-androidx-compose:3.2.1")

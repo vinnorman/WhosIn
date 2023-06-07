@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
-import com.gonativecoders.whosin.core.util.image.ComposeFileProvider
 import com.gonativecoders.whosin.core.util.image.compress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -62,7 +61,8 @@ import kotlinx.coroutines.launch
 fun ProfileSetupScreen(
     viewModel: ProfileSetupViewModel,
     onProfileSetupComplete: (User) -> Unit,
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    navigateToSelfieCapture: () -> Unit
 ) {
     val context = LocalContext.current
     ProfileSetupContent(
@@ -75,6 +75,7 @@ fun ProfileSetupScreen(
                 onProfileSetupComplete(updatedUser)
             }
         },
+        navigateToSelfieCapture = navigateToSelfieCapture
     )
 }
 
@@ -82,7 +83,8 @@ fun ProfileSetupScreen(
 fun ProfileSetupContent(
     uiState: ProfileSetupViewModel.UiState,
     onNameChanged: (String) -> Unit,
-    onNextClicked: (Uri?) -> Unit
+    onNextClicked: (Uri?) -> Unit,
+    navigateToSelfieCapture: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -179,9 +181,10 @@ fun ProfileSetupContent(
                         modifier = Modifier
                             .padding(horizontal = 24.dp),
                         onClick = {
-                            val uri = ComposeFileProvider.getImageUri(context)
-                            imageUri = uri
-                            cameraLauncher.launch(uri)
+                            navigateToSelfieCapture()
+//                            val uri = ComposeFileProvider.getImageUri(context)
+//                            imageUri = uri
+//                            cameraLauncher.launch(uri)
                         }) {
                         Text(text = "Take Photo")
                     }
@@ -229,6 +232,7 @@ fun Preview() {
             saving = true
         ),
         onNameChanged = {},
-        onNextClicked = {}
+        onNextClicked = {},
+        navigateToSelfieCapture = {}
     )
 }

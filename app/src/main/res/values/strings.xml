@@ -6,4 +6,9 @@
     <string name="screen_name_me">Me</string>
     <string name="screen_name_team">Team</string>
     <string name="screen_name_chat">Chat</string>
+    <string name="icn_camera_view_switch_camera_content_description">Flip camera</string>
+    <string name="icn_camera_view_camera_shutter_content_description">Take Photo</string>
+    <string name="icn_camera_view_view_gallery_content_description">Get from library</string>
+    <string name="icn_camera_image_preview_confirm_content_description">Confirm photo</string>
+    <string name="icn_image_preview_cancel_content_description">Retake</string>
 </resources>
