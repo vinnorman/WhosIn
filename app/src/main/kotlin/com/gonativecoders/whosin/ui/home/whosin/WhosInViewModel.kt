@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonativecoders.whosin.core.auth.model.User
+import com.gonativecoders.whosin.core.data.settings.SettingsRepository
 import com.gonativecoders.whosin.core.data.team.TeamRepository
 import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.data.whosin.WhosInRepository
@@ -19,6 +20,7 @@ import java.util.Date
 class WhosInViewModel(
     private val user: User,
     private val whosInRepository: WhosInRepository,
+    private val settingsRepository: SettingsRepository,
     private val teamRepository: TeamRepository
 ) : ViewModel() {
 
@@ -43,6 +45,7 @@ class WhosInViewModel(
                 if (workDays.isNotEmpty()) {
                     uiState = UiState.Success(
                         user = user,
+                        isTutorialComplete = settingsRepository.hasCompletedTutorial(),
                         members = members,
                         workDays = workDays
                     )
@@ -81,7 +84,8 @@ class WhosInViewModel(
         it: UiState.Success,
         day: WorkDay
     ) {
-        uiState = it.copy(workDays = it.workDays.map { workDay ->
+        uiState = it.copy(
+            workDays = it.workDays.map { workDay ->
             if (day == workDay) {
                 workDay.copy(
                     attendance = workDay.attendance.toMutableList().apply {
@@ -93,6 +97,9 @@ class WhosInViewModel(
                 workDay
             }
         })
+        if (!it.isTutorialComplete) {
+            onTutorialDismissed()
+        }
     }
 
     fun goToToday() {
@@ -109,12 +116,22 @@ class WhosInViewModel(
         }
     }
 
+    fun onTutorialDismissed() {
+        viewModelScope.launch {
+            settingsRepository.setTutorialComplete()
+            (uiState as? UiState.Success)?.also {
+                uiState = it.copy(isTutorialComplete = true)
+            }
+        }
+    }
+
     sealed class UiState {
 
         object Loading : UiState()
 
         data class Success(
             val user: User,
+            val isTutorialComplete: Boolean,
             val members: List<TeamMember>,
             val workDays: List<WorkDay>,
         ) : UiState()

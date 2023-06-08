@@ -26,7 +26,7 @@ val koinModules = module {
     viewModel { CreateTeamViewModel(repository = get(), authManager = get()) }
     viewModel { JoinTeamViewModel(repository = get(), authManager = get()) }
     viewModel { (user: User) -> TeamViewModel(user = user, repository = get()) }
-    viewModel { (user: User) -> WhosInViewModel(user = user, whosInRepository = get(), teamRepository = get()) }
+    viewModel { (user: User) -> WhosInViewModel(user = user, settingsRepository = get(), whosInRepository = get(), teamRepository = get()) }
 
     viewModel { (user: User) -> TeamInfoViewModel(user = user, repository = get()) }
     viewModel { (teamId: String) -> EditTeamViewModel(teamId = teamId, teamRepository = get()) }

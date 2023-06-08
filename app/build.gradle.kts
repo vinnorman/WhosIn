@@ -125,7 +125,6 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.2.2")
     implementation("io.insert-koin:koin-androidx-compose:3.2.1")
 
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
