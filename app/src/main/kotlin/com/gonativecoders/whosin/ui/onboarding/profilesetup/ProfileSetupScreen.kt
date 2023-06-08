@@ -63,23 +63,24 @@ fun ProfileSetupScreen(
 ) {
 
     var isTakingPhoto by remember { mutableStateOf(false) }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var newPhotoUri by remember { mutableStateOf<Uri?>(null) }
 
     if (isTakingPhoto) {
         SelfieCaptureScreen(
             onImageSelected = {
-                imageUri = it
+                viewModel.onPhotoUpdated(it)
+
                 isTakingPhoto = false
             },
             onBackPressed = { isTakingPhoto = false })
     } else {
         ProfileSetupContent(
             uiState = viewModel.uiState,
-            imageUri = imageUri,
+            newPhotoUri = newPhotoUri,
             onNameChanged = viewModel::onNameUpdated,
             onNextClicked = {
                 coroutineScope.launch {
-                    val updatedUser = viewModel.updateUser(imageUri)
+                    val updatedUser = viewModel.updateUser(newPhotoUri)
                     onProfileSetupComplete(updatedUser)
                 }
             },
@@ -92,7 +93,7 @@ fun ProfileSetupScreen(
 @Composable
 fun ProfileSetupContent(
     uiState: ProfileSetupViewModel.UiState,
-    imageUri: Uri?,
+    newPhotoUri: Uri?,
     onNameChanged: (String) -> Unit,
     onNextClicked: () -> Unit,
     onBackPressed: () -> Unit,
@@ -166,7 +167,7 @@ fun ProfileSetupContent(
                         ) {
 
                             AsyncImage(
-                                model = imageUri,
+                                model = newPhotoUri ?: uiState.imageUri,
                                 placeholder = painterResource(id = R.drawable.default_avatar),
                                 error = painterResource(id = R.drawable.default_avatar),
                                 contentDescription = "Profile photo",
@@ -228,7 +229,7 @@ fun Preview() {
             imageUri = null,
             saving = true
         ),
-        imageUri = null,
+        newPhotoUri = null,
         onNameChanged = {},
         onBackPressed = {},
         onNextClicked = {},

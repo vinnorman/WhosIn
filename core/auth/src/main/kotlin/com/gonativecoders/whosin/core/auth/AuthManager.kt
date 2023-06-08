@@ -23,8 +23,9 @@ class AuthManager internal constructor(private val service: AuthService) {
 
     fun logOut() = service.logOut()
 
-    suspend fun signInWithGoogle(idToken: String, email: String, displayName: String) = try {
-        service.signInWithGoogle(idToken, email, displayName)
+    suspend fun signInWithGoogle(idToken: String, email: String, displayName: String, photoUrl: String?) = try {
+        val highResPhotoUrl = photoUrl?.replace("=s96","=s400")
+        service.signInWithGoogle(idToken, email, displayName, highResPhotoUrl)
     } catch (exception: Exception) {
         throw AuthException(exception.message, exception)
     }

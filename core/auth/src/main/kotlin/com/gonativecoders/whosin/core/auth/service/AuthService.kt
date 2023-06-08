@@ -8,7 +8,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -37,22 +36,31 @@ internal class AuthService(
     }
 
     suspend fun getCurrentUser(): User? {
-        val userId = firebaseAuth.currentUser?.uid ?: return null
-        return firestore.collection("users").document(userId).get().await().toObject<FirebaseUser>()?.toUser()
+        try {
+            val userId = firebaseAuth.currentUser?.uid ?: return null
+            val user = firestore.collection("users").document(userId).get().await()
+            return if (user.exists()) user.toObject<FirebaseUser>()?.toUser() else null
+        } catch (exception: Exception) {
+            return null
+        }
+
     }
 
-    suspend fun signInWithGoogle(idToken: String, email: String, displayName: String): User {
+    suspend fun signInWithGoogle(idToken: String, email: String, displayName: String, photoUrl: String?): User {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
         val user = firebaseAuth.signInWithCredential(firebaseCredential).await().user ?: throw Exception("Couldn't create account")
 
-        firestore.collection("users")
-            .document(user.uid)
-            .set(
-                mapOf(
-                    "name" to displayName,
-                    "email" to email
-                ), SetOptions.merge()
-            ).await()
+        if (!firestore.collection("users").document(user.uid).get().await().exists()) {
+            firestore.collection("users")
+                .document(user.uid)
+                .set(
+                    mapOf(
+                        "name" to displayName,
+                        "email" to email,
+                        "photoUri" to photoUrl
+                    )
+                ).await()
+        }
 
         return firestore.collection("users")
             .document(user.uid).get().await().toObject<FirebaseUser>()!!.toUser()

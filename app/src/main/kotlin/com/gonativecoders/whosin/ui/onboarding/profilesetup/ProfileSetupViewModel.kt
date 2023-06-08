@@ -17,24 +17,36 @@ class ProfileSetupViewModel(
         UiState(
             displayName = user.name,
             imageUri = user.photoUri,
-            saving = false
+            saving = false,
         )
     )
         private set
 
-    suspend fun updateUser(image: Uri?): User {
+    suspend fun updateUser(newPhotoUri: Uri?): User {
         uiState = uiState.copy(saving = true)
-        val photoUri = image?.let { userRepository.uploadProfilePhoto(user, image) }
-        val updatedUser = user.copy(
-            hasSetupProfile = true,
-            photoUri = photoUri
-        )
+        val updatedUser = if (newPhotoUri != null) {
+            val photoUri =  userRepository.uploadProfilePhoto(user, newPhotoUri)
+            user.copy(
+                name = uiState.displayName,
+                hasSetupProfile = true,
+                photoUri = photoUri
+            )
+        } else {
+            user.copy(
+                name = uiState.displayName,
+                hasSetupProfile = true,
+            )
+        }
         userRepository.updateUser(updatedUser)
         return updatedUser
     }
 
     fun onNameUpdated(name: String) {
         uiState = uiState.copy(displayName = name)
+    }
+
+    fun onPhotoUpdated(uri: Uri) {
+        uiState = uiState.copy(imageUri = uri.path)
     }
 
     data class UiState(
