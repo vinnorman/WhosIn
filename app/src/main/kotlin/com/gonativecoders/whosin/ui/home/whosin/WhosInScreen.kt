@@ -3,6 +3,7 @@
 package com.gonativecoders.whosin.ui.home.whosin
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -59,6 +60,7 @@ import com.gonativecoders.whosin.core.data.team.model.TeamMember
 import com.gonativecoders.whosin.core.data.whosin.model.Attendee
 import com.gonativecoders.whosin.core.data.whosin.model.WorkDay
 import com.gonativecoders.whosin.core.theme.Blue50
+import com.gonativecoders.whosin.core.theme.Blue50again
 import com.gonativecoders.whosin.core.theme.Grey50
 import com.gonativecoders.whosin.core.theme.Grey600
 import com.gonativecoders.whosin.core.theme.Grey800
@@ -86,9 +88,11 @@ fun WhosInScreen(
             userId = uiState.user.id,
             onDayClicked = { day -> viewModel.updateAttendance(day) },
             members = uiState.members,
+            shouldShowTutorial = !uiState.isTutorialComplete,
             onNextWeekClicked = { viewModel.goToNextWeek() },
             onPreviousWeekClicked = { viewModel.goToPreviousWeek() },
-            onTodayClicked = { viewModel.goToToday() }
+            onTodayClicked = { viewModel.goToToday() },
+            onTutorialDismissed = viewModel::onTutorialDismissed
         ) { date -> viewModel.goToDate(date) }
     }
 }
@@ -98,12 +102,14 @@ fun WhosInScreen(
 fun WhosInContent(
     days: List<WorkDay>,
     userId: String,
+    shouldShowTutorial: Boolean,
     members: List<TeamMember>,
     onDayClicked: (WorkDay) -> Unit,
     onNextWeekClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
     onTodayClicked: () -> Unit,
-    onDateSelected: (Date) -> Unit,
+    onTutorialDismissed: () -> Unit,
+    onDateSelected: (Date) -> Unit
 ) {
 
     var showCalendar by rememberSaveable { mutableStateOf(false) }
@@ -149,6 +155,10 @@ fun WhosInContent(
             onNextWeekClicked = onNextWeekClicked,
             onCalendarClicked = { showCalendar = true }
         )
+        AttendanceTutorial(
+            shouldShowTutorial = shouldShowTutorial,
+            onDismissed = onTutorialDismissed
+        )
         WeekView(
             days = days,
             userId = userId,
@@ -163,8 +173,8 @@ fun WhosInContent(
 @Composable
 private fun WeekNavigation(
     days: List<WorkDay>,
-    onTodayClicked: () -> Unit,
     onPreviousWeekClicked: () -> Unit,
+    onTodayClicked: () -> Unit,
     onNextWeekClicked: () -> Unit,
     onCalendarClicked: () -> Unit,
 ) {
@@ -225,6 +235,44 @@ private fun WeekNavigation(
 
 
 @Composable
+fun AttendanceTutorial(
+    shouldShowTutorial: Boolean,
+    onDismissed: () -> Unit
+) {
+    AnimatedVisibility(visible = shouldShowTutorial) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            colors = CardDefaults.cardColors(containerColor = Blue50again)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "To get started, simply tap a day to add your attendance for that day!",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = onDismissed) {
+                    Text(
+                        text = "Ok got it!",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+        }
+    }
+
+}
+
+
+@Composable
 fun WeekView(
     days: List<WorkDay>,
     userId: String,
@@ -234,7 +282,7 @@ fun WeekView(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 12.dp, start = 12.dp, end = 12.dp)
+            .padding(top = 16.dp, start = 12.dp, end = 12.dp)
     ) {
 
         days.forEach { day ->
@@ -384,7 +432,7 @@ fun WhosInScreenPreview() {
             name = "Vin",
             currentTeamId = "123",
             teams = listOf(),
-            email ="vin.norman@gmail.com",
+            email = "vin.norman@gmail.com",
             hasSetupProfile = false
         )
 
@@ -394,9 +442,11 @@ fun WhosInScreenPreview() {
                 userId = user.id,
                 onDayClicked = { },
                 members = listOf(),
+                shouldShowTutorial = true,
                 onNextWeekClicked = {},
                 onPreviousWeekClicked = {},
-                onTodayClicked = {}
+                onTodayClicked = {},
+                onTutorialDismissed = {}
             ) {}
         }
 

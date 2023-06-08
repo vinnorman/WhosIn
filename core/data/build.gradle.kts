@@ -33,5 +33,8 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+
     implementation("io.insert-koin:koin-android:3.2.2")
 }

@@ -51,7 +51,7 @@ class CreateAccountViewModel(private val authManager: AuthManager) : ViewModel()
         uiState = uiState.copy(isCreatingAccount = true)
         viewModelScope.launch {
             try {
-                val user = authManager.signInWithGoogle(credential.googleIdToken!!, credential.id, credential.displayName!!)
+                val user = authManager.signInWithGoogle(credential.googleIdToken!!, credential.id, credential.displayName!!, credential.profilePictureUri?.toString())
                 onLoggedIn(user)
             } catch (exception: Exception) {
                 uiState = uiState.copy(error = exception, isCreatingAccount = false)
@@ -61,7 +61,6 @@ class CreateAccountViewModel(private val authManager: AuthManager) : ViewModel()
 
     fun onErrorDialogDismissed() {
         uiState = uiState.copy(error = null)
-
     }
 
 }
