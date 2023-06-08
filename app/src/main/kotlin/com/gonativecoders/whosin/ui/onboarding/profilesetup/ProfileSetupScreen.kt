@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.gonativecoders.whosin.R
 import com.gonativecoders.whosin.core.auth.model.User
+import com.gonativecoders.whosin.core.components.Loading
 import com.gonativecoders.whosin.core.screens.SelfieCaptureScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -68,8 +70,7 @@ fun ProfileSetupScreen(
     if (isTakingPhoto) {
         SelfieCaptureScreen(
             onImageSelected = {
-                viewModel.onPhotoUpdated(it)
-
+                newPhotoUri = it
                 isTakingPhoto = false
             },
             onBackPressed = { isTakingPhoto = false })
@@ -99,6 +100,7 @@ fun ProfileSetupContent(
     onBackPressed: () -> Unit,
     onTakePhotoClicked: () -> Unit,
 ) {
+
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -136,88 +138,109 @@ fun ProfileSetupContent(
                 )
             }
         ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(bottom = 24.dp, top = 120.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
+            if (uiState.saving) return@Scaffold Loading()
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    ElevatedCard(
-                        modifier = Modifier
-                            .size(150.dp),
-                        shape = CircleShape,
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                        ),
-                        elevation = CardDefaults.elevatedCardElevation(
-                            defaultElevation = 2.dp
-                        )
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            AsyncImage(
-                                model = newPhotoUri ?: uiState.imageUri,
-                                placeholder = painterResource(id = R.drawable.default_avatar),
-                                error = painterResource(id = R.drawable.default_avatar),
-                                contentDescription = "Profile photo",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-
-                        }
-                    }
-                    Spacer(modifier = Modifier.size(48.dp))
-                    Button(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp),
-                        onClick = onTakePhotoClicked
-                    ) {
-                        Text(text = "Take Photo")
-                    }
-                    Spacer(modifier = Modifier.size(48.dp))
-
-                    OutlinedTextField(
-                        singleLine = true,
-                        modifier = Modifier,
-                        value = uiState.displayName,
-                        colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
-                        onValueChange = onNameChanged,
-                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
-                        label = { Text("Display Name") },
-                        leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Full Name") }
-                    )
-                }
-
-                Column {
-                    Button(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        onClick = onNextClicked
-                    ) {
-                        Text(text = "Next")
-                    }
-                }
-
-            }
+            ProfileSetupBody(
+                innerPadding = innerPadding,
+                newPhotoUri = newPhotoUri,
+                uiState = uiState,
+                onTakePhotoClicked = onTakePhotoClicked,
+                onNameChanged = onNameChanged,
+                onNextClicked = onNextClicked
+            )
 
         }
     }
 
+}
+
+@Composable
+private fun ProfileSetupBody(
+    innerPadding: PaddingValues,
+    newPhotoUri: Uri?,
+    uiState: ProfileSetupViewModel.UiState,
+    onTakePhotoClicked: () -> Unit,
+    onNameChanged: (String) -> Unit,
+    onNextClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(bottom = 24.dp, top = 120.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ElevatedCard(
+                modifier = Modifier
+                    .size(150.dp),
+                shape = CircleShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                ),
+                elevation = CardDefaults.elevatedCardElevation(
+                    defaultElevation = 2.dp
+                )
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    AsyncImage(
+                        model = newPhotoUri ?: uiState.imageUri,
+                        placeholder = painterResource(id = R.drawable.default_avatar),
+                        error = painterResource(id = R.drawable.default_avatar),
+                        contentDescription = "Profile photo",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                }
+            }
+            Spacer(modifier = Modifier.size(48.dp))
+            Button(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp),
+                onClick = onTakePhotoClicked
+            ) {
+                Text(text = "Take Photo")
+            }
+            Spacer(modifier = Modifier.size(48.dp))
+
+            OutlinedTextField(
+                singleLine = true,
+                modifier = Modifier,
+                value = uiState.displayName,
+                colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White),
+                onValueChange = onNameChanged,
+                keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
+                label = { Text("Display Name") },
+                leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Full Name") }
+            )
+        }
+
+        Column {
+            Button(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                onClick = onNextClicked
+            ) {
+                Text(text = "Next")
+            }
+        }
+
+    }
 }
 
 @Composable

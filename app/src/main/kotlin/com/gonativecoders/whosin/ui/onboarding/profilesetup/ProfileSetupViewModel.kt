@@ -45,9 +45,6 @@ class ProfileSetupViewModel(
         uiState = uiState.copy(displayName = name)
     }
 
-    fun onPhotoUpdated(uri: Uri) {
-        uiState = uiState.copy(imageUri = uri.path)
-    }
 
     data class UiState(
         val displayName: String,
